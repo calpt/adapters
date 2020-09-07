@@ -35,7 +35,7 @@ from transformers import (
     AdamW,
     AdapterType,
     AutoConfig,
-    AutoModelForQuestionAnswering,
+    AutoModelWithHeads,
     AutoTokenizer,
     get_linear_schedule_with_warmup,
     setup_task_adapter_training,
@@ -77,6 +77,9 @@ def train(args, train_dataset, model, tokenizer, adapter_names=None):
     """ Train the model """
     if args.local_rank in [-1, 0]:
         tb_writer = SummaryWriter()
+
+    if args.patience > 0 and not args.evaluate_during_training:
+        raise ValueError("Patience requires evaluate_during_training.")
 
     args.train_batch_size = args.per_gpu_train_batch_size * max(1, args.n_gpu)
     train_sampler = RandomSampler(train_dataset) if args.local_rank == -1 else DistributedSampler(train_dataset)
@@ -164,6 +167,8 @@ def train(args, train_dataset, model, tokenizer, adapter_names=None):
             logger.info("  Starting fine-tuning.")
 
     tr_loss, logging_loss = 0.0, 0.0
+    best_eval_score = None
+    evals_without_improvement = 0
     model.zero_grad()
     train_iterator = trange(
         epochs_trained, int(args.num_train_epochs), desc="Epoch", disable=args.local_rank not in [-1, 0],
@@ -187,8 +192,7 @@ def train(args, train_dataset, model, tokenizer, adapter_names=None):
                 "input_ids": batch[0],
                 "attention_mask": batch[1],
                 "token_type_ids": batch[2],
-                "start_positions": batch[3],
-                "end_positions": batch[4],
+                "labels": [batch[3], batch[4]],
                 "adapter_names": adapter_names,
             }
 
@@ -236,6 +240,18 @@ def train(args, train_dataset, model, tokenizer, adapter_names=None):
                     # Only evaluate when single GPU otherwise metrics may not average well
                     if args.local_rank == -1 and args.evaluate_during_training:
                         results = evaluate(args, model, tokenizer, adapter_names=adapter_names)
+                        if args.patience > 0:
+                            # Keep track of best loss to determine if we should stop early
+                            eval_score = results[args.early_stopping_metric]
+                            if not best_eval_score or _compare_scores(args, eval_score, best_eval_score):
+                                evals_without_improvement = 0
+                                best_eval_score = eval_score
+                            else:
+                                evals_without_improvement += 1
+                                if evals_without_improvement >= args.patience:
+                                    logger.info(
+                                        f"Patience threshold ({args.patience}) exceeded, stopping training"
+                                    )
                         for key, value in results.items():
                             tb_writer.add_scalar("eval_{}".format(key), value, global_step)
                     tb_writer.add_scalar("lr", scheduler.get_lr()[0], global_step)
@@ -264,10 +280,12 @@ def train(args, train_dataset, model, tokenizer, adapter_names=None):
                     torch.save(scheduler.state_dict(), os.path.join(output_dir, "scheduler.pt"))
                     logger.info("Saving optimizer and scheduler states to %s", output_dir)
 
-            if args.max_steps > 0 and global_step > args.max_steps:
+            if ((args.max_steps > 0 and global_step > args.max_steps)
+                    or (args.patience > 0 and evals_without_improvement >= args.patience)):
                 epoch_iterator.close()
                 break
-        if args.max_steps > 0 and global_step > args.max_steps:
+        if ((args.max_steps > 0 and global_step > args.max_steps) or
+                (args.patience > 0 and evals_without_improvement >= args.patience)):
             train_iterator.close()
             break
 
@@ -275,6 +293,13 @@ def train(args, train_dataset, model, tokenizer, adapter_names=None):
         tb_writer.close()
 
     return global_step, tr_loss / global_step
+
+
+def _compare_scores(args, current, best):
+    if "loss" in args.early_stopping_metric:
+        return current < best
+    else:
+        return current > best
 
 
 def evaluate(args, model, tokenizer, prefix="", adapter_names=None):
@@ -712,6 +737,9 @@ def main():
     parser.add_argument(
         "--lang_adapter_config", type=str, default=None, help="Language adapter configuration.",
     )
+    parser.add_argument("--patience", type=int, default=-1)
+    parser.add_argument("--early_stopping_metric", type=str, default="loss")
+
     args = parser.parse_args()
 
     if args.doc_stride >= args.max_seq_length - args.max_query_length:
@@ -786,12 +814,14 @@ def main():
         do_lower_case=args.do_lower_case,
         cache_dir=args.cache_dir if args.cache_dir else None,
     )
-    model = AutoModelForQuestionAnswering.from_pretrained(
+    model = AutoModelWithHeads.from_pretrained(
         args.model_name_or_path,
         from_tf=bool(".ckpt" in args.model_name_or_path),
         config=config,
         cache_dir=args.cache_dir if args.cache_dir else None,
     )
+    if "squad" not in model.config.prediction_heads:
+        model.add_qa_head("squad", num_labels=config.num_labels)
 
     # Setup adapters
     task_name = "squad"
@@ -852,7 +882,7 @@ def main():
 
         # Load a trained model and vocabulary that you have fine-tuned
         if not args.train_adapter:
-            model = AutoModelForQuestionAnswering.from_pretrained(args.output_dir)  # , force_download=True)
+            model = AutoModelWithHeads.from_pretrained(args.output_dir)  # , force_download=True)
             model.to(args.device)
 
     # Evaluation - we can ask to evaluate all the checkpoints (sub-directories) in a directory
@@ -899,7 +929,7 @@ def main():
                 else:
                     adapter_names = [[task_name]]
             else:
-                model = AutoModelForQuestionAnswering.from_pretrained(checkpoint)  # , force_download=True)
+                model = AutoModelWithHeads.from_pretrained(checkpoint)  # , force_download=True)
                 model.to(args.device)
 
             # Evaluate
