@@ -57,6 +57,27 @@ class TrainingArguments:
     evaluate_during_training: bool = field(
         default=False, metadata={"help": "Run evaluation during training at each logging step."},
     )
+    patience: int = field(
+        default=-1,
+        metadata={
+            "help": (
+                "If > 0: stops training after evaluating this many times consecutively with non-decreasing loss."
+                "Requires evaluate_during_training."
+            )
+        },
+    )
+    early_stopping_metric: str = field(
+        default="loss", metadata={"help": "Metric used for early stopping. Loss by default."}
+    )
+    eval_epochs: int = field(
+        default=-1,
+        metadata={
+            "help": (
+                "If > 0 and, run evaluation after every time after this number of epochs instead of every logging step."
+                "Requires evaluate_during_training."
+            )
+        }
+    )
 
     per_device_train_batch_size: int = field(
         default=8, metadata={"help": "Batch size per GPU/TPU core/CPU for training."}

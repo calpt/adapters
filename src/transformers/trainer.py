@@ -195,6 +195,8 @@ class Trainer:
         """
         self.model = model.to(args.device)
         self.args = args
+        if self.args.patience > 0 and not self.args.evaluate_during_training:
+            raise ValueError("Patience requires evaluate_during_training.")
         if data_collator is not None:
             self.data_collator = data_collator
         else:
@@ -458,6 +460,8 @@ class Trainer:
 
         tr_loss = 0.0
         logging_loss = 0.0
+        best_eval_score = None
+        evals_without_improvement = 0
         model.zero_grad()
         train_iterator = trange(
             epochs_trained, int(num_train_epochs), desc="Epoch", disable=not self.is_local_master()
@@ -526,8 +530,20 @@ class Trainer:
 
                         self._log(logs)
 
-                        if self.args.evaluate_during_training:
-                            self.evaluate()
+                        if self.args.evaluate_during_training and self.args.eval_epochs < 1:
+                            results = self.evaluate()
+                            if self.args.patience > 0:
+                                # Keep track of best loss to determine if we should stop early
+                                eval_score = results[self.args.early_stopping_metric]
+                                if not best_eval_score or self._compare_scores(eval_score, best_eval_score):
+                                    evals_without_improvement = 0
+                                    best_eval_score = eval_score
+                                else:
+                                    evals_without_improvement += 1
+                                    if evals_without_improvement >= self.args.patience:
+                                        logger.info(
+                                            f"Patience threshold ({self.args.patience}) exceeded, stopping training"
+                                        )
 
                     if self.args.save_steps > 0 and self.global_step % self.args.save_steps == 0:
                         # In all cases (even distributed/parallel), self.model is always a reference
@@ -552,10 +568,51 @@ class Trainer:
                             torch.save(optimizer.state_dict(), os.path.join(output_dir, "optimizer.pt"))
                             torch.save(scheduler.state_dict(), os.path.join(output_dir, "scheduler.pt"))
 
-                if self.args.max_steps > 0 and self.global_step > self.args.max_steps:
+                if ((self.args.max_steps > 0 and self.global_step > self.args.max_steps) or
+                        (self.args.patience > 0 and evals_without_improvement >= self.args.patience)):
                     epoch_iterator.close()
                     break
-            if self.args.max_steps > 0 and self.global_step > self.args.max_steps:
+
+            # if eval_epochs is set, evaluate after epoch is completed
+            if self.args.evaluate_during_training and self.args.eval_epochs > 0 and epoch % self.args.eval_epochs == 0:
+                results = self.evaluate()
+                if self.args.patience > 0:
+                    # Keep track of best loss to determine if we should stop early
+                    eval_score = results[self.args.early_stopping_metric]
+                    if not best_eval_score or self._compare_scores(eval_score, best_eval_score):
+                        evals_without_improvement = 0
+                        best_eval_score = eval_score
+
+                        # Save checkpoint of best model
+                        if hasattr(model, "module"):
+                            assert model.module is self.model
+                        else:
+                            assert model is self.model
+                        # Save model checkpoint
+                        output_dir = os.path.join(self.args.output_dir, f"{PREFIX_CHECKPOINT_DIR}-best")
+
+                        self.save_model(output_dir)
+
+                        if is_tpu_available():
+                            xm.rendezvous("saving_optimizer_states")
+                            xm.save(optimizer.state_dict(), os.path.join(output_dir, "optimizer.pt"))
+                            xm.save(scheduler.state_dict(), os.path.join(output_dir, "scheduler.pt"))
+                        elif self.is_world_master():
+                            torch.save(optimizer.state_dict(), os.path.join(output_dir, "optimizer.pt"))
+                            torch.save(scheduler.state_dict(), os.path.join(output_dir, "scheduler.pt"))
+                    else:
+                        evals_without_improvement += 1
+                        if evals_without_improvement >= self.args.patience:
+                            logger.info(
+                                f"Patience threshold ({self.args.patience}) exceeded, stopping training"
+                            )
+                # log eval results
+                logger.info("***** Eval results {} *****".format(self.eval_dataset.args.task_name))
+                for key, value in results.items():
+                    logger.info("  %s = %s", key, value)
+
+            if ((self.args.max_steps > 0 and self.global_step > self.args.max_steps) or
+                    (self.args.patience > 0 and evals_without_improvement >= self.args.patience)):
                 train_iterator.close()
                 break
             if self.args.tpu_metrics_debug:
@@ -584,6 +641,12 @@ class Trainer:
             iterator.write(output)
         else:
             print(output)
+
+    def _compare_scores(self, current, best):
+        if "loss" in self.args.early_stopping_metric:
+            return current < best
+        else:
+            return current > best
 
     def _training_step(
         self, model: nn.Module, inputs: Dict[str, torch.Tensor], optimizer: torch.optim.Optimizer
