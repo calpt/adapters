@@ -18,7 +18,7 @@ from zipfile import ZipFile, is_zipfile
 import requests
 from filelock import FileLock
 
-from .file_utils import get_from_cache, is_remote_url, torch_cache_home
+from .file_utils import get_from_cache, hf_bucket_url, is_remote_url, torch_cache_home
 
 
 logger = logging.getLogger(__name__)
@@ -29,8 +29,8 @@ HEAD_CONFIG_NAME = "head_config.json"
 HEAD_WEIGHTS_NAME = "pytorch_model_head.bin"
 ADAPTERFUSION_CONFIG_NAME = "adapter_fusion_config.json"
 ADAPTERFUSION_WEIGHTS_NAME = "pytorch_model_adapter_fusion.bin"
+ADAPTER_PACKAGE_NAME = "pytorch_adapter.zip"
 
-ADAPTER_IDENTIFIER_PATTERN = r"[0-9a-zA-Z\-_\/@]{2,}"
 ADAPTER_HUB_URL = "https://raw.githubusercontent.com/Adapter-Hub/Hub/master/dist/"
 ADAPTER_HUB_INDEX_FILE = ADAPTER_HUB_URL + "index_{}/{}.json"
 ADAPTER_HUB_CONFIG_FILE = ADAPTER_HUB_URL + "architectures.json"
@@ -384,12 +384,25 @@ def pull_from_hub(
     return download_path
 
 
+def pull_from_hf_model_hub(
+    specifier: str,
+    version: str = None,
+    **kwargs
+) -> str:
+    download_url = hf_bucket_url(specifier, ADAPTER_PACKAGE_NAME, revision=version)
+    download_path = download_cached(download_url, **kwargs)
+    if not download_path:
+        raise EnvironmentError("Unable to load file from {}. The file might be unavailable.".format(download_url))
+    return download_path
+
+
 def resolve_adapter_path(
     adapter_name_or_path,
     adapter_type: AdapterType = AdapterType.text_task,
     model_name: str = None,
     adapter_config: Union[dict, str] = None,
     version: str = None,
+    source: str = "ah",
     **kwargs
 ) -> str:
     """
@@ -428,8 +441,11 @@ def resolve_adapter_path(
                     WEIGHTS_NAME, CONFIG_NAME, adapter_name_or_path
                 )
             )
-    # matches possible form of identifier in hub
-    elif re.fullmatch(ADAPTER_IDENTIFIER_PATTERN, adapter_name_or_path):
+    # pull from HF Model Hub
+    elif source == "hf":
+        return pull_from_hf_model_hub(adapter_name_or_path, version=version, **kwargs)
+    # pull from AdapterHub
+    elif source == "ah":
         if not adapter_type:  # make sure we have set an adapter_type
             adapter_type = AdapterType.text_task
         return pull_from_hub(
