@@ -26,6 +26,7 @@ def generate_summaries_or_translations(
     examples: List[str],
     out_file: str,
     model_name: str,
+    load_adapter=None,
     batch_size: int = 8,
     device: str = DEFAULT_DEVICE,
     fp16=False,
@@ -37,6 +38,9 @@ def generate_summaries_or_translations(
     fout = Path(out_file).open("w", encoding="utf-8")
     model_name = str(model_name)
     model = AutoModelForSeq2SeqLM.from_pretrained(model_name).to(device)
+    if load_adapter:
+        adapter_name = model.load_adapter(load_adapter)
+        model.set_active_adapters([adapter_name])
     if fp16:
         model = model.half()
 
@@ -90,6 +94,7 @@ def run_generate(verbose=True):
     parser.add_argument("model_name", type=str, help="like facebook/bart-large-cnn,t5-base, etc.")
     parser.add_argument("input_path", type=str, help="like cnn_dm/test.source")
     parser.add_argument("save_path", type=str, help="where to save summaries")
+    parser.add_argument("--load_adapter", type=str, required=False, help="path to a pre-trained adapter to be loaded")
     parser.add_argument("--reference_path", type=str, required=False, help="like cnn_dm/test.target")
     parser.add_argument("--score_path", type=str, required=False, default="metrics.json", help="where to save metrics")
     parser.add_argument("--device", type=str, required=False, default=DEFAULT_DEVICE, help="cuda, cuda:1, cpu etc.")
@@ -125,6 +130,7 @@ def run_generate(verbose=True):
         examples,
         args.save_path,
         args.model_name,
+        load_adapter=args.load_adapter,
         batch_size=args.bs,
         device=args.device,
         fp16=args.fp16,
