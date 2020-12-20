@@ -52,6 +52,9 @@ class ModelArguments:
     tokenizer_name: Optional[str] = field(
         default=None, metadata={"help": "Pretrained tokenizer name or path if not the same as model_name"}
     )
+    training_state_path: Optional[str] = field(
+        default=None, metadata={"help": "Path from where to load the training state."}
+    )
     cache_dir: Optional[str] = field(
         default=None,
         metadata={"help": "Where do you want to store the pretrained models downloaded from huggingface.co"},
@@ -309,9 +312,14 @@ def main():
     )
 
     # Training
+    training_state_path = None
+    if os.path.isdir(model_args.training_state_path):
+        training_state_path = model_args.training_state_path
+    elif os.path.isdir(model_args.model_name_or_path):
+        training_state_path = model_args.model_name_or_path
     if training_args.do_train:
         trainer.train(
-            model_path=model_args.model_name_or_path if os.path.isdir(model_args.model_name_or_path) else None
+            model_path=training_state_path
         )
         trainer.save_model()
         # For convenience, we also re-save the tokenizer to the same directory,
