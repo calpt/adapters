@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 import transformers
+from early_stopping_callback import EarlyStoppingCallback
 from seq2seq_trainer import Seq2SeqTrainer
 from seq2seq_training_args import Seq2SeqTrainingArguments
 from transformers import (
@@ -113,6 +114,9 @@ class DataTrainingArguments:
     ignore_pad_token_for_loss: bool = field(
         default=True,
         metadata={"help": "If only pad tokens should be ignored. This assumes that `config.pad_token_id` is defined."},
+    )
+    patience: int = field(
+        default=0,
     )
 
 
@@ -294,6 +298,10 @@ def main():
         else None
     )
 
+    # Early stopping
+    if data_args.patience > 0:
+        training_args.load_best_model_at_end = True
+
     # Initialize our Trainer
     compute_metrics_fn = (
         build_compute_metrics_fn(data_args.task, tokenizer) if training_args.predict_with_generate else None
@@ -310,6 +318,9 @@ def main():
         do_save_full_model=not adapter_args.train_adapter,
         do_save_adapters=adapter_args.train_adapter,
     )
+    if data_args.patience > 0:
+        callback = EarlyStoppingCallback(early_stopping_patience=data_args.patience)
+        trainer.add_callback(callback)
 
     # Training
     training_state_path = None
