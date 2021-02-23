@@ -324,7 +324,7 @@ def main():
 
     # Training
     training_state_path = None
-    if os.path.isdir(model_args.training_state_path):
+    if model_args.training_state_path and os.path.isdir(model_args.training_state_path):
         training_state_path = model_args.training_state_path
     elif os.path.isdir(model_args.model_name_or_path):
         training_state_path = model_args.model_name_or_path
