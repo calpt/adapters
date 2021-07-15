@@ -17,8 +17,8 @@ import unittest
 
 import numpy as np
 
-from transformers import is_flax_available
-from transformers.testing_utils import require_flax, require_sentencepiece, require_tokenizers, slow
+from adapter_transformers import is_flax_available
+from adapter_transformers.testing_utils import require_flax, require_sentencepiece, require_tokenizers, slow
 
 from .test_configuration_common import ConfigTester
 from .test_generation_flax_utils import FlaxGenerationTesterMixin
@@ -39,8 +39,8 @@ if is_flax_available():
     from flax.core.frozen_dict import unfreeze
     from flax.training.common_utils import onehot
     from flax.traverse_util import flatten_dict
-    from transformers import FLAX_MODEL_MAPPING, ByT5Tokenizer, T5Config, T5Tokenizer
-    from transformers.models.t5.modeling_flax_t5 import FlaxT5ForConditionalGeneration, FlaxT5Model, shift_tokens_right
+    from adapter_transformers import FLAX_MODEL_MAPPING, ByT5Tokenizer, T5Config, T5Tokenizer
+    from adapter_transformers.models.t5.modeling_flax_t5 import FlaxT5ForConditionalGeneration, FlaxT5Model, shift_tokens_right
 
 
 class FlaxT5ModelTester:

@@ -20,10 +20,10 @@ import unittest
 from copy import deepcopy
 
 from parameterized import parameterized
-from transformers import AutoModel, TrainingArguments, is_torch_available, logging
-from transformers.deepspeed import HfDeepSpeedConfig, is_deepspeed_available
-from transformers.file_utils import WEIGHTS_NAME
-from transformers.testing_utils import (
+from adapter_transformers import AutoModel, TrainingArguments, is_torch_available, logging
+from adapter_transformers.deepspeed import HfDeepSpeedConfig, is_deepspeed_available
+from adapter_transformers.file_utils import WEIGHTS_NAME
+from adapter_transformers.testing_utils import (
     CaptureLogger,
     CaptureStderr,
     ExtendSysPath,
@@ -37,7 +37,7 @@ from transformers.testing_utils import (
     require_torch_multi_gpu,
     slow,
 )
-from transformers.trainer_utils import set_seed
+from adapter_transformers.trainer_utils import set_seed
 
 
 bindir = os.path.abspath(os.path.dirname(__file__))
@@ -77,7 +77,7 @@ def require_deepspeed_aio(test_case):
 
 if is_deepspeed_available():
     from deepspeed.utils import logger as deepspeed_logger  # noqa
-    from transformers.deepspeed import deepspeed_config, is_deepspeed_zero3_enabled  # noqa
+    from adapter_transformers.deepspeed import deepspeed_config, is_deepspeed_zero3_enabled  # noqa
 
 ZERO2 = "zero2"
 ZERO3 = "zero3"
@@ -114,7 +114,7 @@ class CoreIntegrationDeepSpeed(TestCasePlus, TrainerIntegrationCommon):
 
         with LoggingLevel(logging.INFO):
             with mockenv_context(**self.dist_env_1_gpu):
-                logger = logging.get_logger("transformers.modeling_utils")
+                logger = logging.get_logger("adapter_transformers.modeling_utils")
                 with CaptureLogger(logger) as cl:
                     AutoModel.from_pretrained(T5_TINY)
         self.assertIn("Detected DeepSpeed ZeRO-3", cl.out)
@@ -128,7 +128,7 @@ class CoreIntegrationDeepSpeed(TestCasePlus, TrainerIntegrationCommon):
 
         with LoggingLevel(logging.INFO):
             with mockenv_context(**self.dist_env_1_gpu):
-                logger = logging.get_logger("transformers.modeling_utils")
+                logger = logging.get_logger("adapter_transformers.modeling_utils")
                 with CaptureLogger(logger) as cl:
                     AutoModel.from_pretrained(T5_TINY)
         self.assertNotIn("Detected DeepSpeed ZeRO-3", cl.out)

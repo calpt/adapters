@@ -2,7 +2,7 @@ import unittest
 
 import torch
 
-from transformers import (
+from adapter_transformers import (
     AutoModelForSequenceClassification,
     AutoTokenizer,
     BertConfig,
@@ -12,8 +12,8 @@ from transformers import (
     Trainer,
     TrainingArguments,
 )
-from transformers.adapters.composition import Fuse
-from transformers.testing_utils import slow
+from adapter_transformers.adapters.composition import Fuse
+from adapter_transformers.testing_utils import slow
 
 
 class TestAdapterTrainer(unittest.TestCase):

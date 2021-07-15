@@ -17,8 +17,8 @@ import os
 import tempfile
 import unittest
 
-from transformers import LxmertConfig, is_tf_available
-from transformers.testing_utils import require_tf, slow
+from adapter_transformers import LxmertConfig, is_tf_available
+from adapter_transformers.testing_utils import require_tf, slow
 
 from .test_configuration_common import ConfigTester
 from .test_modeling_tf_common import TFModelTesterMixin, ids_tensor
@@ -27,7 +27,7 @@ from .test_modeling_tf_common import TFModelTesterMixin, ids_tensor
 if is_tf_available():
     import tensorflow as tf
 
-    from transformers.models.lxmert.modeling_tf_lxmert import TFLxmertForPreTraining, TFLxmertModel
+    from adapter_transformers.models.lxmert.modeling_tf_lxmert import TFLxmertForPreTraining, TFLxmertModel
 
 
 class TFLxmertModelTester(object):
@@ -485,14 +485,14 @@ class TFLxmertModelTest(TFModelTesterMixin, unittest.TestCase):
             check_hidden_states_output(config, inputs_dict, model_class)
 
     def test_pt_tf_model_equivalence(self):
-        from transformers import is_torch_available
+        from adapter_transformers import is_torch_available
 
         if not is_torch_available():
             return
 
         import torch
 
-        import transformers
+        import adapter_transformers
 
         for model_class in self.all_model_classes:
             config, inputs_dict = self.model_tester.prepare_config_and_inputs_for_common(
@@ -500,7 +500,7 @@ class TFLxmertModelTest(TFModelTesterMixin, unittest.TestCase):
             )
 
             pt_model_class_name = model_class.__name__[2:]  # Skip the "TF" at the beginning
-            pt_model_class = getattr(transformers, pt_model_class_name)
+            pt_model_class = getattr(adapter_transformers, pt_model_class_name)
 
             config.output_hidden_states = True
             config.task_obj_predict = False
@@ -510,10 +510,10 @@ class TFLxmertModelTest(TFModelTesterMixin, unittest.TestCase):
 
             # Check we can load pt model in tf and vice-versa with model => model functions
 
-            tf_model = transformers.load_pytorch_model_in_tf2_model(
+            tf_model = adapter_transformers.load_pytorch_model_in_tf2_model(
                 tf_model, pt_model, tf_inputs=self._prepare_for_class(inputs_dict, model_class)
             )
-            pt_model = transformers.load_tf2_model_in_pytorch_model(pt_model, tf_model)
+            pt_model = adapter_transformers.load_tf2_model_in_pytorch_model(pt_model, tf_model)
 
             # Check predictions on first output (logits/hidden-states) are close enought given low-level computational differences
             pt_model.eval()
@@ -581,11 +581,11 @@ class TFLxmertModelTest(TFModelTesterMixin, unittest.TestCase):
 
                 pt_checkpoint_path = os.path.join(tmpdirname, "pt_model.bin")
                 torch.save(pt_model.state_dict(), pt_checkpoint_path)
-                tf_model = transformers.load_pytorch_checkpoint_in_tf2_model(tf_model, pt_checkpoint_path)
+                tf_model = adapter_transformers.load_pytorch_checkpoint_in_tf2_model(tf_model, pt_checkpoint_path)
 
                 tf_checkpoint_path = os.path.join(tmpdirname, "tf_model.h5")
                 tf_model.save_weights(tf_checkpoint_path)
-                pt_model = transformers.load_tf2_checkpoint_in_pytorch_model(pt_model, tf_checkpoint_path)
+                pt_model = adapter_transformers.load_tf2_checkpoint_in_pytorch_model(pt_model, tf_checkpoint_path)
 
             # Check predictions on first output (logits/hidden-states) are close enought given low-level computational differences
             pt_model.eval()

@@ -26,7 +26,7 @@ import numpy as np
 
 from huggingface_hub import HfApi
 from requests.exceptions import HTTPError
-from transformers import (
+from adapter_transformers import (
     AutoTokenizer,
     IntervalStrategy,
     PretrainedConfig,
@@ -34,8 +34,8 @@ from transformers import (
     is_torch_available,
     logging,
 )
-from transformers.file_utils import WEIGHTS_NAME
-from transformers.testing_utils import (
+from adapter_transformers.file_utils import WEIGHTS_NAME
+from adapter_transformers.testing_utils import (
     ENDPOINT_STAGING,
     PASS,
     USER,
@@ -56,8 +56,8 @@ from transformers.testing_utils import (
     require_torch_up_to_2_gpus,
     slow,
 )
-from transformers.trainer_utils import PREFIX_CHECKPOINT_DIR
-from transformers.utils.hp_naming import TrialShortNamer
+from adapter_transformers.trainer_utils import PREFIX_CHECKPOINT_DIR
+from adapter_transformers.utils.hp_naming import TrialShortNamer
 
 
 if is_torch_available():
@@ -65,7 +65,7 @@ if is_torch_available():
     from torch import nn
     from torch.utils.data import IterableDataset
 
-    from transformers import (
+    from adapter_transformers import (
         AutoModelForSequenceClassification,
         EarlyStoppingCallback,
         GlueDataset,
@@ -77,7 +77,7 @@ if is_torch_available():
         Trainer,
         TrainerState,
     )
-    from transformers.modeling_utils import unwrap_model
+    from adapter_transformers.modeling_utils import unwrap_model
 
 
 PATH_SAMPLE_TEXT = f"{get_tests_dir()}/fixtures/sample_text.txt"
@@ -448,7 +448,7 @@ class TrainerIntegrationPrerunTest(TestCasePlus, TrainerIntegrationCommon):
     def test_adafactor_lr_none(self):
         # test the special case where lr=None, since Trainer can't not have lr_scheduler
 
-        from transformers.optimization import Adafactor, AdafactorSchedule
+        from adapter_transformers.optimization import Adafactor, AdafactorSchedule
 
         train_dataset = RegressionDataset()
         args = TrainingArguments("./regression")

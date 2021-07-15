@@ -16,8 +16,8 @@ import random
 
 import numpy as np
 
-from transformers import is_flax_available
-from transformers.testing_utils import require_flax
+from adapter_transformers import is_flax_available
+from adapter_transformers.testing_utils import require_flax
 
 
 if is_flax_available():

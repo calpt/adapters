@@ -17,9 +17,9 @@ import unittest
 
 import numpy as np
 
-from transformers import BartConfig, BartTokenizer, is_tf_available
-from transformers.file_utils import cached_property
-from transformers.testing_utils import require_tf, slow
+from adapter_transformers import BartConfig, BartTokenizer, is_tf_available
+from adapter_transformers.file_utils import cached_property
+from adapter_transformers.testing_utils import require_tf, slow
 
 from .test_configuration_common import ConfigTester
 from .test_modeling_tf_common import TFModelTesterMixin, ids_tensor
@@ -28,7 +28,7 @@ from .test_modeling_tf_common import TFModelTesterMixin, ids_tensor
 if is_tf_available():
     import tensorflow as tf
 
-    from transformers import TFBartForConditionalGeneration, TFBartModel
+    from adapter_transformers import TFBartForConditionalGeneration, TFBartModel
 
 
 @require_tf

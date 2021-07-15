@@ -15,15 +15,15 @@
 
 import unittest
 
-from transformers import BarthezTokenizer, BarthezTokenizerFast, BatchEncoding
-from transformers.testing_utils import require_sentencepiece, require_tokenizers, require_torch, slow
+from adapter_transformers import BarthezTokenizer, BarthezTokenizerFast, BatchEncoding
+from adapter_transformers.testing_utils import require_sentencepiece, require_tokenizers, require_torch, slow
 
 from .test_tokenization_common import TokenizerTesterMixin
 
 
 @require_tokenizers
 @require_sentencepiece
-@slow  # see https://github.com/huggingface/transformers/issues/11457
+@slow  # see https://github.com/huggingface/adapter_transformers/issues/11457
 class BarthezTokenizationTest(TokenizerTesterMixin, unittest.TestCase):
 
     tokenizer_class = BarthezTokenizer

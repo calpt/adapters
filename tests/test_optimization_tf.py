@@ -14,8 +14,8 @@
 
 import unittest
 
-from transformers import is_tf_available
-from transformers.testing_utils import require_tf
+from adapter_transformers import is_tf_available
+from adapter_transformers.testing_utils import require_tf
 
 
 if is_tf_available():
@@ -23,7 +23,7 @@ if is_tf_available():
     from tensorflow.python.eager import context
     from tensorflow.python.framework import ops
 
-    from transformers import GradientAccumulator, create_optimizer
+    from adapter_transformers import GradientAccumulator, create_optimizer
 
 
 @require_tf

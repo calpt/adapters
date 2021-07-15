@@ -21,8 +21,8 @@ import unittest
 
 import numpy as np
 
-from transformers import Wav2Vec2Config, is_tf_available
-from transformers.testing_utils import require_datasets, require_soundfile, require_tf, slow
+from adapter_transformers import Wav2Vec2Config, is_tf_available
+from adapter_transformers.testing_utils import require_datasets, require_soundfile, require_tf, slow
 
 from .test_configuration_common import ConfigTester
 from .test_modeling_tf_common import TFModelTesterMixin, ids_tensor
@@ -31,8 +31,8 @@ from .test_modeling_tf_common import TFModelTesterMixin, ids_tensor
 if is_tf_available():
     import tensorflow as tf
 
-    from transformers import TFWav2Vec2ForCTC, TFWav2Vec2Model, Wav2Vec2Processor
-    from transformers.models.wav2vec2.modeling_tf_wav2vec2 import _compute_mask_indices
+    from adapter_transformers import TFWav2Vec2ForCTC, TFWav2Vec2Model, Wav2Vec2Processor
+    from adapter_transformers.models.wav2vec2.modeling_tf_wav2vec2 import _compute_mask_indices
 
 
 @require_tf

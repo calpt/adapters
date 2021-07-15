@@ -17,8 +17,8 @@
 import copy
 import unittest
 
-from transformers import is_torch_available
-from transformers.testing_utils import require_torch, slow, torch_device
+from adapter_transformers import is_torch_available
+from adapter_transformers.testing_utils import require_torch, slow, torch_device
 
 from .test_configuration_common import ConfigTester
 from .test_modeling_common import ModelTesterMixin, ids_tensor, random_attention_mask
@@ -28,7 +28,7 @@ if is_torch_available():
     import torch
     from torch import nn
 
-    from transformers import (
+    from adapter_transformers import (
         IBERT_PRETRAINED_MODEL_ARCHIVE_LIST,
         IBertConfig,
         IBertForMaskedLM,
@@ -38,7 +38,7 @@ if is_torch_available():
         IBertForTokenClassification,
         IBertModel,
     )
-    from transformers.models.ibert.modeling_ibert import (
+    from adapter_transformers.models.ibert.modeling_ibert import (
         IBertEmbeddings,
         IntGELU,
         IntLayerNorm,
@@ -258,7 +258,7 @@ class IBertModelTest(ModelTesterMixin, unittest.TestCase):
 
     def test_create_position_ids_respects_padding_index(self):
         """Ensure that the default position ids only assign a sequential . This is a regression
-        test for https://github.com/huggingface/transformers/issues/1761
+        test for https://github.com/huggingface/adapter_transformers/issues/1761
 
         The position ids should be masked with the embedding object's padding index. Therefore, the
         first available non-padding position index is IBertEmbeddings.padding_idx + 1
@@ -277,7 +277,7 @@ class IBertModelTest(ModelTesterMixin, unittest.TestCase):
 
     def test_create_position_ids_from_inputs_embeds(self):
         """Ensure that the default position ids only assign a sequential . This is a regression
-        test for https://github.com/huggingface/transformers/issues/1761
+        test for https://github.com/huggingface/adapter_transformers/issues/1761
 
         The position ids should be masked with the embedding object's padding index. Therefore, the
         first available non-padding position index is IBertEmbeddings.padding_idx + 1

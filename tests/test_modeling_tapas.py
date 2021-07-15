@@ -20,7 +20,7 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from transformers import (
+from adapter_transformers import (
     MODEL_FOR_CAUSAL_LM_MAPPING,
     MODEL_FOR_MASKED_LM_MAPPING,
     MODEL_FOR_MULTIPLE_CHOICE_MAPPING,
@@ -31,9 +31,9 @@ from transformers import (
     MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING,
     is_torch_available,
 )
-from transformers.file_utils import cached_property
-from transformers.models.auto import get_values
-from transformers.testing_utils import require_scatter, require_torch, slow, torch_device
+from adapter_transformers.file_utils import cached_property
+from adapter_transformers.models.auto import get_values
+from adapter_transformers.testing_utils import require_scatter, require_torch, slow, torch_device
 
 from .test_configuration_common import ConfigTester
 from .test_modeling_common import ModelTesterMixin, floats_tensor, ids_tensor, random_attention_mask
@@ -42,7 +42,7 @@ from .test_modeling_common import ModelTesterMixin, floats_tensor, ids_tensor, r
 if is_torch_available():
     import torch
 
-    from transformers import (
+    from adapter_transformers import (
         TapasConfig,
         TapasForMaskedLM,
         TapasForQuestionAnswering,
@@ -50,7 +50,7 @@ if is_torch_available():
         TapasModel,
         TapasTokenizer,
     )
-    from transformers.models.tapas.modeling_tapas import (
+    from adapter_transformers.models.tapas.modeling_tapas import (
         IndexMap,
         ProductIndexMap,
         flatten,

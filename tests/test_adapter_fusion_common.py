@@ -4,8 +4,8 @@ from dataclasses import asdict
 
 import torch
 
-from transformers import ADAPTERFUSION_CONFIG_MAP, AdapterConfig, AutoModel, PfeifferConfig
-from transformers.testing_utils import require_torch
+from adapter_transformers import ADAPTERFUSION_CONFIG_MAP, AdapterConfig, AutoModel, PfeifferConfig
+from adapter_transformers.testing_utils import require_torch
 
 
 @require_torch

@@ -16,9 +16,9 @@
 import os
 import unittest
 
-from transformers import BertGenerationTokenizer
-from transformers.file_utils import cached_property
-from transformers.testing_utils import require_sentencepiece, require_torch, slow
+from adapter_transformers import BertGenerationTokenizer
+from adapter_transformers.file_utils import cached_property
+from adapter_transformers.testing_utils import require_sentencepiece, require_torch, slow
 
 from .test_tokenization_common import TokenizerTesterMixin
 
@@ -211,7 +211,7 @@ class BertGenerationTokenizationTest(TokenizerTesterMixin, unittest.TestCase):
     def test_torch_encode_plus_sent_to_model(self):
         import torch
 
-        from transformers import BertGenerationConfig, BertGenerationEncoder
+        from adapter_transformers import BertGenerationConfig, BertGenerationEncoder
 
         # Build sequence
         first_ten_tokens = list(self.big_tokenizer.get_vocab().keys())[:10]

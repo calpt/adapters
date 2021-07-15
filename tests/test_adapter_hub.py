@@ -3,7 +3,7 @@ import unittest
 
 import numpy as np
 
-from transformers import (  # get_adapter_config_hash,
+from adapter_transformers import (  # get_adapter_config_hash,
     ADAPTER_CONFIG_MAP,
     AdapterConfig,
     AutoModel,
@@ -17,8 +17,8 @@ from transformers import (  # get_adapter_config_hash,
     get_adapter_config_hash,
     glue_compute_metrics,
 )
-from transformers.adapters.utils import find_in_index
-from transformers.testing_utils import require_torch
+from adapter_transformers.adapters.utils import find_in_index
+from adapter_transformers.testing_utils import require_torch
 
 from .test_modeling_common import ids_tensor
 

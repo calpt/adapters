@@ -14,7 +14,7 @@
 
 import unittest
 
-from transformers import (
+from adapter_transformers import (
     AutoModelForCausalLM,
     AutoModelForSeq2SeqLM,
     AutoTokenizer,
@@ -25,7 +25,7 @@ from transformers import (
     is_torch_available,
     pipeline,
 )
-from transformers.testing_utils import is_pipeline_test, require_torch, slow, torch_device
+from adapter_transformers.testing_utils import is_pipeline_test, require_torch, slow, torch_device
 
 from .test_pipelines_common import MonoInputPipelineCommonMixin
 
@@ -34,7 +34,7 @@ if is_torch_available():
     import torch
     from torch import nn
 
-    from transformers.models.gpt2 import GPT2Config, GPT2LMHeadModel
+    from adapter_transformers.models.gpt2 import GPT2Config, GPT2LMHeadModel
 
 DEFAULT_DEVICE_NUM = -1 if torch_device == "cpu" else 0
 
@@ -67,7 +67,7 @@ class SimpleConversationPipelineTests(unittest.TestCase):
         # import tempfile
 
         # from tokenizers import Tokenizer, models
-        # from transformers.tokenization_utils_fast import PreTrainedTokenizerFast
+        # from adapter_transformers.tokenization_utils_fast import PreTrainedTokenizerFast
 
         # vocab = [(chr(i), i) for i in range(256)]
         # tokenizer = Tokenizer(models.Unigram(vocab))

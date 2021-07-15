@@ -2,7 +2,7 @@ import unittest
 from tempfile import TemporaryDirectory
 from typing import Dict
 
-from transformers import BertConfig, BertForSequenceClassification, BertModelWithHeads
+from adapter_transformers import BertConfig, BertForSequenceClassification, BertModelWithHeads
 
 
 def get_default(num_label):

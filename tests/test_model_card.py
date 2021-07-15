@@ -19,7 +19,7 @@ import os
 import tempfile
 import unittest
 
-from transformers.modelcard import ModelCard
+from adapter_transformers.modelcard import ModelCard
 
 
 class ModelCardTester(unittest.TestCase):

@@ -14,9 +14,9 @@
 
 import unittest
 
-from transformers.data.processors.squad import SquadExample
-from transformers.pipelines import Pipeline, QuestionAnsweringArgumentHandler, pipeline
-from transformers.testing_utils import slow
+from adapter_transformers.data.processors.squad import SquadExample
+from adapter_transformers.pipelines import Pipeline, QuestionAnsweringArgumentHandler, pipeline
+from adapter_transformers.testing_utils import slow
 
 from .test_pipelines_common import CustomInputPipelineCommonMixin
 

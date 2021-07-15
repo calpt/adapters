@@ -16,8 +16,8 @@
 import os
 import unittest
 
-from transformers import AlbertTokenizer, AlbertTokenizerFast
-from transformers.testing_utils import require_sentencepiece, require_tokenizers, slow
+from adapter_transformers import AlbertTokenizer, AlbertTokenizerFast
+from adapter_transformers.testing_utils import require_sentencepiece, require_tokenizers, slow
 
 from .test_tokenization_common import TokenizerTesterMixin
 

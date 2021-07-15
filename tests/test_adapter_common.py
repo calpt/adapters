@@ -4,7 +4,7 @@ import tempfile
 
 import torch
 
-from transformers import (
+from adapter_transformers import (
     ADAPTER_CONFIG_MAP,
     AutoModel,
     AutoModelForSequenceClassification,
@@ -14,7 +14,7 @@ from transformers import (
     PfeifferConfig,
     PfeifferInvConfig,
 )
-from transformers.testing_utils import require_torch, torch_device
+from adapter_transformers.testing_utils import require_torch, torch_device
 
 
 def create_twin_models(model_class, config_creator=None):

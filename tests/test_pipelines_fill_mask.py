@@ -14,8 +14,8 @@
 
 import unittest
 
-from transformers import pipeline
-from transformers.testing_utils import require_tf, require_torch, slow
+from adapter_transformers import pipeline
+from adapter_transformers.testing_utils import require_tf, require_torch, slow
 
 from .test_pipelines_common import MonoInputPipelineCommonMixin
 

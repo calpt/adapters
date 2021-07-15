@@ -15,9 +15,9 @@
 import os
 import unittest
 
-import transformers.models.bart.tokenization_bart
-from transformers import logging
-from transformers.testing_utils import CaptureLogger, mockenv
+import adapter_transformers.models.bart.tokenization_bart
+from adapter_transformers import logging
+from adapter_transformers.testing_utils import CaptureLogger, mockenv
 
 
 class HfArgumentParserTest(unittest.TestCase):
@@ -45,7 +45,7 @@ class HfArgumentParserTest(unittest.TestCase):
     def test_integration(self):
         level_origin = logging.get_verbosity()
 
-        logger = logging.get_logger("transformers.models.bart.tokenization_bart")
+        logger = logging.get_logger("adapter_transformers.models.bart.tokenization_bart")
         msg = "Testing 1, 2, 3"
 
         # should be able to log warnings (if default settings weren't overridden by `pytest --log-level-all`)
@@ -54,7 +54,7 @@ class HfArgumentParserTest(unittest.TestCase):
                 logger.warning(msg)
             self.assertEqual(cl.out, msg + "\n")
 
-        # this is setting the level for all of `transformers.*` loggers
+        # this is setting the level for all of `adapter_transformers.*` loggers
         logging.set_verbosity_error()
 
         # should not be able to log warnings
@@ -74,9 +74,9 @@ class HfArgumentParserTest(unittest.TestCase):
     @mockenv(TRANSFORMERS_VERBOSITY="error")
     def test_env_override(self):
         # reset for the env var to take effect, next time some logger call is made
-        transformers.utils.logging._reset_library_root_logger()
+        adapter_transformers.utils.logging._reset_library_root_logger()
         # this action activates the env var
-        _ = logging.get_logger("transformers.models.bart.tokenization_bart")
+        _ = logging.get_logger("adapter_transformers.models.bart.tokenization_bart")
 
         env_level_str = os.getenv("TRANSFORMERS_VERBOSITY", None)
         env_level = logging.log_levels[env_level_str]
@@ -90,16 +90,16 @@ class HfArgumentParserTest(unittest.TestCase):
 
         # restore to the original level
         os.environ["TRANSFORMERS_VERBOSITY"] = ""
-        transformers.utils.logging._reset_library_root_logger()
+        adapter_transformers.utils.logging._reset_library_root_logger()
 
     @mockenv(TRANSFORMERS_VERBOSITY="super-error")
     def test_env_invalid_override(self):
         # reset for the env var to take effect, next time some logger call is made
-        transformers.utils.logging._reset_library_root_logger()
+        adapter_transformers.utils.logging._reset_library_root_logger()
         logger = logging.logging.getLogger()
         with CaptureLogger(logger) as cl:
             # this action activates the env var
-            logging.get_logger("transformers.models.bart.tokenization_bart")
+            logging.get_logger("adapter_transformers.models.bart.tokenization_bart")
         self.assertIn("Unknown option TRANSFORMERS_VERBOSITY=super-error", cl.out)
 
         # no need to restore as nothing was changed

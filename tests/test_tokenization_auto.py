@@ -16,7 +16,7 @@
 import tempfile
 import unittest
 
-from transformers import (
+from adapter_transformers import (
     BERT_PRETRAINED_CONFIG_ARCHIVE_MAP,
     GPT2_PRETRAINED_CONFIG_ARCHIVE_MAP,
     AutoTokenizer,
@@ -28,10 +28,10 @@ from transformers import (
     RobertaTokenizer,
     RobertaTokenizerFast,
 )
-from transformers.models.auto.configuration_auto import AutoConfig
-from transformers.models.auto.tokenization_auto import TOKENIZER_MAPPING, get_tokenizer_config
-from transformers.models.roberta.configuration_roberta import RobertaConfig
-from transformers.testing_utils import (
+from adapter_transformers.models.auto.configuration_auto import AutoConfig
+from adapter_transformers.models.auto.tokenization_auto import TOKENIZER_MAPPING, get_tokenizer_config
+from adapter_transformers.models.roberta.configuration_roberta import RobertaConfig
+from adapter_transformers.testing_utils import (
     DUMMY_DIFF_TOKENIZER_IDENTIFIER,
     DUMMY_UNKWOWN_IDENTIFIER,
     SMALL_MODEL_IDENTIFIER,

@@ -16,9 +16,9 @@ import unittest
 
 import numpy as np
 
-from transformers import AutoModelForTokenClassification, AutoTokenizer, pipeline
-from transformers.pipelines import AggregationStrategy, Pipeline, TokenClassificationArgumentHandler
-from transformers.testing_utils import nested_simplify, require_tf, require_torch, slow
+from adapter_transformers import AutoModelForTokenClassification, AutoTokenizer, pipeline
+from adapter_transformers.pipelines import AggregationStrategy, Pipeline, TokenClassificationArgumentHandler
+from adapter_transformers.testing_utils import nested_simplify, require_tf, require_torch, slow
 
 from .test_pipelines_common import CustomInputPipelineCommonMixin
 
@@ -64,7 +64,7 @@ class TokenClassificationPipelineTests(CustomInputPipelineCommonMixin, unittest.
     @require_torch
     @slow
     def test_spanish_bert(self):
-        # https://github.com/huggingface/transformers/pull/4987
+        # https://github.com/huggingface/adapter_transformers/pull/4987
         NER_MODEL = "mrm8488/bert-spanish-cased-finetuned-ner"
         model = AutoModelForTokenClassification.from_pretrained(NER_MODEL)
         tokenizer = AutoTokenizer.from_pretrained(NER_MODEL, use_fast=True)

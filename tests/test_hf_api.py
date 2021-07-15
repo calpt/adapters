@@ -21,8 +21,8 @@ import time
 import unittest
 
 from requests.exceptions import HTTPError
-from transformers.hf_api import HfApi, HfFolder, ModelInfo, RepoObj
-from transformers.testing_utils import ENDPOINT_STAGING, PASS, USER, is_staging_test, require_git_lfs
+from adapter_transformers.hf_api import HfApi, HfFolder, ModelInfo, RepoObj
+from adapter_transformers.testing_utils import ENDPOINT_STAGING, PASS, USER, is_staging_test, require_git_lfs
 
 
 ENDPOINT_STAGING_BASIC_AUTH = f"https://{USER}:{PASS}@moon-staging.huggingface.co"
@@ -139,10 +139,10 @@ class HfLargefilesTest(HfApiCommonTest):
         # This will fail as we haven't set up our custom transfer agent yet.
         failed_process = subprocess.run(["git", "push"], capture_output=True, cwd=WORKING_REPO_DIR)
         self.assertEqual(failed_process.returncode, 1)
-        self.assertIn("transformers-cli lfs-enable-largefiles", failed_process.stderr.decode())
+        self.assertIn("adapter_transformers-cli lfs-enable-largefiles", failed_process.stderr.decode())
         # ^ Instructions on how to fix this are included in the error message.
 
-        subprocess.run(["transformers-cli", "lfs-enable-largefiles", WORKING_REPO_DIR], check=True)
+        subprocess.run(["adapter_transformers-cli", "lfs-enable-largefiles", WORKING_REPO_DIR], check=True)
 
         start_time = time.time()
         subprocess.run(["git", "push"], check=True, cwd=WORKING_REPO_DIR)
@@ -167,7 +167,7 @@ class HfLargefilesTest(HfApiCommonTest):
         subprocess.run(["git", "add", "*"], check=True, cwd=WORKING_REPO_DIR)
         subprocess.run(["git", "commit", "-m", "both files in same commit"], check=True, cwd=WORKING_REPO_DIR)
 
-        subprocess.run(["transformers-cli", "lfs-enable-largefiles", WORKING_REPO_DIR], check=True)
+        subprocess.run(["adapter_transformers-cli", "lfs-enable-largefiles", WORKING_REPO_DIR], check=True)
 
         start_time = time.time()
         subprocess.run(["git", "push"], check=True, cwd=WORKING_REPO_DIR)

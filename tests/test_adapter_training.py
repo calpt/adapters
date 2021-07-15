@@ -2,7 +2,7 @@ import copy
 
 import torch
 
-from transformers import (
+from adapter_transformers import (
     AutoModelForSequenceClassification,
     AutoModelWithHeads,
     AutoTokenizer,
@@ -11,8 +11,8 @@ from transformers import (
     Trainer,
     TrainingArguments,
 )
-from transformers.adapters.composition import Fuse
-from transformers.testing_utils import require_torch
+from adapter_transformers.adapters.composition import Fuse
+from adapter_transformers.testing_utils import require_torch
 
 
 def filter_parameters(model, filter_string):

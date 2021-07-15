@@ -16,9 +16,9 @@
 import os
 import unittest
 
-from transformers.file_utils import cached_property
-from transformers.models.xlm_prophetnet.tokenization_xlm_prophetnet import SPIECE_UNDERLINE, XLMProphetNetTokenizer
-from transformers.testing_utils import require_sentencepiece, slow
+from adapter_transformers.file_utils import cached_property
+from adapter_transformers.models.xlm_prophetnet.tokenization_xlm_prophetnet import SPIECE_UNDERLINE, XLMProphetNetTokenizer
+from adapter_transformers.testing_utils import require_sentencepiece, slow
 
 from .test_tokenization_common import TokenizerTesterMixin
 

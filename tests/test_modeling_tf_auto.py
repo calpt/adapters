@@ -17,12 +17,12 @@ import copy
 import tempfile
 import unittest
 
-from transformers import is_tf_available
-from transformers.testing_utils import DUMMY_UNKWOWN_IDENTIFIER, SMALL_MODEL_IDENTIFIER, require_tf, slow
+from adapter_transformers import is_tf_available
+from adapter_transformers.testing_utils import DUMMY_UNKWOWN_IDENTIFIER, SMALL_MODEL_IDENTIFIER, require_tf, slow
 
 
 if is_tf_available():
-    from transformers import (
+    from adapter_transformers import (
         AutoConfig,
         BertConfig,
         GPT2Config,
@@ -46,7 +46,7 @@ if is_tf_available():
         TFRobertaForMaskedLM,
         TFT5ForConditionalGeneration,
     )
-    from transformers.models.auto.modeling_tf_auto import (
+    from adapter_transformers.models.auto.modeling_tf_auto import (
         TF_MODEL_FOR_CAUSAL_LM_MAPPING,
         TF_MODEL_FOR_MASKED_LM_MAPPING,
         TF_MODEL_FOR_PRETRAINING_MAPPING,
@@ -57,9 +57,9 @@ if is_tf_available():
         TF_MODEL_MAPPING,
         TF_MODEL_WITH_LM_HEAD_MAPPING,
     )
-    from transformers.models.bert.modeling_tf_bert import TF_BERT_PRETRAINED_MODEL_ARCHIVE_LIST
-    from transformers.models.gpt2.modeling_tf_gpt2 import TF_GPT2_PRETRAINED_MODEL_ARCHIVE_LIST
-    from transformers.models.t5.modeling_tf_t5 import TF_T5_PRETRAINED_MODEL_ARCHIVE_LIST
+    from adapter_transformers.models.bert.modeling_tf_bert import TF_BERT_PRETRAINED_MODEL_ARCHIVE_LIST
+    from adapter_transformers.models.gpt2.modeling_tf_gpt2 import TF_GPT2_PRETRAINED_MODEL_ARCHIVE_LIST
+    from adapter_transformers.models.t5.modeling_tf_t5 import TF_T5_PRETRAINED_MODEL_ARCHIVE_LIST
 
 
 @require_tf

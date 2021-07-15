@@ -19,10 +19,10 @@ import copy
 import tempfile
 import unittest
 
-from transformers import is_torch_available
-from transformers.file_utils import cached_property
-from transformers.models.auto import get_values
-from transformers.testing_utils import require_sentencepiece, require_tokenizers, require_torch, slow, torch_device
+from adapter_transformers import is_torch_available
+from adapter_transformers.file_utils import cached_property
+from adapter_transformers.models.auto import get_values
+from adapter_transformers.testing_utils import require_sentencepiece, require_tokenizers, require_torch, slow, torch_device
 
 from .test_configuration_common import ConfigTester
 from .test_generation_utils import GenerationTesterMixin
@@ -32,7 +32,7 @@ from .test_modeling_common import ModelTesterMixin, ids_tensor
 if is_torch_available():
     import torch
 
-    from transformers import (
+    from adapter_transformers import (
         MODEL_FOR_QUESTION_ANSWERING_MAPPING,
         LEDConfig,
         LEDForConditionalGeneration,
@@ -41,7 +41,7 @@ if is_torch_available():
         LEDModel,
         LEDTokenizer,
     )
-    from transformers.models.led.modeling_led import LEDDecoder, LEDEncoder
+    from adapter_transformers.models.led.modeling_led import LEDDecoder, LEDEncoder
 
 
 def prepare_led_inputs_dict(
@@ -482,7 +482,7 @@ class LEDModelIntegrationTests(unittest.TestCase):
     base from https://github.com/allenai/longformer.
     IMPORTANT: Note that the original checkpoints include a `postion_embeddings` "hack"
     and have to be cut to have the correct shape.
-    See: https://github.com/huggingface/transformers/pull/9278#issue-544709661.
+    See: https://github.com/huggingface/adapter_transformers/pull/9278#issue-544709661.
     """
 
     @cached_property

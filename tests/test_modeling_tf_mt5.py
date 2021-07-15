@@ -15,14 +15,14 @@
 
 import unittest
 
-from transformers import is_tf_available
-from transformers.testing_utils import require_sentencepiece, require_tf, require_tokenizers, slow
+from adapter_transformers import is_tf_available
+from adapter_transformers.testing_utils import require_sentencepiece, require_tf, require_tokenizers, slow
 
 
 if is_tf_available():
     import tensorflow as tf
 
-    from transformers import AutoTokenizer, TFAutoModelForSeq2SeqLM
+    from adapter_transformers import AutoTokenizer, TFAutoModelForSeq2SeqLM
 
 
 @require_tf

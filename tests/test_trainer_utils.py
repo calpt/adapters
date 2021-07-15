@@ -18,8 +18,8 @@ import unittest
 
 import numpy as np
 
-from transformers.file_utils import is_torch_available
-from transformers.testing_utils import require_torch
+from adapter_transformers.file_utils import is_torch_available
+from adapter_transformers.testing_utils import require_torch
 
 
 if is_torch_available():
@@ -27,9 +27,9 @@ if is_torch_available():
     from torch import nn
     from torch.utils.data import IterableDataset
 
-    from transformers.modeling_outputs import SequenceClassifierOutput
-    from transformers.tokenization_utils_base import BatchEncoding
-    from transformers.trainer_pt_utils import (
+    from adapter_transformers.modeling_outputs import SequenceClassifierOutput
+    from adapter_transformers.tokenization_utils_base import BatchEncoding
+    from adapter_transformers.trainer_pt_utils import (
         DistributedLengthGroupedSampler,
         DistributedSamplerWithLoop,
         DistributedTensorGatherer,

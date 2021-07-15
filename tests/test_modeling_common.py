@@ -25,10 +25,10 @@ from typing import Dict, List, Tuple
 
 from huggingface_hub import HfApi
 from requests.exceptions import HTTPError
-from transformers import is_torch_available, logging
-from transformers.file_utils import WEIGHTS_NAME, is_torch_fx_available
-from transformers.models.auto import get_values
-from transformers.testing_utils import (
+from adapter_transformers import is_torch_available, logging
+from adapter_transformers.file_utils import WEIGHTS_NAME, is_torch_fx_available
+from adapter_transformers.models.auto import get_values
+from adapter_transformers.testing_utils import (
     ENDPOINT_STAGING,
     PASS,
     USER,
@@ -46,7 +46,7 @@ if is_torch_available():
     import torch
     from torch import nn
 
-    from transformers import (
+    from adapter_transformers import (
         BERT_PRETRAINED_MODEL_ARCHIVE_LIST,
         MODEL_FOR_CAUSAL_LM_MAPPING,
         MODEL_FOR_IMAGE_CLASSIFICATION_MAPPING,
@@ -69,7 +69,7 @@ if is_torch_available():
     )
 
 if is_torch_fx_available():
-    from transformers.utils.fx import symbolic_trace
+    from adapter_transformers.utils.fx import symbolic_trace
 
 
 def _config_zero_init(config):
@@ -1525,7 +1525,7 @@ class ModelTesterMixin:
                     # This tests that we do not trigger the warning form PyTorch "Using a target size that is different
                     # to the input size. This will likely lead to incorrect results due to broadcasting. Please ensure
                     # they have the same size." which is a symptom something in wrong for the regression problem.
-                    # See https://github.com/huggingface/transformers/issues/11780
+                    # See https://github.com/huggingface/adapter_transformers/issues/11780
                     with warnings.catch_warnings(record=True) as warning_list:
                         loss = model(**inputs).loss
                     self.assertListEqual(warning_list, [])
@@ -1604,7 +1604,7 @@ class ModelUtilsTest(unittest.TestCase):
         model = T5ForConditionalGeneration.from_pretrained(TINY_T5)
         self.assertIsNotNone(model)
 
-        logger = logging.get_logger("transformers.configuration_utils")
+        logger = logging.get_logger("adapter_transformers.configuration_utils")
         with CaptureLogger(logger) as cl:
             BertModel.from_pretrained(TINY_T5)
         self.assertTrue("You are using a model of type t5 to instantiate a model of type bert" in cl.out)

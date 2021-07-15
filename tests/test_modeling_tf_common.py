@@ -26,9 +26,9 @@ from typing import List, Tuple
 
 from huggingface_hub import HfApi
 from requests.exceptions import HTTPError
-from transformers import is_tf_available
-from transformers.models.auto import get_values
-from transformers.testing_utils import (
+from adapter_transformers import is_tf_available
+from adapter_transformers.models.auto import get_values
+from adapter_transformers.testing_utils import (
     ENDPOINT_STAGING,
     PASS,
     USER,
@@ -46,7 +46,7 @@ if is_tf_available():
     import numpy as np
     import tensorflow as tf
 
-    from transformers import (
+    from adapter_transformers import (
         TF_MODEL_FOR_CAUSAL_LM_MAPPING,
         TF_MODEL_FOR_MASKED_LM_MAPPING,
         TF_MODEL_FOR_MULTIPLE_CHOICE_MAPPING,
@@ -61,7 +61,7 @@ if is_tf_available():
         TFSharedEmbeddings,
         tf_top_k_top_p_filtering,
     )
-    from transformers.generation_tf_utils import (
+    from adapter_transformers.generation_tf_utils import (
         TFBeamSampleDecoderOnlyOutput,
         TFBeamSampleEncoderDecoderOutput,
         TFBeamSearchDecoderOnlyOutput,
@@ -429,13 +429,13 @@ class TFModelTesterMixin:
 
         import torch
 
-        import transformers
+        import adapter_transformers
 
         config, inputs_dict = self.model_tester.prepare_config_and_inputs_for_common()
 
         for model_class in self.all_model_classes:
             pt_model_class_name = model_class.__name__[2:]  # Skip the "TF" at the beginning
-            pt_model_class = getattr(transformers, pt_model_class_name)
+            pt_model_class = getattr(adapter_transformers, pt_model_class_name)
 
             config.output_hidden_states = True
 
@@ -444,10 +444,10 @@ class TFModelTesterMixin:
 
             # Check we can load pt model in tf and vice-versa with model => model functions
 
-            tf_model = transformers.load_pytorch_model_in_tf2_model(
+            tf_model = adapter_transformers.load_pytorch_model_in_tf2_model(
                 tf_model, pt_model, tf_inputs=self._prepare_for_class(inputs_dict, model_class)
             )
-            pt_model = transformers.load_tf2_model_in_pytorch_model(pt_model, tf_model)
+            pt_model = adapter_transformers.load_tf2_model_in_pytorch_model(pt_model, tf_model)
 
             # Check predictions on first output (logits/hidden-states) are close enought given low-level computational differences
             pt_model.eval()
@@ -486,11 +486,11 @@ class TFModelTesterMixin:
             with tempfile.TemporaryDirectory() as tmpdirname:
                 pt_checkpoint_path = os.path.join(tmpdirname, "pt_model.bin")
                 torch.save(pt_model.state_dict(), pt_checkpoint_path)
-                tf_model = transformers.load_pytorch_checkpoint_in_tf2_model(tf_model, pt_checkpoint_path)
+                tf_model = adapter_transformers.load_pytorch_checkpoint_in_tf2_model(tf_model, pt_checkpoint_path)
 
                 tf_checkpoint_path = os.path.join(tmpdirname, "tf_model.h5")
                 tf_model.save_weights(tf_checkpoint_path)
-                pt_model = transformers.load_tf2_checkpoint_in_pytorch_model(pt_model, tf_checkpoint_path)
+                pt_model = adapter_transformers.load_tf2_checkpoint_in_pytorch_model(pt_model, tf_checkpoint_path)
 
             # Check predictions on first output (logits/hidden-states) are close enought given low-level computational differences
             pt_model.eval()

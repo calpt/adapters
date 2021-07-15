@@ -16,8 +16,8 @@
 
 import unittest
 
-from transformers import AddedToken, LukeTokenizer
-from transformers.testing_utils import require_torch, slow
+from adapter_transformers import AddedToken, LukeTokenizer
+from adapter_transformers.testing_utils import require_torch, slow
 
 from .test_tokenization_common import TokenizerTesterMixin
 

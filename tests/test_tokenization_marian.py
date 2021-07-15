@@ -19,13 +19,13 @@ import unittest
 from pathlib import Path
 from shutil import copyfile
 
-from transformers import BatchEncoding, MarianTokenizer
-from transformers.file_utils import is_sentencepiece_available, is_tf_available, is_torch_available
-from transformers.testing_utils import require_sentencepiece, slow
+from adapter_transformers import BatchEncoding, MarianTokenizer
+from adapter_transformers.file_utils import is_sentencepiece_available, is_tf_available, is_torch_available
+from adapter_transformers.testing_utils import require_sentencepiece, slow
 
 
 if is_sentencepiece_available():
-    from transformers.models.marian.tokenization_marian import VOCAB_FILES_NAMES, save_json
+    from adapter_transformers.models.marian.tokenization_marian import VOCAB_FILES_NAMES, save_json
 
 from .test_tokenization_common import TokenizerTesterMixin
 

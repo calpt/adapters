@@ -6,7 +6,7 @@ import time
 import tensorflow as tf
 from datasets import load_dataset
 
-from transformers import AutoTokenizer, TFAutoModelForSequenceClassification
+from adapter_transformers import AutoTokenizer, TFAutoModelForSequenceClassification
 
 
 if __name__ == "__main__":

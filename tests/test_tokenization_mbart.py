@@ -16,8 +16,8 @@ import os
 import tempfile
 import unittest
 
-from transformers import SPIECE_UNDERLINE, BatchEncoding, MBartTokenizer, MBartTokenizerFast, is_torch_available
-from transformers.testing_utils import nested_simplify, require_sentencepiece, require_tokenizers, require_torch
+from adapter_transformers import SPIECE_UNDERLINE, BatchEncoding, MBartTokenizer, MBartTokenizerFast, is_torch_available
+from adapter_transformers.testing_utils import nested_simplify, require_sentencepiece, require_tokenizers, require_torch
 
 from .test_tokenization_common import TokenizerTesterMixin
 
@@ -26,7 +26,7 @@ SAMPLE_VOCAB = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fixture
 
 
 if is_torch_available():
-    from transformers.models.mbart.modeling_mbart import shift_tokens_right
+    from adapter_transformers.models.mbart.modeling_mbart import shift_tokens_right
 
 EN_CODE = 250004
 RO_CODE = 250020

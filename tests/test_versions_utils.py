@@ -14,8 +14,8 @@
 
 import sys
 
-from transformers.testing_utils import TestCasePlus
-from transformers.utils.versions import importlib_metadata, require_version, require_version_core
+from adapter_transformers.testing_utils import TestCasePlus
+from adapter_transformers.utils.versions import importlib_metadata, require_version, require_version_core
 
 
 numpy_ver = importlib_metadata.version("numpy")
@@ -67,7 +67,7 @@ class DependencyVersionCheckTest(TestCasePlus):
                 require_version_core(req)
             except importlib_metadata.PackageNotFoundError as e:
                 self.assertIn(f"The '{req}' distribution was not found and is required by this application", str(e))
-                self.assertIn("Try: pip install transformers -U", str(e))
+                self.assertIn("Try: pip install adapter_transformers -U", str(e))
 
         # bogus requirements formats:
         # 1. whole thing

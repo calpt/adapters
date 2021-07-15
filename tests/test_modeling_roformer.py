@@ -18,8 +18,8 @@
 import unittest
 
 from tests.test_modeling_common import floats_tensor
-from transformers import is_torch_available
-from transformers.testing_utils import require_torch, slow, torch_device
+from adapter_transformers import is_torch_available
+from adapter_transformers.testing_utils import require_torch, slow, torch_device
 
 from .test_configuration_common import ConfigTester
 from .test_modeling_common import ModelTesterMixin, ids_tensor, random_attention_mask
@@ -28,7 +28,7 @@ from .test_modeling_common import ModelTesterMixin, ids_tensor, random_attention
 if is_torch_available():
     import torch
 
-    from transformers import (
+    from adapter_transformers import (
         RoFormerConfig,
         RoFormerForCausalLM,
         RoFormerForMaskedLM,
@@ -38,7 +38,7 @@ if is_torch_available():
         RoFormerForTokenClassification,
         RoFormerModel,
     )
-    from transformers.models.roformer.modeling_roformer import (
+    from adapter_transformers.models.roformer.modeling_roformer import (
         ROFORMER_PRETRAINED_MODEL_ARCHIVE_LIST,
         RoFormerSelfAttention,
         RoFormerSinusoidalPositionalEmbedding,

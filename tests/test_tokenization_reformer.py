@@ -15,9 +15,9 @@
 import os
 import unittest
 
-from transformers import SPIECE_UNDERLINE, ReformerTokenizer, ReformerTokenizerFast
-from transformers.file_utils import cached_property
-from transformers.testing_utils import require_sentencepiece, require_tokenizers, require_torch, slow
+from adapter_transformers import SPIECE_UNDERLINE, ReformerTokenizer, ReformerTokenizerFast
+from adapter_transformers.file_utils import cached_property
+from adapter_transformers.testing_utils import require_sentencepiece, require_tokenizers, require_torch, slow
 
 from .test_tokenization_common import TokenizerTesterMixin
 
@@ -328,7 +328,7 @@ class ReformerTokenizationTest(TokenizerTesterMixin, unittest.TestCase):
     def test_torch_encode_plus_sent_to_model(self):
         import torch
 
-        from transformers import ReformerConfig, ReformerModel
+        from adapter_transformers import ReformerConfig, ReformerModel
 
         # Build sequence
         first_ten_tokens = list(self.big_tokenizer.get_vocab().keys())[:10]
@@ -356,7 +356,7 @@ class ReformerTokenizationTest(TokenizerTesterMixin, unittest.TestCase):
 
         # This tokenizer does not know some characters like ")".
         # That is the reason why we use very simple texts here.
-        # Also see https://github.com/huggingface/transformers/pull/11737#issuecomment-850769064
+        # Also see https://github.com/huggingface/adapter_transformers/pull/11737#issuecomment-850769064
         sequences = [
             "This is a very simple sentence.",
             "The quick brown fox jumps over the lazy dog.",

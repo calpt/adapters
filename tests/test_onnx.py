@@ -16,15 +16,15 @@ import unittest
 from pathlib import Path
 from tempfile import NamedTemporaryFile, TemporaryDirectory
 
-from transformers import BertConfig, BertTokenizerFast, FeatureExtractionPipeline
-from transformers.convert_graph_to_onnx import (
+from adapter_transformers import BertConfig, BertTokenizerFast, FeatureExtractionPipeline
+from adapter_transformers.convert_graph_to_onnx import (
     convert,
     ensure_valid_input,
     generate_identified_filename,
     infer_shapes,
     quantize,
 )
-from transformers.testing_utils import require_tf, require_tokenizers, require_torch, slow
+from adapter_transformers.testing_utils import require_tf, require_tokenizers, require_torch, slow
 
 
 class FuncContiguousArgs:
@@ -59,7 +59,7 @@ class OnnxExportTestCase(unittest.TestCase):
     @require_torch
     @slow
     def test_export_custom_bert_model(self):
-        from transformers import BertModel
+        from adapter_transformers import BertModel
 
         vocab = ["[UNK]", "[SEP]", "[CLS]", "[PAD]", "[MASK]", "some", "other", "words"]
         with NamedTemporaryFile(mode="w+t") as vocab_file:
@@ -118,7 +118,7 @@ class OnnxExportTestCase(unittest.TestCase):
         """
         Validate the dynamic axis generated for each parameters are correct
         """
-        from transformers import BertModel
+        from adapter_transformers import BertModel
 
         model = BertModel(BertConfig.from_pretrained("lysandre/tiny-bert-random"))
         tokenizer = BertTokenizerFast.from_pretrained("lysandre/tiny-bert-random")
@@ -131,7 +131,7 @@ class OnnxExportTestCase(unittest.TestCase):
         """
         Validate the dynamic axis generated for each parameters are correct
         """
-        from transformers import TFBertModel
+        from adapter_transformers import TFBertModel
 
         model = TFBertModel(BertConfig.from_pretrained("lysandre/tiny-bert-random"))
         tokenizer = BertTokenizerFast.from_pretrained("lysandre/tiny-bert-random")

@@ -17,8 +17,8 @@
 import tempfile
 import unittest
 
-from transformers import is_torch_available
-from transformers.testing_utils import require_torch, slow, torch_device
+from adapter_transformers import is_torch_available
+from adapter_transformers.testing_utils import require_torch, slow, torch_device
 
 from .test_modeling_bart import BartStandaloneDecoderModelTester
 from .test_modeling_bert import BertModelTester
@@ -33,7 +33,7 @@ if is_torch_available():
     import numpy as np
     import torch
 
-    from transformers import (
+    from adapter_transformers import (
         AutoConfig,
         AutoTokenizer,
         BartForCausalLM,
@@ -49,7 +49,7 @@ if is_torch_available():
         RobertaForCausalLM,
         RobertaModel,
     )
-    from transformers.modeling_outputs import BaseModelOutput
+    from adapter_transformers.modeling_outputs import BaseModelOutput
 
 
 @require_torch

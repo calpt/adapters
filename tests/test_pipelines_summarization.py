@@ -14,9 +14,9 @@
 
 import unittest
 
-from transformers import AutoTokenizer, is_torch_available, pipeline
-from transformers.testing_utils import require_torch, slow, torch_device
-from transformers.tokenization_utils import TruncationStrategy
+from adapter_transformers import AutoTokenizer, is_torch_available, pipeline
+from adapter_transformers.testing_utils import require_torch, slow, torch_device
+from adapter_transformers.tokenization_utils import TruncationStrategy
 
 from .test_pipelines_common import MonoInputPipelineCommonMixin
 
@@ -25,7 +25,7 @@ if is_torch_available():
     import torch
     from torch import nn
 
-    from transformers.models.bart import BartConfig, BartForConditionalGeneration
+    from adapter_transformers.models.bart import BartConfig, BartForConditionalGeneration
 
 DEFAULT_DEVICE_NUM = -1 if torch_device == "cpu" else 0
 
@@ -61,7 +61,7 @@ class SimpleSummarizationPipelineTests(unittest.TestCase):
         # # Generated with:
         # import tempfile
         # from tokenizers import Tokenizer, models
-        # from transformers import PreTrainedTokenizerFast
+        # from adapter_transformers import PreTrainedTokenizerFast
         # model_max_length = 4
         # vocab = [(chr(i), i) for i in range(256)]
         # tokenizer = Tokenizer(models.Unigram(vocab))
@@ -73,7 +73,7 @@ class SimpleSummarizationPipelineTests(unittest.TestCase):
         tokenizer = AutoTokenizer.from_pretrained("Narsil/small_summarization_test")
         summarizer = pipeline(task="summarization", model=model, tokenizer=tokenizer)
 
-        with self.assertLogs("transformers", level="WARNING"):
+        with self.assertLogs("adapter_transformers", level="WARNING"):
             with self.assertRaises(IndexError):
                 _ = summarizer("This is a test")
 

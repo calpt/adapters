@@ -21,12 +21,12 @@ from typing import List, Tuple
 
 import numpy as np
 
-import transformers
+import adapter_transformers
 from huggingface_hub import HfApi
 from requests.exceptions import HTTPError
-from transformers import BertConfig, FlaxBertModel, is_flax_available, is_torch_available
-from transformers.models.auto import get_values
-from transformers.testing_utils import (
+from adapter_transformers import BertConfig, FlaxBertModel, is_flax_available, is_torch_available
+from adapter_transformers.models.auto import get_values
+from adapter_transformers.testing_utils import (
     ENDPOINT_STAGING,
     PASS,
     USER,
@@ -45,8 +45,8 @@ if is_flax_available():
     import jaxlib.xla_extension as jax_xla
     from flax.core.frozen_dict import unfreeze
     from flax.traverse_util import flatten_dict
-    from transformers import FLAX_MODEL_FOR_QUESTION_ANSWERING_MAPPING, FLAX_MODEL_MAPPING
-    from transformers.modeling_flax_pytorch_utils import (
+    from adapter_transformers import FLAX_MODEL_FOR_QUESTION_ANSWERING_MAPPING, FLAX_MODEL_MAPPING
+    from adapter_transformers.modeling_flax_pytorch_utils import (
         convert_pytorch_state_dict_to_flax,
         load_flax_weights_in_pytorch_model,
     )
@@ -177,7 +177,7 @@ class FlaxModelTesterMixin:
 
                 # load corresponding PyTorch class
                 pt_model_class_name = model_class.__name__[4:]  # Skip the "Flax" at the beginning
-                pt_model_class = getattr(transformers, pt_model_class_name)
+                pt_model_class = getattr(adapter_transformers, pt_model_class_name)
 
                 pt_model = pt_model_class(config).eval()
                 # Flax models don't use the `use_cache` option and cache is not returned as a default.
@@ -219,7 +219,7 @@ class FlaxModelTesterMixin:
 
                 # load corresponding PyTorch class
                 pt_model_class_name = model_class.__name__[4:]  # Skip the "Flax" at the beginning
-                pt_model_class = getattr(transformers, pt_model_class_name)
+                pt_model_class = getattr(adapter_transformers, pt_model_class_name)
 
                 pt_model = pt_model_class(config).eval()
                 # Flax models don't use the `use_cache` option and cache is not returned as a default.

@@ -16,7 +16,7 @@
 import os
 import unittest
 
-from transformers import AutoFeatureExtractor, Wav2Vec2FeatureExtractor
+from adapter_transformers import AutoFeatureExtractor, Wav2Vec2FeatureExtractor
 
 
 SAMPLE_FEATURE_EXTRACTION_CONFIG_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fixtures")

@@ -14,12 +14,12 @@
 
 import unittest
 
-from transformers import is_tf_available
-from transformers.testing_utils import require_tf
+from adapter_transformers import is_tf_available
+from adapter_transformers.testing_utils import require_tf
 
 
 if is_tf_available():
-    from transformers.activations_tf import get_tf_activation
+    from adapter_transformers.activations_tf import get_tf_activation
 
 
 @require_tf

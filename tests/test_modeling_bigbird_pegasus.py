@@ -19,8 +19,8 @@ import copy
 import tempfile
 import unittest
 
-from transformers import is_torch_available
-from transformers.testing_utils import require_sentencepiece, require_tokenizers, require_torch, slow, torch_device
+from adapter_transformers import is_torch_available
+from adapter_transformers.testing_utils import require_sentencepiece, require_tokenizers, require_torch, slow, torch_device
 
 from .test_configuration_common import ConfigTester
 from .test_generation_utils import GenerationTesterMixin
@@ -30,7 +30,7 @@ from .test_modeling_common import ModelTesterMixin, ids_tensor
 if is_torch_available():
     import torch
 
-    from transformers import (
+    from adapter_transformers import (
         BigBirdPegasusConfig,
         BigBirdPegasusForCausalLM,
         BigBirdPegasusForConditionalGeneration,
@@ -39,7 +39,7 @@ if is_torch_available():
         BigBirdPegasusModel,
         PegasusTokenizer,
     )
-    from transformers.models.bigbird_pegasus.modeling_bigbird_pegasus import (
+    from adapter_transformers.models.bigbird_pegasus.modeling_bigbird_pegasus import (
         BigBirdPegasusDecoder,
         BigBirdPegasusEncoder,
     )

@@ -18,15 +18,15 @@ import os
 import pickle
 import unittest
 
-from transformers import AutoTokenizer
-from transformers.models.bert_japanese.tokenization_bert_japanese import (
+from adapter_transformers import AutoTokenizer
+from adapter_transformers.models.bert_japanese.tokenization_bert_japanese import (
     VOCAB_FILES_NAMES,
     BertJapaneseTokenizer,
     CharacterTokenizer,
     MecabTokenizer,
     WordpieceTokenizer,
 )
-from transformers.testing_utils import custom_tokenizers
+from adapter_transformers.testing_utils import custom_tokenizers
 
 from .test_tokenization_common import TokenizerTesterMixin
 

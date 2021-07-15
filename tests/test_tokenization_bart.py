@@ -15,10 +15,10 @@ import json
 import os
 import unittest
 
-from transformers import BartTokenizer, BartTokenizerFast, BatchEncoding
-from transformers.file_utils import cached_property
-from transformers.models.roberta.tokenization_roberta import VOCAB_FILES_NAMES
-from transformers.testing_utils import require_tokenizers, require_torch
+from adapter_transformers import BartTokenizer, BartTokenizerFast, BatchEncoding
+from adapter_transformers.file_utils import cached_property
+from adapter_transformers.models.roberta.tokenization_roberta import VOCAB_FILES_NAMES
+from adapter_transformers.testing_utils import require_tokenizers, require_torch
 
 from .test_tokenization_common import TokenizerTesterMixin, filter_roberta_detectors
 

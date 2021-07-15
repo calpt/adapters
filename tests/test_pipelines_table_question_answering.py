@@ -14,8 +14,8 @@
 
 import unittest
 
-from transformers.pipelines import Pipeline, pipeline
-from transformers.testing_utils import require_pandas, require_torch, require_torch_scatter, slow
+from adapter_transformers.pipelines import Pipeline, pipeline
+from adapter_transformers.testing_utils import require_pandas, require_torch, require_torch_scatter, slow
 
 from .test_pipelines_common import CustomInputPipelineCommonMixin
 

@@ -19,8 +19,8 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import List, Optional
 
-from transformers import HfArgumentParser, TrainingArguments
-from transformers.hf_argparser import string_to_bool
+from adapter_transformers import HfArgumentParser, TrainingArguments
+from adapter_transformers.hf_argparser import string_to_bool
 
 
 def list_field(default=None, metadata=None):

@@ -21,9 +21,9 @@ import unittest
 
 import timeout_decorator  # noqa
 
-from transformers import is_torch_available
-from transformers.file_utils import cached_property
-from transformers.testing_utils import require_sentencepiece, require_tokenizers, require_torch, slow, torch_device
+from adapter_transformers import is_torch_available
+from adapter_transformers.file_utils import cached_property
+from adapter_transformers.testing_utils import require_sentencepiece, require_tokenizers, require_torch, slow, torch_device
 
 from .test_configuration_common import ConfigTester
 from .test_generation_utils import GenerationTesterMixin
@@ -33,7 +33,7 @@ from .test_modeling_common import ModelTesterMixin, floats_tensor, ids_tensor
 if is_torch_available():
     import torch
 
-    from transformers import (
+    from adapter_transformers import (
         AutoModelForSequenceClassification,
         BartConfig,
         BartForCausalLM,
@@ -45,7 +45,7 @@ if is_torch_available():
         BartTokenizer,
         pipeline,
     )
-    from transformers.models.bart.modeling_bart import BartDecoder, BartEncoder, shift_tokens_right
+    from adapter_transformers.models.bart.modeling_bart import BartDecoder, BartEncoder, shift_tokens_right
 
 
 def prepare_bart_inputs_dict(

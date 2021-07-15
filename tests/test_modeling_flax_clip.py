@@ -4,9 +4,9 @@ import unittest
 
 import numpy as np
 
-import transformers
-from transformers import CLIPConfig, CLIPTextConfig, CLIPVisionConfig, is_flax_available, is_torch_available
-from transformers.testing_utils import is_pt_flax_cross_test, require_flax, slow
+import adapter_transformers
+from adapter_transformers import CLIPConfig, CLIPTextConfig, CLIPVisionConfig, is_flax_available, is_torch_available
+from adapter_transformers.testing_utils import is_pt_flax_cross_test, require_flax, slow
 
 from .test_modeling_flax_common import FlaxModelTesterMixin, floats_tensor, ids_tensor, random_attention_mask
 
@@ -14,11 +14,11 @@ from .test_modeling_flax_common import FlaxModelTesterMixin, floats_tensor, ids_
 if is_flax_available():
     import jax
     import jax.numpy as jnp
-    from transformers.modeling_flax_pytorch_utils import (
+    from adapter_transformers.modeling_flax_pytorch_utils import (
         convert_pytorch_state_dict_to_flax,
         load_flax_weights_in_pytorch_model,
     )
-    from transformers.models.clip.modeling_flax_clip import FlaxCLIPModel, FlaxCLIPTextModel, FlaxCLIPVisionModel
+    from adapter_transformers.models.clip.modeling_flax_clip import FlaxCLIPModel, FlaxCLIPTextModel, FlaxCLIPVisionModel
 
 if is_torch_available():
     import torch
@@ -449,7 +449,7 @@ class FlaxCLIPModelTest(FlaxModelTesterMixin, unittest.TestCase):
 
                 # load corresponding PyTorch class
                 pt_model_class_name = model_class.__name__[4:]  # Skip the "Flax" at the beginning
-                pt_model_class = getattr(transformers, pt_model_class_name)
+                pt_model_class = getattr(adapter_transformers, pt_model_class_name)
 
                 pt_model = pt_model_class(config).eval()
                 fx_model = model_class(config, dtype=jnp.float32)
@@ -492,7 +492,7 @@ class FlaxCLIPModelTest(FlaxModelTesterMixin, unittest.TestCase):
 
                 # load corresponding PyTorch class
                 pt_model_class_name = model_class.__name__[4:]  # Skip the "Flax" at the beginning
-                pt_model_class = getattr(transformers, pt_model_class_name)
+                pt_model_class = getattr(adapter_transformers, pt_model_class_name)
 
                 pt_model = pt_model_class(config).eval()
                 fx_model = model_class(config, dtype=jnp.float32)

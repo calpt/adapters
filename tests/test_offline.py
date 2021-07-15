@@ -15,7 +15,7 @@
 import subprocess
 import sys
 
-from transformers.testing_utils import TestCasePlus, require_torch
+from adapter_transformers.testing_utils import TestCasePlus, require_torch
 
 
 class OfflineTests(TestCasePlus):
@@ -23,14 +23,14 @@ class OfflineTests(TestCasePlus):
     def test_offline_mode(self):
 
         # this test is a bit tricky since TRANSFORMERS_OFFLINE can only be changed before
-        # `transformers` is loaded, and it's too late for inside pytest - so we are changing it
+        # `adapter_transformers` is loaded, and it's too late for inside pytest - so we are changing it
         # while running an external program
 
         # python one-liner segments
 
         # this must be loaded before socket.socket is monkey-patched
         load = """
-from transformers import BertConfig, BertModel, BertTokenizer
+from adapter_transformers import BertConfig, BertModel, BertTokenizer
         """
 
         run = """

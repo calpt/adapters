@@ -21,8 +21,8 @@ import os
 import tempfile
 import unittest
 
-from transformers.file_utils import cached_property
-from transformers.testing_utils import (
+from adapter_transformers.file_utils import cached_property
+from adapter_transformers.testing_utils import (
     is_torch_available,
     require_sentencepiece,
     require_tokenizers,
@@ -40,13 +40,13 @@ from .test_modeling_common import ModelTesterMixin, _config_zero_init, floats_te
 if is_torch_available():
     import torch
 
-    from transformers import (
+    from adapter_transformers import (
         Speech2TextConfig,
         Speech2TextForConditionalGeneration,
         Speech2TextModel,
         Speech2TextProcessor,
     )
-    from transformers.models.speech_to_text.modeling_speech_to_text import Speech2TextDecoder, Speech2TextEncoder
+    from adapter_transformers.models.speech_to_text.modeling_speech_to_text import Speech2TextDecoder, Speech2TextEncoder
 
 
 def prepare_speech_to_text_inputs_dict(

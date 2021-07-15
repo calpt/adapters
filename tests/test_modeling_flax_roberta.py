@@ -16,14 +16,14 @@ import unittest
 
 import numpy as np
 
-from transformers import RobertaConfig, is_flax_available
-from transformers.testing_utils import require_flax, slow
+from adapter_transformers import RobertaConfig, is_flax_available
+from adapter_transformers.testing_utils import require_flax, slow
 
 from .test_modeling_flax_common import FlaxModelTesterMixin, ids_tensor, random_attention_mask
 
 
 if is_flax_available():
-    from transformers.models.roberta.modeling_flax_roberta import (
+    from adapter_transformers.models.roberta.modeling_flax_roberta import (
         FlaxRobertaForMaskedLM,
         FlaxRobertaForMultipleChoice,
         FlaxRobertaForQuestionAnswering,

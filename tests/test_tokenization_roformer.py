@@ -16,8 +16,8 @@
 import importlib
 import unittest
 
-from transformers import RoFormerTokenizer, RoFormerTokenizerFast
-from transformers.testing_utils import require_tokenizers
+from adapter_transformers import RoFormerTokenizer, RoFormerTokenizerFast
+from adapter_transformers.testing_utils import require_tokenizers
 
 from .test_tokenization_common import TokenizerTesterMixin
 

@@ -17,8 +17,8 @@ import unittest
 import numpy as np
 import timeout_decorator  # noqa
 
-from transformers import BartConfig, is_flax_available
-from transformers.testing_utils import require_flax, slow
+from adapter_transformers import BartConfig, is_flax_available
+from adapter_transformers.testing_utils import require_flax, slow
 
 from .test_generation_flax_utils import FlaxGenerationTesterMixin
 from .test_modeling_flax_common import FlaxModelTesterMixin, ids_tensor
@@ -34,8 +34,8 @@ if is_flax_available():
 
     import jax
     import jax.numpy as jnp
-    from transformers import BartTokenizer
-    from transformers.models.bart.modeling_flax_bart import (
+    from adapter_transformers import BartTokenizer
+    from adapter_transformers.models.bart.modeling_flax_bart import (
         FlaxBartForConditionalGeneration,
         FlaxBartForQuestionAnswering,
         FlaxBartForSequenceClassification,

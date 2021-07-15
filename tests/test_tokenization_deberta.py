@@ -18,9 +18,9 @@ import json
 import os
 import unittest
 
-from transformers import DebertaTokenizer, DebertaTokenizerFast
-from transformers.models.deberta.tokenization_deberta import VOCAB_FILES_NAMES
-from transformers.testing_utils import slow
+from adapter_transformers import DebertaTokenizer, DebertaTokenizerFast
+from adapter_transformers.models.deberta.tokenization_deberta import VOCAB_FILES_NAMES
+from adapter_transformers.testing_utils import slow
 
 from .test_tokenization_common import TokenizerTesterMixin
 

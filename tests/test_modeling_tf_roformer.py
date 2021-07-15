@@ -16,8 +16,8 @@
 
 import unittest
 
-from transformers import RoFormerConfig, is_tf_available
-from transformers.testing_utils import require_tf, slow
+from adapter_transformers import RoFormerConfig, is_tf_available
+from adapter_transformers.testing_utils import require_tf, slow
 
 from .test_configuration_common import ConfigTester
 from .test_modeling_tf_common import TFModelTesterMixin, ids_tensor
@@ -26,7 +26,7 @@ from .test_modeling_tf_common import TFModelTesterMixin, ids_tensor
 if is_tf_available():
     import tensorflow as tf
 
-    from transformers import (
+    from adapter_transformers import (
         TFRoFormerForCausalLM,
         TFRoFormerForMaskedLM,
         TFRoFormerForMultipleChoice,
@@ -35,7 +35,7 @@ if is_tf_available():
         TFRoFormerForTokenClassification,
         TFRoFormerModel,
     )
-    from transformers.models.roformer.modeling_tf_roformer import (
+    from adapter_transformers.models.roformer.modeling_tf_roformer import (
         TFRoFormerSelfAttention,
         TFRoFormerSinusoidalPositionalEmbedding,
     )

@@ -16,12 +16,12 @@
 
 import unittest
 
-from transformers import is_tf_available, is_torch_available
-from transformers.testing_utils import DUMMY_UNKWOWN_IDENTIFIER, SMALL_MODEL_IDENTIFIER, is_pt_tf_cross_test, slow
+from adapter_transformers import is_tf_available, is_torch_available
+from adapter_transformers.testing_utils import DUMMY_UNKWOWN_IDENTIFIER, SMALL_MODEL_IDENTIFIER, is_pt_tf_cross_test, slow
 
 
 if is_tf_available():
-    from transformers import (
+    from adapter_transformers import (
         AutoConfig,
         BertConfig,
         GPT2Config,
@@ -43,12 +43,12 @@ if is_tf_available():
         TFRobertaForMaskedLM,
         TFT5ForConditionalGeneration,
     )
-    from transformers.models.bert.modeling_tf_bert import TF_BERT_PRETRAINED_MODEL_ARCHIVE_LIST
-    from transformers.models.gpt2.modeling_tf_gpt2 import TF_GPT2_PRETRAINED_MODEL_ARCHIVE_LIST
-    from transformers.models.t5.modeling_tf_t5 import TF_T5_PRETRAINED_MODEL_ARCHIVE_LIST
+    from adapter_transformers.models.bert.modeling_tf_bert import TF_BERT_PRETRAINED_MODEL_ARCHIVE_LIST
+    from adapter_transformers.models.gpt2.modeling_tf_gpt2 import TF_GPT2_PRETRAINED_MODEL_ARCHIVE_LIST
+    from adapter_transformers.models.t5.modeling_tf_t5 import TF_T5_PRETRAINED_MODEL_ARCHIVE_LIST
 
 if is_torch_available():
-    from transformers import (
+    from adapter_transformers import (
         AutoModel,
         AutoModelForCausalLM,
         AutoModelForMaskedLM,

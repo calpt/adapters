@@ -17,8 +17,8 @@ import unittest
 
 import numpy as np
 
-from transformers import is_torch_available, is_vision_available
-from transformers.testing_utils import require_torch, require_vision
+from adapter_transformers import is_torch_available, is_vision_available
+from adapter_transformers.testing_utils import require_torch, require_vision
 
 
 if is_torch_available():
@@ -27,7 +27,7 @@ if is_torch_available():
 if is_vision_available():
     import PIL.Image
 
-    from transformers import ImageFeatureExtractionMixin
+    from adapter_transformers import ImageFeatureExtractionMixin
 
 
 def get_random_image(height, width):

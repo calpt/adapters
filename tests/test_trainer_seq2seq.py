@@ -13,9 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from transformers import BertTokenizer, EncoderDecoderModel, Seq2SeqTrainer, Seq2SeqTrainingArguments
-from transformers.file_utils import is_datasets_available
-from transformers.testing_utils import TestCasePlus, require_datasets, require_torch, slow
+from adapter_transformers import BertTokenizer, EncoderDecoderModel, Seq2SeqTrainer, Seq2SeqTrainingArguments
+from adapter_transformers.file_utils import is_datasets_available
+from adapter_transformers.testing_utils import TestCasePlus, require_datasets, require_torch, slow
 
 
 if is_datasets_available():

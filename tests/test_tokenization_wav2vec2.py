@@ -23,14 +23,14 @@ import unittest
 
 import numpy as np
 
-from transformers import (
+from adapter_transformers import (
     WAV_2_VEC_2_PRETRAINED_MODEL_ARCHIVE_LIST,
     Wav2Vec2Config,
     Wav2Vec2CTCTokenizer,
     Wav2Vec2Tokenizer,
 )
-from transformers.models.wav2vec2.tokenization_wav2vec2 import VOCAB_FILES_NAMES
-from transformers.testing_utils import require_torch, slow
+from adapter_transformers.models.wav2vec2.tokenization_wav2vec2 import VOCAB_FILES_NAMES
+from adapter_transformers.testing_utils import require_torch, slow
 
 from .test_tokenization_common import TokenizerTesterMixin
 

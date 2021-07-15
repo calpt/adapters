@@ -14,15 +14,15 @@
 
 import unittest
 
-from transformers import (
+from adapter_transformers import (
     AutoConfig,
     AutoFeatureExtractor,
     AutoModelForImageClassification,
     PreTrainedTokenizer,
     is_vision_available,
 )
-from transformers.pipelines import ImageClassificationPipeline, pipeline
-from transformers.testing_utils import require_torch, require_vision
+from adapter_transformers.pipelines import ImageClassificationPipeline, pipeline
+from adapter_transformers.testing_utils import require_torch, require_vision
 
 
 if is_vision_available():

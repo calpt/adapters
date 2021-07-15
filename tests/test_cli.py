@@ -16,17 +16,17 @@
 import unittest
 from unittest.mock import patch
 
-from transformers.testing_utils import CaptureStd
+from adapter_transformers.testing_utils import CaptureStd
 
 
 class CLITest(unittest.TestCase):
     @patch("sys.argv", ["fakeprogrampath", "env"])
     def test_cli_env(self):
-        # test transformers-cli env
-        import transformers.commands.transformers_cli
+        # test adapter_transformers-cli env
+        import adapter_transformers.commands.transformers_cli
 
         with CaptureStd() as cs:
-            transformers.commands.transformers_cli.main()
+            adapter_transformers.commands.transformers_cli.main()
         assert "Python version" in cs.out
         assert "Platform" in cs.out
         assert "Using distributed or parallel set-up in script?" in cs.out

@@ -16,9 +16,9 @@
 
 import unittest
 
-from transformers import FunnelTokenizer, is_torch_available
-from transformers.models.auto import get_values
-from transformers.testing_utils import require_sentencepiece, require_tokenizers, require_torch, slow, torch_device
+from adapter_transformers import FunnelTokenizer, is_torch_available
+from adapter_transformers.models.auto import get_values
+from adapter_transformers.testing_utils import require_sentencepiece, require_tokenizers, require_torch, slow, torch_device
 
 from .test_configuration_common import ConfigTester
 from .test_modeling_common import ModelTesterMixin, ids_tensor
@@ -27,7 +27,7 @@ from .test_modeling_common import ModelTesterMixin, ids_tensor
 if is_torch_available():
     import torch
 
-    from transformers import (
+    from adapter_transformers import (
         MODEL_FOR_PRETRAINING_MAPPING,
         FunnelBaseModel,
         FunnelConfig,

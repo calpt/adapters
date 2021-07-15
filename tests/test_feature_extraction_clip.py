@@ -18,8 +18,8 @@ import unittest
 
 import numpy as np
 
-from transformers.file_utils import is_torch_available, is_vision_available
-from transformers.testing_utils import require_torch, require_vision
+from adapter_transformers.file_utils import is_torch_available, is_vision_available
+from adapter_transformers.testing_utils import require_torch, require_vision
 
 from .test_feature_extraction_common import FeatureExtractionSavingTestMixin
 
@@ -30,7 +30,7 @@ if is_torch_available():
 if is_vision_available():
     from PIL import Image
 
-    from transformers import CLIPFeatureExtractor
+    from adapter_transformers import CLIPFeatureExtractor
 
 
 class CLIPFeatureExtractionTester(unittest.TestCase):

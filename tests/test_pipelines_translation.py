@@ -16,14 +16,14 @@ import unittest
 
 import pytest
 
-from transformers import pipeline
-from transformers.testing_utils import is_pipeline_test, is_torch_available, require_torch, slow
+from adapter_transformers import pipeline
+from adapter_transformers.testing_utils import is_pipeline_test, is_torch_available, require_torch, slow
 
 from .test_pipelines_common import MonoInputPipelineCommonMixin
 
 
 if is_torch_available():
-    from transformers.models.mbart import MBart50TokenizerFast, MBartForConditionalGeneration
+    from adapter_transformers.models.mbart import MBart50TokenizerFast, MBartForConditionalGeneration
 
 
 class TranslationEnToDePipelineTests(MonoInputPipelineCommonMixin, unittest.TestCase):

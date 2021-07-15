@@ -17,8 +17,8 @@ import shutil
 import tempfile
 import unittest
 
-from transformers import BatchEncoding, ByT5Tokenizer
-from transformers.file_utils import cached_property, is_tf_available, is_torch_available
+from adapter_transformers import BatchEncoding, ByT5Tokenizer
+from adapter_transformers.file_utils import cached_property, is_tf_available, is_torch_available
 
 from .test_tokenization_common import TokenizerTesterMixin
 

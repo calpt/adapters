@@ -17,14 +17,14 @@ import shutil
 import tempfile
 import unittest
 
-from transformers import BertTokenizer, is_torch_available, set_seed
-from transformers.testing_utils import require_torch
+from adapter_transformers import BertTokenizer, is_torch_available, set_seed
+from adapter_transformers.testing_utils import require_torch
 
 
 if is_torch_available():
     import torch
 
-    from transformers import (
+    from adapter_transformers import (
         DataCollatorForLanguageModeling,
         DataCollatorForPermutationLanguageModeling,
         DataCollatorForTokenClassification,

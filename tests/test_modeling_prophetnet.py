@@ -18,8 +18,8 @@ import copy
 import tempfile
 import unittest
 
-from transformers import is_torch_available
-from transformers.testing_utils import require_torch, slow, torch_device
+from adapter_transformers import is_torch_available
+from adapter_transformers.testing_utils import require_torch, slow, torch_device
 
 from .test_configuration_common import ConfigTester
 from .test_generation_utils import GenerationTesterMixin
@@ -29,7 +29,7 @@ from .test_modeling_common import ModelTesterMixin, floats_tensor, ids_tensor
 if is_torch_available():
     import torch
 
-    from transformers import (
+    from adapter_transformers import (
         ProphetNetConfig,
         ProphetNetDecoder,
         ProphetNetEncoder,
@@ -38,7 +38,7 @@ if is_torch_available():
         ProphetNetModel,
         ProphetNetTokenizer,
     )
-    from transformers.modeling_outputs import BaseModelOutput
+    from adapter_transformers.modeling_outputs import BaseModelOutput
 
 
 class ProphetNetModelTester:

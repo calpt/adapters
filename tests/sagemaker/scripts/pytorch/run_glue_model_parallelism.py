@@ -26,8 +26,8 @@ from typing import Optional
 import numpy as np
 from datasets import load_dataset, load_metric
 
-import transformers
-from transformers import (  # Trainer,; TrainingArguments,
+import adapter_transformers
+from adapter_transformers import (  # Trainer,; TrainingArguments,
     AutoConfig,
     AutoModelForSequenceClassification,
     AutoTokenizer,
@@ -40,10 +40,10 @@ from transformers import (  # Trainer,; TrainingArguments,
 )
 
 # Will import SageMaker Model parallelism specific Trainer
-from transformers.sagemaker import SageMakerTrainer as Trainer
-from transformers.sagemaker import SageMakerTrainingArguments as TrainingArguments
-from transformers.trainer_utils import get_last_checkpoint
-from transformers.utils import check_min_version
+from adapter_transformers.sagemaker import SageMakerTrainer as Trainer
+from adapter_transformers.sagemaker import SageMakerTrainingArguments as TrainingArguments
+from adapter_transformers.trainer_utils import get_last_checkpoint
+from adapter_transformers.utils import check_min_version
 
 
 # Will error if the minimal version of Transformers is not installed. Remove at your own risks.
@@ -170,14 +170,14 @@ class ModelArguments:
     use_auth_token: bool = field(
         default=False,
         metadata={
-            "help": "Will use the token generated when running `transformers-cli login` (necessary to use this script "
+            "help": "Will use the token generated when running `adapter_transformers-cli login` (necessary to use this script "
             "with private models)."
         },
     )
 
 
 def main():
-    # See all possible arguments in src/transformers/training_args.py
+    # See all possible arguments in src/adapter_transformers/training_args.py
     # or by passing the --help flag to this script.
     # We now keep distinct sets of args, for a cleaner separation of concerns.
 
@@ -219,9 +219,9 @@ def main():
     )
     # Set the verbosity to info of the Transformers logger (on main process only):
     if training_args.should_log:
-        transformers.utils.logging.set_verbosity_info()
-        transformers.utils.logging.enable_default_handler()
-        transformers.utils.logging.enable_explicit_format()
+        adapter_transformers.utils.logging.set_verbosity_info()
+        adapter_transformers.utils.logging.enable_default_handler()
+        adapter_transformers.utils.logging.enable_explicit_format()
     logger.info(f"Training/evaluation parameters {training_args}")
 
     # Set seed before initializing model.

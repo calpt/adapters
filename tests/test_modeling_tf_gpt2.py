@@ -15,8 +15,8 @@
 
 import unittest
 
-from transformers import GPT2Config, is_tf_available
-from transformers.testing_utils import require_tf, slow
+from adapter_transformers import GPT2Config, is_tf_available
+from adapter_transformers.testing_utils import require_tf, slow
 
 from .test_configuration_common import ConfigTester
 from .test_modeling_tf_common import TFModelTesterMixin, ids_tensor
@@ -25,7 +25,7 @@ from .test_modeling_tf_common import TFModelTesterMixin, ids_tensor
 if is_tf_available():
     import tensorflow as tf
 
-    from transformers.models.gpt2.modeling_tf_gpt2 import (
+    from adapter_transformers.models.gpt2.modeling_tf_gpt2 import (
         TF_GPT2_PRETRAINED_MODEL_ARCHIVE_LIST,
         TFGPT2DoubleHeadsModel,
         TFGPT2ForSequenceClassification,

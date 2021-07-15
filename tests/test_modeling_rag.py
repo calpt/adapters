@@ -23,12 +23,12 @@ from unittest.mock import patch
 
 import numpy as np
 
-from transformers import BartTokenizer, T5Tokenizer
-from transformers.file_utils import cached_property, is_datasets_available, is_faiss_available, is_torch_available
-from transformers.models.bert.tokenization_bert import VOCAB_FILES_NAMES as DPR_VOCAB_FILES_NAMES
-from transformers.models.dpr.tokenization_dpr import DPRContextEncoderTokenizer, DPRQuestionEncoderTokenizer
-from transformers.models.roberta.tokenization_roberta import VOCAB_FILES_NAMES as BART_VOCAB_FILES_NAMES
-from transformers.testing_utils import (
+from adapter_transformers import BartTokenizer, T5Tokenizer
+from adapter_transformers.file_utils import cached_property, is_datasets_available, is_faiss_available, is_torch_available
+from adapter_transformers.models.bert.tokenization_bert import VOCAB_FILES_NAMES as DPR_VOCAB_FILES_NAMES
+from adapter_transformers.models.dpr.tokenization_dpr import DPRContextEncoderTokenizer, DPRQuestionEncoderTokenizer
+from adapter_transformers.models.roberta.tokenization_roberta import VOCAB_FILES_NAMES as BART_VOCAB_FILES_NAMES
+from adapter_transformers.testing_utils import (
     require_sentencepiece,
     require_tokenizers,
     require_torch,
@@ -51,7 +51,7 @@ if is_torch_available() and is_datasets_available() and is_faiss_available():
     from datasets import Dataset
 
     import faiss
-    from transformers import (
+    from adapter_transformers import (
         AutoConfig,
         AutoModel,
         AutoModelForSeq2SeqLM,
@@ -63,7 +63,7 @@ if is_torch_available() and is_datasets_available() and is_faiss_available():
         RagTokenForGeneration,
         RagTokenizer,
     )
-    from transformers.modeling_outputs import BaseModelOutput
+    from adapter_transformers.modeling_outputs import BaseModelOutput
 
 
 def _assert_tensors_equal(a, b, atol=1e-12, prefix=""):
@@ -84,7 +84,7 @@ def _assert_tensors_equal(a, b, atol=1e-12, prefix=""):
 def require_retrieval(test_case):
     """
     Decorator marking a test that requires a set of dependencies necessary for pefrorm retrieval with
-    :class:`~transformers.RagRetriever`.
+    :class:`~adapter_transformers.RagRetriever`.
 
     These tests are skipped when respective libraries are not installed.
 
@@ -210,7 +210,7 @@ class RagTestMixin:
         )
         dataset.add_faiss_index("embeddings", string_factory="Flat", metric_type=faiss.METRIC_INNER_PRODUCT)
         tokenizer = self.bart_tokenizer if config.generator.model_type == "bart" else self.t5_tokenizer
-        with patch("transformers.models.rag.retrieval_rag.load_dataset") as mock_load_dataset:
+        with patch("adapter_transformers.models.rag.retrieval_rag.load_dataset") as mock_load_dataset:
             mock_load_dataset.return_value = dataset
             retriever = RagRetriever(
                 config,

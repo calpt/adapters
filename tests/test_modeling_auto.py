@@ -17,8 +17,8 @@ import copy
 import tempfile
 import unittest
 
-from transformers import is_torch_available
-from transformers.testing_utils import (
+from adapter_transformers import is_torch_available
+from adapter_transformers.testing_utils import (
     DUMMY_UNKWOWN_IDENTIFIER,
     SMALL_MODEL_IDENTIFIER,
     require_scatter,
@@ -28,7 +28,7 @@ from transformers.testing_utils import (
 
 
 if is_torch_available():
-    from transformers import (
+    from adapter_transformers import (
         AutoConfig,
         AutoModel,
         AutoModelForCausalLM,
@@ -57,7 +57,7 @@ if is_torch_available():
         TapasConfig,
         TapasForQuestionAnswering,
     )
-    from transformers.models.auto.modeling_auto import (
+    from adapter_transformers.models.auto.modeling_auto import (
         MODEL_FOR_CAUSAL_LM_MAPPING,
         MODEL_FOR_MASKED_LM_MAPPING,
         MODEL_FOR_PRETRAINING_MAPPING,
@@ -70,10 +70,10 @@ if is_torch_available():
         MODEL_WITH_HEADS_MAPPING,
         MODEL_WITH_LM_HEAD_MAPPING,
     )
-    from transformers.models.bert.modeling_bert import BERT_PRETRAINED_MODEL_ARCHIVE_LIST
-    from transformers.models.gpt2.modeling_gpt2 import GPT2_PRETRAINED_MODEL_ARCHIVE_LIST
-    from transformers.models.t5.modeling_t5 import T5_PRETRAINED_MODEL_ARCHIVE_LIST
-    from transformers.models.tapas.modeling_tapas import TAPAS_PRETRAINED_MODEL_ARCHIVE_LIST
+    from adapter_transformers.models.bert.modeling_bert import BERT_PRETRAINED_MODEL_ARCHIVE_LIST
+    from adapter_transformers.models.gpt2.modeling_gpt2 import GPT2_PRETRAINED_MODEL_ARCHIVE_LIST
+    from adapter_transformers.models.t5.modeling_t5 import T5_PRETRAINED_MODEL_ARCHIVE_LIST
+    from adapter_transformers.models.tapas.modeling_tapas import TAPAS_PRETRAINED_MODEL_ARCHIVE_LIST
 
 
 @require_torch

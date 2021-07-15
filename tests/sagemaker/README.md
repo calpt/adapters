@@ -5,14 +5,14 @@ This document explains the testing strategy for releasing the new Hugging Face D
 
 ## Test Case 1: Releasing a New Version (Minor/Major) of 🤗 Transformers
 
-### Requirements: Test should run on Release Candidate for new `transformers` release to validate the new release is compatible with the DLCs. To run these tests you need credentials for the HF SageMaker AWS Account. You can ask @philschmid or @n1t0 to get access.
+### Requirements: Test should run on Release Candidate for new `adapter_transformers` release to validate the new release is compatible with the DLCs. To run these tests you need credentials for the HF SageMaker AWS Account. You can ask @philschmid or @n1t0 to get access.
 
 ### Run Tests:
 
 Before we can run the tests we need to adjust the `requirements.txt` for PyTorch under `/tests/sagemaker/scripts/pytorch` and for TensorFlow under `/tests/sagemaker/scripts/pytorch`. We adjust the branch to the new RC-tag.
 
 ```
-git+https://github.com/huggingface/transformers.git@v4.5.0.rc0 # install master or adjust ist with vX.X.X for installing version specific-transforms
+git+https://github.com/huggingface/adapter_transformers.git@v4.5.0.rc0 # install master or adjust ist with vX.X.X for installing version specific-transforms
 ```
 
 After we adjusted the `requirements.txt` we can run Amazon SageMaker tests with:  
@@ -30,7 +30,7 @@ After we have released the Release Candidate we need to create a PR at the [Deep
 
 1. Update the two latest `buildspec.yaml` config for [PyTorch](https://github.com/aws/deep-learning-containers/tree/master/huggingface/pytorch) and [TensorFlow](https://github.com/aws/deep-learning-containers/tree/master/huggingface/tensorflow). The two latest `buildspec.yaml` are the `buildspec.yaml` without a version tag and the one with the highest framework version, e.g. `buildspec-1-7-1.yml` and not `buildspec-1-6.yml`.  
 
-To update the `buildspec.yaml` we need to adjust either the `transformers_version` or the `datasets_version` or both. Example for upgrading to `transformers 4.5.0` and `datasets 1.6.0`.
+To update the `buildspec.yaml` we need to adjust either the `transformers_version` or the `datasets_version` or both. Example for upgrading to `adapter_transformers 4.5.0` and `datasets 1.6.0`.
 ```yaml
 account_id: &ACCOUNT_ID <set-$ACCOUNT_ID-in-environment>
 region: &REGION <set-$REGION-in-environment>
@@ -59,7 +59,7 @@ images:
     os_version: &OS_VERSION ubuntu18.04
     transformers_version: &TRANSFORMERS_VERSION 4.5.0 # this was adjusted from 4.4.2 to 4.5.0
     datasets_version: &DATASETS_VERSION 1.6.0 # this was adjusted from 1.5.0 to 1.6.0
-    tag: !join [ *VERSION, '-', 'transformers', *TRANSFORMERS_VERSION, '-', *DEVICE_TYPE, '-', *TAG_PYTHON_VERSION, '-',
+    tag: !join [ *VERSION, '-', 'adapter_transformers', *TRANSFORMERS_VERSION, '-', *DEVICE_TYPE, '-', *TAG_PYTHON_VERSION, '-',
       *CUDA_VERSION, '-', *OS_VERSION ]
     docker_file: !join [ docker/, *SHORT_VERSION, /, *DOCKER_PYTHON_VERSION, /, 
       *CUDA_VERSION, /Dockerfile., *DEVICE_TYPE ]
@@ -73,7 +73,7 @@ images:
 ## Execute Tests
 
 ### Requirements:
-AWS is going to release new DLCs for PyTorch and/or TensorFlow. The Tests should run on the new framework versions with current `transformers` release to validate the new framework release is compatible with the `transformers` version. To run these tests you need credentials for the HF SageMaker AWS Account. You can ask @philschmid or @n1t0 to get access. AWS will notify us with a new issue in the repository pointing to their framework upgrade PR.
+AWS is going to release new DLCs for PyTorch and/or TensorFlow. The Tests should run on the new framework versions with current `adapter_transformers` release to validate the new framework release is compatible with the `adapter_transformers` version. To run these tests you need credentials for the HF SageMaker AWS Account. You can ask @philschmid or @n1t0 to get access. AWS will notify us with a new issue in the repository pointing to their framework upgrade PR.
 
 ### Run Tests:
 
@@ -129,7 +129,7 @@ images:
     os_version: &OS_VERSION ubuntu18.04
     transformers_version: &TRANSFORMERS_VERSION 4.4.2
     datasets_version: &DATASETS_VERSION 1.5.0
-    tag: !join [ *VERSION, '-', 'transformers', *TRANSFORMERS_VERSION, '-', *DEVICE_TYPE, '-', *TAG_PYTHON_VERSION, '-',
+    tag: !join [ *VERSION, '-', 'adapter_transformers', *TRANSFORMERS_VERSION, '-', *DEVICE_TYPE, '-', *TAG_PYTHON_VERSION, '-',
       *CUDA_VERSION, '-', *OS_VERSION ]
     docker_file: !join [ docker/, *SHORT_VERSION, /, *DOCKER_PYTHON_VERSION, /, 
       *CUDA_VERSION, /Dockerfile., *DEVICE_TYPE ]

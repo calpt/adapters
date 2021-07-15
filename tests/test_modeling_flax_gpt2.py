@@ -18,9 +18,9 @@ import unittest
 
 import numpy as np
 
-import transformers
-from transformers import GPT2Config, GPT2Tokenizer, is_flax_available, is_torch_available
-from transformers.testing_utils import is_pt_flax_cross_test, require_flax, slow
+import adapter_transformers
+from adapter_transformers import GPT2Config, GPT2Tokenizer, is_flax_available, is_torch_available
+from adapter_transformers.testing_utils import is_pt_flax_cross_test, require_flax, slow
 
 from .test_generation_flax_utils import FlaxGenerationTesterMixin
 from .test_modeling_flax_common import FlaxModelTesterMixin, ids_tensor, random_attention_mask
@@ -29,11 +29,11 @@ from .test_modeling_flax_common import FlaxModelTesterMixin, ids_tensor, random_
 if is_flax_available():
     import jax
     import jax.numpy as jnp
-    from transformers.modeling_flax_pytorch_utils import (
+    from adapter_transformers.modeling_flax_pytorch_utils import (
         convert_pytorch_state_dict_to_flax,
         load_flax_weights_in_pytorch_model,
     )
-    from transformers.models.gpt2.modeling_flax_gpt2 import FlaxGPT2LMHeadModel, FlaxGPT2Model
+    from adapter_transformers.models.gpt2.modeling_flax_gpt2 import FlaxGPT2LMHeadModel, FlaxGPT2Model
 
 if is_torch_available():
     import torch
@@ -232,7 +232,7 @@ class FlaxGPT2ModelTest(FlaxModelTesterMixin, FlaxGenerationTesterMixin, unittes
 
                 # load corresponding PyTorch class
                 pt_model_class_name = model_class.__name__[4:]  # Skip the "Flax" at the beginning
-                pt_model_class = getattr(transformers, pt_model_class_name)
+                pt_model_class = getattr(adapter_transformers, pt_model_class_name)
 
                 batch_size, seq_length = pt_inputs["input_ids"].shape
                 rnd_start_indices = np.random.randint(0, seq_length - 1, size=(batch_size,))
@@ -279,7 +279,7 @@ class FlaxGPT2ModelTest(FlaxModelTesterMixin, FlaxGenerationTesterMixin, unittes
 
                 # load corresponding PyTorch class
                 pt_model_class_name = model_class.__name__[4:]  # Skip the "Flax" at the beginning
-                pt_model_class = getattr(transformers, pt_model_class_name)
+                pt_model_class = getattr(adapter_transformers, pt_model_class_name)
 
                 pt_model = pt_model_class(config).eval()
                 fx_model = model_class(config, dtype=jnp.float32)

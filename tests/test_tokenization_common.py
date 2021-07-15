@@ -28,7 +28,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Tuple, Union
 
 from huggingface_hub import HfApi
 from requests.exceptions import HTTPError
-from transformers import (
+from adapter_transformers import (
     BertTokenizer,
     PreTrainedTokenizer,
     PreTrainedTokenizerBase,
@@ -36,7 +36,7 @@ from transformers import (
     is_tf_available,
     is_torch_available,
 )
-from transformers.testing_utils import (
+from adapter_transformers.testing_utils import (
     ENDPOINT_STAGING,
     PASS,
     USER,
@@ -48,11 +48,11 @@ from transformers.testing_utils import (
     require_torch,
     slow,
 )
-from transformers.tokenization_utils import AddedToken
+from adapter_transformers.tokenization_utils import AddedToken
 
 
 if TYPE_CHECKING:
-    from transformers import PretrainedConfig, PreTrainedModel, TFPreTrainedModel
+    from adapter_transformers import PretrainedConfig, PreTrainedModel, TFPreTrainedModel
 
 
 NON_ENGLISH_TAGS = ["chinese", "dutch", "french", "finnish", "german", "multilingual"]
@@ -218,7 +218,7 @@ class TokenizerTesterMixin:
 
         if sequences is None:
             sequences = [
-                "Transformers (formerly known as pytorch-transformers and pytorch-pretrained-bert) provides "
+                "Transformers (formerly known as pytorch-adapter_transformers and pytorch-pretrained-bert) provides "
                 "general-purpose architectures (BERT, GPT-2, RoBERTa, XLM, DistilBert, XLNet...) for Natural "
                 "Language Understanding (NLU) and Natural Language Generation (NLG) with over 32+ pretrained "
                 "models in 100+ languages and deep interoperability between Jax, PyTorch and TensorFlow.",
@@ -869,7 +869,7 @@ class TokenizerTesterMixin:
                         # Simple with no truncation
                         # Reset warnings
                         tokenizer.deprecation_warnings = {}
-                        with self.assertLogs("transformers", level="WARNING") as cm:
+                        with self.assertLogs("adapter_transformers", level="WARNING") as cm:
                             output = tokenizer(seq_1, padding=padding_state, truncation=False)
                             self.assertNotEqual(len(output["input_ids"]), model_max_length)
                         self.assertEqual(len(cm.records), 1)
@@ -880,7 +880,7 @@ class TokenizerTesterMixin:
                         )
 
                         tokenizer.deprecation_warnings = {}
-                        with self.assertLogs("transformers", level="WARNING") as cm:
+                        with self.assertLogs("adapter_transformers", level="WARNING") as cm:
                             output = tokenizer([seq_1], padding=padding_state, truncation=False)
                             self.assertNotEqual(len(output["input_ids"][0]), model_max_length)
                         self.assertEqual(len(cm.records), 1)
@@ -990,7 +990,7 @@ class TokenizerTesterMixin:
                         # Simple with no truncation
                         # Reset warnings
                         tokenizer.deprecation_warnings = {}
-                        with self.assertLogs("transformers", level="WARNING") as cm:
+                        with self.assertLogs("adapter_transformers", level="WARNING") as cm:
                             output = tokenizer(seq_1, seq_2, padding=padding_state, truncation=False)
                             self.assertNotEqual(len(output["input_ids"]), model_max_length)
                         self.assertEqual(len(cm.records), 1)
@@ -1001,7 +1001,7 @@ class TokenizerTesterMixin:
                         )
 
                         tokenizer.deprecation_warnings = {}
-                        with self.assertLogs("transformers", level="WARNING") as cm:
+                        with self.assertLogs("adapter_transformers", level="WARNING") as cm:
                             output = tokenizer([seq_1], [seq_2], padding=padding_state, truncation=False)
                             self.assertNotEqual(len(output["input_ids"][0]), model_max_length)
                         self.assertEqual(len(cm.records), 1)
@@ -1916,7 +1916,7 @@ class TokenizerTesterMixin:
     def test_torch_encode_plus_sent_to_model(self):
         import torch
 
-        from transformers import MODEL_MAPPING, TOKENIZER_MAPPING
+        from adapter_transformers import MODEL_MAPPING, TOKENIZER_MAPPING
 
         MODEL_TOKENIZER_MAPPING = merge_model_tokenizer_mappings(MODEL_MAPPING, TOKENIZER_MAPPING)
 
@@ -1969,7 +1969,7 @@ class TokenizerTesterMixin:
     @require_tf
     @slow
     def test_tf_encode_plus_sent_to_model(self):
-        from transformers import TF_MODEL_MAPPING, TOKENIZER_MAPPING
+        from adapter_transformers import TF_MODEL_MAPPING, TOKENIZER_MAPPING
 
         MODEL_TOKENIZER_MAPPING = merge_model_tokenizer_mappings(TF_MODEL_MAPPING, TOKENIZER_MAPPING)
 
@@ -2004,7 +2004,7 @@ class TokenizerTesterMixin:
     @require_torch
     @slow
     def test_np_encode_plus_sent_to_model(self):
-        from transformers import MODEL_MAPPING, TOKENIZER_MAPPING
+        from adapter_transformers import MODEL_MAPPING, TOKENIZER_MAPPING
 
         MODEL_TOKENIZER_MAPPING = merge_model_tokenizer_mappings(MODEL_MAPPING, TOKENIZER_MAPPING)
 

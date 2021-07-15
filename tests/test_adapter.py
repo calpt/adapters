@@ -1,7 +1,7 @@
 import unittest
 
-from transformers import BartConfig, BertConfig, DistilBertConfig, GPT2Config, MBartConfig, RobertaConfig
-from transformers.testing_utils import require_torch
+from adapter_transformers import BartConfig, BertConfig, DistilBertConfig, GPT2Config, MBartConfig, RobertaConfig
+from adapter_transformers.testing_utils import require_torch
 
 from .test_adapter_common import AdapterModelTestMixin
 from .test_adapter_composition import ParallelAdapterInferenceTestMixin

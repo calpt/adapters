@@ -18,8 +18,8 @@
 import inspect
 import unittest
 
-from transformers.file_utils import cached_property, is_torch_available, is_vision_available
-from transformers.testing_utils import require_torch, require_vision, slow, torch_device
+from adapter_transformers.file_utils import cached_property, is_torch_available, is_vision_available
+from adapter_transformers.testing_utils import require_torch, require_vision, slow, torch_device
 
 from .test_configuration_common import ConfigTester
 from .test_modeling_common import ModelTesterMixin, floats_tensor, ids_tensor
@@ -29,20 +29,20 @@ if is_torch_available():
     import torch
     from torch import nn
 
-    from transformers import (
+    from adapter_transformers import (
         MODEL_MAPPING,
         DeiTConfig,
         DeiTForImageClassification,
         DeiTForImageClassificationWithTeacher,
         DeiTModel,
     )
-    from transformers.models.deit.modeling_deit import DEIT_PRETRAINED_MODEL_ARCHIVE_LIST, to_2tuple
+    from adapter_transformers.models.deit.modeling_deit import DEIT_PRETRAINED_MODEL_ARCHIVE_LIST, to_2tuple
 
 
 if is_vision_available():
     from PIL import Image
 
-    from transformers import DeiTFeatureExtractor
+    from adapter_transformers import DeiTFeatureExtractor
 
 
 class DeiTModelTester:
