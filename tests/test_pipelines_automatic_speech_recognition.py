@@ -14,7 +14,12 @@
 
 import unittest
 
-from adapter_transformers import AutoFeatureExtractor, AutoTokenizer, Speech2TextForConditionalGeneration, Wav2Vec2ForCTC
+from adapter_transformers import (
+    AutoFeatureExtractor,
+    AutoTokenizer,
+    Speech2TextForConditionalGeneration,
+    Wav2Vec2ForCTC,
+)
 from adapter_transformers.pipelines import AutomaticSpeechRecognitionPipeline
 from adapter_transformers.testing_utils import require_datasets, require_torch, require_torchaudio, slow
 

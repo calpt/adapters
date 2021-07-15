@@ -20,7 +20,7 @@ import unittest
 from time import time
 from unittest.mock import patch
 
-from transformers.testing_utils import require_torch_tpu
+from adapter_transformers.testing_utils import require_torch_tpu
 
 
 logging.basicConfig(level=logging.DEBUG)
@@ -39,9 +39,9 @@ class TorchXLAExamplesTests(unittest.TestCase):
         output_directory = "run_glue_output"
 
         testargs = f"""
-            transformers/examples/text-classification/run_glue.py
+            adapter_transformers/examples/text-classification/run_glue.py
             --num_cores=8
-            transformers/examples/text-classification/run_glue.py
+            adapter_transformers/examples/text-classification/run_glue.py
             --do_train
             --do_eval
             --task_name=mrpc
@@ -85,9 +85,9 @@ class TorchXLAExamplesTests(unittest.TestCase):
         import xla_spawn
 
         testargs = """
-            transformers/tests/test_trainer_tpu.py
+            adapter_transformers/tests/test_trainer_tpu.py
             --num_cores=8
-            transformers/tests/test_trainer_tpu.py
+            adapter_transformers/tests/test_trainer_tpu.py
             """.split()
         with patch.object(sys, "argv", testargs):
             xla_spawn.main()

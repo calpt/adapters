@@ -33,8 +33,8 @@ import unittest
 
 import pytest
 
-from parameterized import parameterized
 from adapter_transformers.testing_utils import require_torch, require_torch_gpu, slow, torch_device
+from parameterized import parameterized
 
 
 # skipping in unittest tests

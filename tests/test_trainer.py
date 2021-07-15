@@ -24,8 +24,6 @@ from pathlib import Path
 
 import numpy as np
 
-from huggingface_hub import HfApi
-from requests.exceptions import HTTPError
 from adapter_transformers import (
     AutoTokenizer,
     IntervalStrategy,
@@ -58,6 +56,8 @@ from adapter_transformers.testing_utils import (
 )
 from adapter_transformers.trainer_utils import PREFIX_CHECKPOINT_DIR
 from adapter_transformers.utils.hp_naming import TrialShortNamer
+from huggingface_hub import HfApi
+from requests.exceptions import HTTPError
 
 
 if is_torch_available():

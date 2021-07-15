@@ -46,7 +46,10 @@ if is_torch_available():
         Speech2TextModel,
         Speech2TextProcessor,
     )
-    from adapter_transformers.models.speech_to_text.modeling_speech_to_text import Speech2TextDecoder, Speech2TextEncoder
+    from adapter_transformers.models.speech_to_text.modeling_speech_to_text import (
+        Speech2TextDecoder,
+        Speech2TextEncoder,
+    )
 
 
 def prepare_speech_to_text_inputs_dict(

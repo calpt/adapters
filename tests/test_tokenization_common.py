@@ -26,8 +26,6 @@ from collections import OrderedDict
 from itertools import takewhile
 from typing import TYPE_CHECKING, Any, Dict, List, Tuple, Union
 
-from huggingface_hub import HfApi
-from requests.exceptions import HTTPError
 from adapter_transformers import (
     BertTokenizer,
     PreTrainedTokenizer,
@@ -49,6 +47,8 @@ from adapter_transformers.testing_utils import (
     slow,
 )
 from adapter_transformers.tokenization_utils import AddedToken
+from huggingface_hub import HfApi
+from requests.exceptions import HTTPError
 
 
 if TYPE_CHECKING:

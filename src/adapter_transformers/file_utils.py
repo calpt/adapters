@@ -47,9 +47,9 @@ from packaging import version
 from tqdm.auto import tqdm
 
 import requests
+from adapter_transformers.utils.versions import importlib_metadata
 from filelock import FileLock
 from huggingface_hub import HfApi, HfFolder, Repository
-from adapter_transformers.utils.versions import importlib_metadata
 
 from . import __version__
 from .utils import logging

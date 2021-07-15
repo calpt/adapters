@@ -18,7 +18,12 @@ import shutil
 import tempfile
 from unittest import TestCase
 
-from adapter_transformers import BartTokenizer, BartTokenizerFast, DPRQuestionEncoderTokenizer, DPRQuestionEncoderTokenizerFast
+from adapter_transformers import (
+    BartTokenizer,
+    BartTokenizerFast,
+    DPRQuestionEncoderTokenizer,
+    DPRQuestionEncoderTokenizerFast,
+)
 from adapter_transformers.file_utils import is_datasets_available, is_faiss_available, is_torch_available
 from adapter_transformers.models.bart.configuration_bart import BartConfig
 from adapter_transformers.models.bert.tokenization_bert import VOCAB_FILES_NAMES as DPR_VOCAB_FILES_NAMES

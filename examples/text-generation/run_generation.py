@@ -24,7 +24,7 @@ import logging
 import numpy as np
 import torch
 
-from transformers import (
+from adapter_transformers import (
     CTRLLMHeadModel,
     CTRLTokenizer,
     GPT2LMHeadModel,

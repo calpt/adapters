@@ -30,9 +30,9 @@ from datasets import ClassLabel, load_dataset, load_metric
 from torch.utils.data.dataloader import DataLoader
 from tqdm.auto import tqdm
 
-import transformers
+import adapter_transformers
 from accelerate import Accelerator
-from transformers import (
+from adapter_transformers import (
     CONFIG_MAPPING,
     MODEL_MAPPING,
     AdamW,
@@ -45,7 +45,7 @@ from transformers import (
     get_scheduler,
     set_seed,
 )
-from transformers.utils.versions import require_version
+from adapter_transformers.utils.versions import require_version
 
 
 logger = logging.getLogger(__name__)
@@ -58,7 +58,7 @@ MODEL_TYPES = tuple(conf.model_type for conf in MODEL_CONFIG_CLASSES)
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Finetune a transformers model on a text classification task (NER) with accelerate library"
+        description="Finetune a adapter_transformers model on a text classification task (NER) with accelerate library"
     )
     parser.add_argument(
         "--dataset_name",
@@ -232,10 +232,10 @@ def main():
     logger.setLevel(logging.INFO if accelerator.is_local_main_process else logging.ERROR)
     if accelerator.is_local_main_process:
         datasets.utils.logging.set_verbosity_warning()
-        transformers.utils.logging.set_verbosity_info()
+        adapter_transformers.utils.logging.set_verbosity_info()
     else:
         datasets.utils.logging.set_verbosity_error()
-        transformers.utils.logging.set_verbosity_error()
+        adapter_transformers.utils.logging.set_verbosity_error()
 
     # If passed along, set the training seed now.
     if args.seed is not None:

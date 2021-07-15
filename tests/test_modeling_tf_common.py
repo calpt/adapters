@@ -24,8 +24,6 @@ import unittest
 from importlib import import_module
 from typing import List, Tuple
 
-from huggingface_hub import HfApi
-from requests.exceptions import HTTPError
 from adapter_transformers import is_tf_available
 from adapter_transformers.models.auto import get_values
 from adapter_transformers.testing_utils import (
@@ -40,6 +38,8 @@ from adapter_transformers.testing_utils import (
     slow,
     tooslow,
 )
+from huggingface_hub import HfApi
+from requests.exceptions import HTTPError
 
 
 if is_tf_available():

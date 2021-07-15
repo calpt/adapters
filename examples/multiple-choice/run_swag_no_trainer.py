@@ -32,9 +32,9 @@ from datasets import load_dataset, load_metric
 from torch.utils.data.dataloader import DataLoader
 from tqdm.auto import tqdm
 
-import transformers
+import adapter_transformers
 from accelerate import Accelerator
-from transformers import (
+from adapter_transformers import (
     CONFIG_MAPPING,
     MODEL_MAPPING,
     AdamW,
@@ -47,7 +47,7 @@ from transformers import (
     get_scheduler,
     set_seed,
 )
-from transformers.file_utils import PaddingStrategy
+from adapter_transformers.file_utils import PaddingStrategy
 
 
 logger = logging.getLogger(__name__)
@@ -57,7 +57,7 @@ MODEL_TYPES = tuple(conf.model_type for conf in MODEL_CONFIG_CLASSES)
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Finetune a transformers model on a text classification task")
+    parser = argparse.ArgumentParser(description="Finetune a adapter_transformers model on a text classification task")
     parser.add_argument(
         "--dataset_name",
         type=str,
@@ -182,9 +182,9 @@ class DataCollatorForMultipleChoice:
     Data collator that will dynamically pad the inputs for multiple choice received.
 
     Args:
-        tokenizer (:class:`~transformers.PreTrainedTokenizer` or :class:`~transformers.PreTrainedTokenizerFast`):
+        tokenizer (:class:`~adapter_transformers.PreTrainedTokenizer` or :class:`~adapter_transformers.PreTrainedTokenizerFast`):
             The tokenizer used for encoding the data.
-        padding (:obj:`bool`, :obj:`str` or :class:`~transformers.file_utils.PaddingStrategy`, `optional`, defaults to :obj:`True`):
+        padding (:obj:`bool`, :obj:`str` or :class:`~adapter_transformers.file_utils.PaddingStrategy`, `optional`, defaults to :obj:`True`):
             Select a strategy to pad the returned sequences (according to the model's padding side and padding index)
             among:
 
@@ -251,10 +251,10 @@ def main():
     logger.setLevel(logging.INFO if accelerator.is_local_main_process else logging.ERROR)
     if accelerator.is_local_main_process:
         datasets.utils.logging.set_verbosity_warning()
-        transformers.utils.logging.set_verbosity_info()
+        adapter_transformers.utils.logging.set_verbosity_info()
     else:
         datasets.utils.logging.set_verbosity_error()
-        transformers.utils.logging.set_verbosity_error()
+        adapter_transformers.utils.logging.set_verbosity_error()
 
     # If passed along, set the training seed now.
     if args.seed is not None:

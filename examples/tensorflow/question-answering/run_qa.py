@@ -28,8 +28,8 @@ from typing import Optional
 import tensorflow as tf
 from datasets import load_dataset, load_metric
 
-import transformers
-from transformers import (
+import adapter_transformers
+from adapter_transformers import (
     AutoConfig,
     AutoTokenizer,
     EvalPrediction,
@@ -39,8 +39,8 @@ from transformers import (
     TFTrainingArguments,
     set_seed,
 )
-from transformers.file_utils import CONFIG_NAME, TF2_WEIGHTS_NAME
-from transformers.utils import check_min_version
+from adapter_transformers.file_utils import CONFIG_NAME, TF2_WEIGHTS_NAME
+from adapter_transformers.utils import check_min_version
 from utils_qa import postprocess_qa_predictions
 
 
@@ -77,7 +77,7 @@ class ModelArguments:
     use_auth_token: bool = field(
         default=False,
         metadata={
-            "help": "Will use the token generated when running `transformers-cli login` (necessary to use this script "
+            "help": "Will use the token generated when running `adapter_transformers-cli login` (necessary to use this script "
             "with private models)."
         },
     )
@@ -259,7 +259,7 @@ def convert_dataset_for_tensorflow(
 
 def main():
     # region Argument parsing
-    # See all possible arguments in src/transformers/training_args.py
+    # See all possible arguments in src/adapter_transformers/training_args.py
     # or by passing the --help flag to this script.
     # We now keep distinct sets of args, for a cleaner separation of concerns.
 
@@ -301,9 +301,9 @@ def main():
 
     # Set the verbosity to info of the Transformers logger (on main process only):
     if training_args.should_log:
-        transformers.utils.logging.set_verbosity_info()
-        transformers.utils.logging.enable_default_handler()
-        transformers.utils.logging.enable_explicit_format()
+        adapter_transformers.utils.logging.set_verbosity_info()
+        adapter_transformers.utils.logging.enable_default_handler()
+        adapter_transformers.utils.logging.enable_explicit_format()
     logger.info(f"Training/evaluation parameters {training_args}")
     # endregion
 
@@ -364,7 +364,7 @@ def main():
     if not isinstance(tokenizer, PreTrainedTokenizerFast):
         raise ValueError(
             "This example script only works for models that have a fast tokenizer. Checkout the big table of models "
-            "at https://huggingface.co/transformers/index.html#supported-frameworks to find the model types that meet this "
+            "at https://huggingface.co/adapter_transformers/index.html#supported-frameworks to find the model types that meet this "
             "requirement"
         )
     # endregion

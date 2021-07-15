@@ -36,7 +36,14 @@ from adapter_transformers import (
     is_tokenizers_available,
 )
 from adapter_transformers.models.gpt2.tokenization_gpt2 import GPT2Tokenizer
-from adapter_transformers.testing_utils import CaptureStderr, require_flax, require_tf, require_tokenizers, require_torch, slow
+from adapter_transformers.testing_utils import (
+    CaptureStderr,
+    require_flax,
+    require_tf,
+    require_tokenizers,
+    require_torch,
+    slow,
+)
 
 
 if is_tokenizers_available():

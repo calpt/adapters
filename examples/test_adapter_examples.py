@@ -8,7 +8,7 @@ from unittest.mock import patch
 import torch
 
 from examples.test_examples import get_results
-from transformers.testing_utils import TestCasePlus, get_gpu_count, require_torch_non_multi_gpu, slow, torch_device
+from adapter_transformers.testing_utils import TestCasePlus, get_gpu_count, require_torch_non_multi_gpu, slow, torch_device
 
 
 SRC_DIRS = [

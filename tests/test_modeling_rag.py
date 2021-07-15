@@ -24,7 +24,12 @@ from unittest.mock import patch
 import numpy as np
 
 from adapter_transformers import BartTokenizer, T5Tokenizer
-from adapter_transformers.file_utils import cached_property, is_datasets_available, is_faiss_available, is_torch_available
+from adapter_transformers.file_utils import (
+    cached_property,
+    is_datasets_available,
+    is_faiss_available,
+    is_torch_available,
+)
 from adapter_transformers.models.bert.tokenization_bert import VOCAB_FILES_NAMES as DPR_VOCAB_FILES_NAMES
 from adapter_transformers.models.dpr.tokenization_dpr import DPRContextEncoderTokenizer, DPRQuestionEncoderTokenizer
 from adapter_transformers.models.roberta.tokenization_roberta import VOCAB_FILES_NAMES as BART_VOCAB_FILES_NAMES

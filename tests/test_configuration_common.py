@@ -19,10 +19,10 @@ import os
 import tempfile
 import unittest
 
-from huggingface_hub import HfApi
-from requests.exceptions import HTTPError
 from adapter_transformers import BertConfig, GPT2Config
 from adapter_transformers.testing_utils import ENDPOINT_STAGING, PASS, USER, is_staging_test
+from huggingface_hub import HfApi
+from requests.exceptions import HTTPError
 
 
 class ConfigTester(object):

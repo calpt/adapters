@@ -18,9 +18,9 @@
 import copy
 import unittest
 
-from tests.test_modeling_common import floats_tensor
 from adapter_transformers import is_torch_available
 from adapter_transformers.testing_utils import require_torch, slow, torch_device
+from tests.test_modeling_common import floats_tensor
 
 from .test_configuration_common import ConfigTester
 from .test_modeling_common import ModelTesterMixin, ids_tensor

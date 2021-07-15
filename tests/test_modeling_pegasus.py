@@ -19,7 +19,13 @@ import unittest
 
 from adapter_transformers import is_torch_available
 from adapter_transformers.file_utils import cached_property
-from adapter_transformers.testing_utils import require_sentencepiece, require_tokenizers, require_torch, slow, torch_device
+from adapter_transformers.testing_utils import (
+    require_sentencepiece,
+    require_tokenizers,
+    require_torch,
+    slow,
+    torch_device,
+)
 
 from .test_configuration_common import ConfigTester
 from .test_generation_utils import GenerationTesterMixin
@@ -30,7 +36,12 @@ from .test_modeling_mbart import AbstractSeq2SeqIntegrationTest
 if is_torch_available():
     import torch
 
-    from adapter_transformers import AutoModelForSeq2SeqLM, PegasusConfig, PegasusForConditionalGeneration, PegasusModel
+    from adapter_transformers import (
+        AutoModelForSeq2SeqLM,
+        PegasusConfig,
+        PegasusForConditionalGeneration,
+        PegasusModel,
+    )
     from adapter_transformers.models.pegasus.modeling_pegasus import PegasusDecoder, PegasusEncoder, PegasusForCausalLM
 
 

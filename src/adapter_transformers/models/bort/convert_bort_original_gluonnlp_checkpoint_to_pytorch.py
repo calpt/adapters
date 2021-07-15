@@ -25,10 +25,6 @@ from torch import nn
 
 import gluonnlp as nlp
 import mxnet as mx
-from gluonnlp.base import get_home_dir
-from gluonnlp.model.bert import BERTEncoder
-from gluonnlp.model.utils import _load_vocab
-from gluonnlp.vocab import Vocab
 from adapter_transformers import BertConfig, BertForMaskedLM, BertModel, RobertaTokenizer
 from adapter_transformers.models.bert.modeling_bert import (
     BertIntermediate,
@@ -38,6 +34,10 @@ from adapter_transformers.models.bert.modeling_bert import (
     BertSelfOutput,
 )
 from adapter_transformers.utils import logging
+from gluonnlp.base import get_home_dir
+from gluonnlp.model.bert import BERTEncoder
+from gluonnlp.model.utils import _load_vocab
+from gluonnlp.vocab import Vocab
 
 
 if version.parse(nlp.__version__) != version.parse("0.8.3"):

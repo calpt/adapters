@@ -17,7 +17,13 @@
 import unittest
 
 from adapter_transformers import is_torch_available
-from adapter_transformers.testing_utils import require_sentencepiece, require_tokenizers, require_torch, slow, torch_device
+from adapter_transformers.testing_utils import (
+    require_sentencepiece,
+    require_tokenizers,
+    require_torch,
+    slow,
+    torch_device,
+)
 
 from .test_configuration_common import ConfigTester
 from .test_modeling_common import ModelTesterMixin, ids_tensor, random_attention_mask

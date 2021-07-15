@@ -16,8 +16,19 @@ import os
 import tempfile
 import unittest
 
-from adapter_transformers import SPIECE_UNDERLINE, BatchEncoding, MBartTokenizer, MBartTokenizerFast, is_torch_available
-from adapter_transformers.testing_utils import nested_simplify, require_sentencepiece, require_tokenizers, require_torch
+from adapter_transformers import (
+    SPIECE_UNDERLINE,
+    BatchEncoding,
+    MBartTokenizer,
+    MBartTokenizerFast,
+    is_torch_available,
+)
+from adapter_transformers.testing_utils import (
+    nested_simplify,
+    require_sentencepiece,
+    require_tokenizers,
+    require_torch,
+)
 
 from .test_tokenization_common import TokenizerTesterMixin
 

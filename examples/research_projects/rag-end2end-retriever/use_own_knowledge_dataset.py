@@ -10,7 +10,7 @@ import torch
 from datasets import Features, Sequence, Value, load_dataset
 
 import faiss
-from transformers import DPRContextEncoder, DPRContextEncoderTokenizerFast, HfArgumentParser
+from adapter_transformers import DPRContextEncoder, DPRContextEncoderTokenizerFast, HfArgumentParser
 
 
 logger = logging.getLogger(__name__)

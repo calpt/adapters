@@ -36,13 +36,13 @@ from tqdm import tqdm
 import jax
 import jax.numpy as jnp
 import optax
-import transformers
+import adapter_transformers
 from filelock import FileLock
 from flax import jax_utils, traverse_util
 from flax.jax_utils import unreplicate
 from flax.training import train_state
 from flax.training.common_utils import get_metrics, onehot, shard, shard_prng_key
-from transformers import (
+from adapter_transformers import (
     CONFIG_MAPPING,
     FLAX_MODEL_FOR_SEQ_TO_SEQ_CAUSAL_LM_MAPPING,
     AutoConfig,
@@ -52,7 +52,7 @@ from transformers import (
     TrainingArguments,
     is_tensorboard_available,
 )
-from transformers.file_utils import is_offline_mode
+from adapter_transformers.file_utils import is_offline_mode
 
 
 logger = logging.getLogger(__name__)
@@ -288,7 +288,7 @@ def create_learning_rate_fn(
 
 
 def main():
-    # See all possible arguments in src/transformers/training_args.py
+    # See all possible arguments in src/adapter_transformers/training_args.py
     # or by passing the --help flag to this script.
     # We now keep distinct sets of args, for a cleaner separation of concerns.
 
@@ -321,10 +321,10 @@ def main():
     logger.setLevel(logging.INFO if jax.process_index() == 0 else logging.ERROR)
     if jax.process_index() == 0:
         datasets.utils.logging.set_verbosity_warning()
-        transformers.utils.logging.set_verbosity_info()
+        adapter_transformers.utils.logging.set_verbosity_info()
     else:
         datasets.utils.logging.set_verbosity_error()
-        transformers.utils.logging.set_verbosity_error()
+        adapter_transformers.utils.logging.set_verbosity_error()
 
     # Set the verbosity to info of the Transformers logger (on main process only):
     logger.info(f"Training/evaluation parameters {training_args}")

@@ -23,7 +23,13 @@ from PIL import Image
 
 import requests
 import timm
-from adapter_transformers import DeiTFeatureExtractor, ViTConfig, ViTFeatureExtractor, ViTForImageClassification, ViTModel
+from adapter_transformers import (
+    DeiTFeatureExtractor,
+    ViTConfig,
+    ViTFeatureExtractor,
+    ViTForImageClassification,
+    ViTModel,
+)
 from adapter_transformers.utils import logging
 from adapter_transformers.utils.imagenet_classes import id2label
 

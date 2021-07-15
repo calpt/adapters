@@ -29,8 +29,8 @@ from typing import Optional
 import numpy as np
 from datasets import load_dataset, load_metric
 
-import transformers
-from transformers import (
+import adapter_transformers
+from adapter_transformers import (
     AdapterConfig,
     AutoConfig,
     AutoModelWithHeads,
@@ -44,7 +44,7 @@ from transformers import (
     default_data_collator,
     set_seed,
 )
-from transformers.trainer_utils import is_main_process
+from adapter_transformers.trainer_utils import is_main_process
 
 
 task_to_keys = {
@@ -139,7 +139,7 @@ class ModelArguments:
 
 
 def main():
-    # See all possible arguments in src/transformers/training_args.py
+    # See all possible arguments in src/adapter_transformers/training_args.py
     # or by passing the --help flag to this script.
     # We now keep distinct sets of args, for a cleaner separation of concerns.
 
@@ -179,7 +179,7 @@ def main():
     )
     # Set the verbosity to info of the Transformers logger (on main process only):
     if is_main_process(training_args.local_rank):
-        transformers.utils.logging.set_verbosity_info()
+        adapter_transformers.utils.logging.set_verbosity_info()
     logger.info(f"Training/evaluation parameters {training_args}")
 
     # Set seed before initializing model.

@@ -21,7 +21,7 @@ import torch.distributed as dist
 from datasets import concatenate_datasets, load_from_disk
 from torch.utils.data import DataLoader
 
-from transformers import (
+from adapter_transformers import (
     AutoConfig,
     AutoTokenizer,
     BartForConditionalGeneration,
@@ -35,8 +35,8 @@ from transformers import (
     RagTokenizer,
     T5ForConditionalGeneration,
 )
-from transformers import logging as transformers_logging
-from transformers.integrations import is_ray_available
+from adapter_transformers import logging as transformers_logging
+from adapter_transformers.integrations import is_ray_available
 
 
 if is_ray_available():

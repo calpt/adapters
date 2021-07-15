@@ -22,8 +22,6 @@ from typing import List, Tuple
 import numpy as np
 
 import adapter_transformers
-from huggingface_hub import HfApi
-from requests.exceptions import HTTPError
 from adapter_transformers import BertConfig, FlaxBertModel, is_flax_available, is_torch_available
 from adapter_transformers.models.auto import get_values
 from adapter_transformers.testing_utils import (
@@ -35,6 +33,8 @@ from adapter_transformers.testing_utils import (
     require_flax,
     slow,
 )
+from huggingface_hub import HfApi
+from requests.exceptions import HTTPError
 
 
 if is_flax_available():
@@ -43,13 +43,13 @@ if is_flax_available():
     import jax
     import jax.numpy as jnp
     import jaxlib.xla_extension as jax_xla
-    from flax.core.frozen_dict import unfreeze
-    from flax.traverse_util import flatten_dict
     from adapter_transformers import FLAX_MODEL_FOR_QUESTION_ANSWERING_MAPPING, FLAX_MODEL_MAPPING
     from adapter_transformers.modeling_flax_pytorch_utils import (
         convert_pytorch_state_dict_to_flax,
         load_flax_weights_in_pytorch_model,
     )
+    from flax.core.frozen_dict import unfreeze
+    from flax.traverse_util import flatten_dict
 
     os.environ["XLA_PYTHON_CLIENT_MEM_FRACTION"] = "0.12"  # assumed parallelism: 8
 

@@ -28,8 +28,8 @@ import numpy as np
 import torch
 from datasets import load_dataset
 
-import transformers
-from transformers import (
+import adapter_transformers
+from adapter_transformers import (
     AdapterConfig,
     AutoConfig,
     AutoModelForMultipleChoice,
@@ -41,11 +41,11 @@ from transformers import (
     default_data_collator,
     set_seed,
 )
-from transformers.adapters.composition import Fuse
-from transformers.file_utils import PaddingStrategy
-from transformers.tokenization_utils_base import PreTrainedTokenizerBase
-from transformers.trainer_utils import get_last_checkpoint
-from transformers.utils import check_min_version
+from adapter_transformers.adapters.composition import Fuse
+from adapter_transformers.file_utils import PaddingStrategy
+from adapter_transformers.tokenization_utils_base import PreTrainedTokenizerBase
+from adapter_transformers.trainer_utils import get_last_checkpoint
+from adapter_transformers.utils import check_min_version
 
 
 # Will error if the minimal version of Transformers is not installed. Remove at your own risks.
@@ -84,7 +84,7 @@ class ModelArguments:
     use_auth_token: bool = field(
         default=False,
         metadata={
-            "help": "Will use the token generated when running `transformers-cli login` (necessary to use this script "
+            "help": "Will use the token generated when running `adapter_transformers-cli login` (necessary to use this script "
             "with private models)."
         },
     )
@@ -153,9 +153,9 @@ class DataCollatorForMultipleChoice:
     Data collator that will dynamically pad the inputs for multiple choice received.
 
     Args:
-        tokenizer (:class:`~transformers.PreTrainedTokenizer` or :class:`~transformers.PreTrainedTokenizerFast`):
+        tokenizer (:class:`~adapter_transformers.PreTrainedTokenizer` or :class:`~adapter_transformers.PreTrainedTokenizerFast`):
             The tokenizer used for encoding the data.
-        padding (:obj:`bool`, :obj:`str` or :class:`~transformers.file_utils.PaddingStrategy`, `optional`, defaults to :obj:`True`):
+        padding (:obj:`bool`, :obj:`str` or :class:`~adapter_transformers.file_utils.PaddingStrategy`, `optional`, defaults to :obj:`True`):
             Select a strategy to pad the returned sequences (according to the model's padding side and padding index)
             among:
 
@@ -205,7 +205,7 @@ class DataCollatorForMultipleChoice:
 
 
 def main():
-    # See all possible arguments in src/transformers/training_args.py
+    # See all possible arguments in src/adapter_transformers/training_args.py
     # or by passing the --help flag to this script.
     # We now keep distinct sets of args, for a cleaner separation of concerns.
 
@@ -234,9 +234,9 @@ def main():
     )
     # Set the verbosity to info of the Transformers logger (on main process only):
     if training_args.should_log:
-        transformers.utils.logging.set_verbosity_info()
-        transformers.utils.logging.enable_default_handler()
-        transformers.utils.logging.enable_explicit_format()
+        adapter_transformers.utils.logging.set_verbosity_info()
+        adapter_transformers.utils.logging.enable_default_handler()
+        adapter_transformers.utils.logging.enable_explicit_format()
     logger.info(f"Training/evaluation parameters {training_args}")
 
     # Detecting last checkpoint.

@@ -20,7 +20,13 @@ import unittest
 
 from adapter_transformers import is_torch_available
 from adapter_transformers.file_utils import cached_property
-from adapter_transformers.testing_utils import require_sentencepiece, require_tokenizers, require_torch, slow, torch_device
+from adapter_transformers.testing_utils import (
+    require_sentencepiece,
+    require_tokenizers,
+    require_torch,
+    slow,
+    torch_device,
+)
 
 from .test_configuration_common import ConfigTester
 from .test_generation_utils import GenerationTesterMixin
@@ -30,7 +36,14 @@ from .test_modeling_common import ModelTesterMixin, ids_tensor
 if is_torch_available():
     import torch
 
-    from adapter_transformers import ByT5Tokenizer, T5Config, T5EncoderModel, T5ForConditionalGeneration, T5Model, T5Tokenizer
+    from adapter_transformers import (
+        ByT5Tokenizer,
+        T5Config,
+        T5EncoderModel,
+        T5ForConditionalGeneration,
+        T5Model,
+        T5Tokenizer,
+    )
     from adapter_transformers.models.t5.modeling_t5 import T5_PRETRAINED_MODEL_ARCHIVE_LIST
 
 

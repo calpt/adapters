@@ -36,11 +36,15 @@ if is_flax_available():
     import jax
     import jax.numpy as jnp
     import optax
+    from adapter_transformers import FLAX_MODEL_MAPPING, ByT5Tokenizer, T5Config, T5Tokenizer
+    from adapter_transformers.models.t5.modeling_flax_t5 import (
+        FlaxT5ForConditionalGeneration,
+        FlaxT5Model,
+        shift_tokens_right,
+    )
     from flax.core.frozen_dict import unfreeze
     from flax.training.common_utils import onehot
     from flax.traverse_util import flatten_dict
-    from adapter_transformers import FLAX_MODEL_MAPPING, ByT5Tokenizer, T5Config, T5Tokenizer
-    from adapter_transformers.models.t5.modeling_flax_t5 import FlaxT5ForConditionalGeneration, FlaxT5Model, shift_tokens_right
 
 
 class FlaxT5ModelTester:

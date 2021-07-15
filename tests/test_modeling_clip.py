@@ -32,7 +32,14 @@ if is_torch_available():
     import torch
     from torch import nn
 
-    from adapter_transformers import CLIPConfig, CLIPModel, CLIPTextConfig, CLIPTextModel, CLIPVisionConfig, CLIPVisionModel
+    from adapter_transformers import (
+        CLIPConfig,
+        CLIPModel,
+        CLIPTextConfig,
+        CLIPTextModel,
+        CLIPVisionConfig,
+        CLIPVisionModel,
+    )
     from adapter_transformers.models.clip.modeling_clip import CLIP_PRETRAINED_MODEL_ARCHIVE_LIST
 
 

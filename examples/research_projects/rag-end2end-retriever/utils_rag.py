@@ -15,7 +15,7 @@ import git
 import torch
 from torch.utils.data import Dataset
 
-from transformers import BartTokenizer, RagTokenizer, T5Tokenizer
+from adapter_transformers import BartTokenizer, RagTokenizer, T5Tokenizer
 
 
 def encode_line(tokenizer, line, max_length, padding_side, pad_to_max_length=True, return_tensors="pt"):

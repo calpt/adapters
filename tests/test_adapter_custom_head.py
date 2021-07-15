@@ -3,9 +3,9 @@ import unittest
 
 import torch
 
-from tests.test_modeling_common import ids_tensor
 from adapter_transformers import AutoConfig, AutoModelWithHeads
 from adapter_transformers.adapters.heads import PredictionHead
+from tests.test_modeling_common import ids_tensor
 
 
 class CustomHead(PredictionHead):

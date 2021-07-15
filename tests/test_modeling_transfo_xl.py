@@ -29,7 +29,12 @@ if is_torch_available():
     import torch
     from torch import nn
 
-    from adapter_transformers import TransfoXLConfig, TransfoXLForSequenceClassification, TransfoXLLMHeadModel, TransfoXLModel
+    from adapter_transformers import (
+        TransfoXLConfig,
+        TransfoXLForSequenceClassification,
+        TransfoXLLMHeadModel,
+        TransfoXLModel,
+    )
     from adapter_transformers.models.transfo_xl.modeling_transfo_xl import TRANSFO_XL_PRETRAINED_MODEL_ARCHIVE_LIST
 
 

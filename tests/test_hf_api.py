@@ -20,9 +20,9 @@ import subprocess
 import time
 import unittest
 
-from requests.exceptions import HTTPError
 from adapter_transformers.hf_api import HfApi, HfFolder, ModelInfo, RepoObj
 from adapter_transformers.testing_utils import ENDPOINT_STAGING, PASS, USER, is_staging_test, require_git_lfs
+from requests.exceptions import HTTPError
 
 
 ENDPOINT_STAGING_BASIC_AUTH = f"https://{USER}:{PASS}@moon-staging.huggingface.co"

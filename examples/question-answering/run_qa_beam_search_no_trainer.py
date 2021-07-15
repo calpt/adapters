@@ -31,9 +31,9 @@ from datasets import load_dataset, load_metric
 from torch.utils.data.dataloader import DataLoader
 from tqdm.auto import tqdm
 
-import transformers
+import adapter_transformers
 from accelerate import Accelerator
-from transformers import (
+from adapter_transformers import (
     AdamW,
     DataCollatorWithPadding,
     EvalPrediction,
@@ -45,8 +45,8 @@ from transformers import (
     get_scheduler,
     set_seed,
 )
-from transformers.utils import check_min_version
-from transformers.utils.versions import require_version
+from adapter_transformers.utils import check_min_version
+from adapter_transformers.utils.versions import require_version
 from utils_qa import postprocess_qa_predictions_with_beam_search
 
 
@@ -59,7 +59,7 @@ logger = logging.getLogger(__name__)
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Finetune a transformers model on a Question Answering task")
+    parser = argparse.ArgumentParser(description="Finetune a adapter_transformers model on a Question Answering task")
     parser.add_argument(
         "--dataset_name",
         type=str,
@@ -249,10 +249,10 @@ def main():
     logger.setLevel(logging.INFO if accelerator.is_local_main_process else logging.ERROR)
     if accelerator.is_local_main_process:
         datasets.utils.logging.set_verbosity_warning()
-        transformers.utils.logging.set_verbosity_info()
+        adapter_transformers.utils.logging.set_verbosity_info()
     else:
         datasets.utils.logging.set_verbosity_error()
-        transformers.utils.logging.set_verbosity_error()
+        adapter_transformers.utils.logging.set_verbosity_error()
 
     # If passed along, set the training seed now.
     if args.seed is not None:

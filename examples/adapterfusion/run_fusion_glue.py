@@ -26,7 +26,7 @@ from typing import Dict, Optional
 
 import numpy as np
 
-from transformers import (
+from adapter_transformers import (
     AdapterArguments,
     AutoConfig,
     AutoModelForSequenceClassification,
@@ -34,8 +34,8 @@ from transformers import (
     EvalPrediction,
     GlueDataset,
 )
-from transformers import GlueDataTrainingArguments as DataTrainingArguments
-from transformers import (
+from adapter_transformers import GlueDataTrainingArguments as DataTrainingArguments
+from adapter_transformers import (
     HfArgumentParser,
     Trainer,
     TrainingArguments,
@@ -70,7 +70,7 @@ class ModelArguments:
 
 
 def main():
-    # See all possible arguments in src/transformers/training_args.py
+    # See all possible arguments in src/adapter_transformers/training_args.py
     # or by passing the --help flag to this script.
     # We now keep distinct sets of args, for a cleaner separation of concerns.
 
@@ -146,7 +146,7 @@ def main():
 
     # ~~~~~ Here comes the interesting part of setting up AdapterFusion training ~~~~~
 
-    from transformers.adapters.configuration import PfeifferConfig
+    from adapter_transformers.adapters.configuration import PfeifferConfig
 
     # First, load the pre-trained adapters we want to fuse from Hub
     model.load_adapter("sentiment/sst-2@ukp", config=PfeifferConfig(), with_head=False)

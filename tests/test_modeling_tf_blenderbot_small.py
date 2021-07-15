@@ -27,7 +27,11 @@ from .test_modeling_tf_common import TFModelTesterMixin, ids_tensor
 if is_tf_available():
     import tensorflow as tf
 
-    from adapter_transformers import TFAutoModelForSeq2SeqLM, TFBlenderbotSmallForConditionalGeneration, TFBlenderbotSmallModel
+    from adapter_transformers import (
+        TFAutoModelForSeq2SeqLM,
+        TFBlenderbotSmallForConditionalGeneration,
+        TFBlenderbotSmallModel,
+    )
 
 
 @require_tf

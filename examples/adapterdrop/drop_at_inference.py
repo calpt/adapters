@@ -1,7 +1,7 @@
 # TODO: Replace this with a proper colab notebook
 import torch
 
-from src.transformers import AutoModelForSequenceClassification, AutoTokenizer
+from src.adapter_transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 
 if __name__ == "__main__":

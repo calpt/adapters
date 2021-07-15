@@ -8,7 +8,7 @@ import pytorch_lightning as pl
 from pytorch_lightning.plugins.training_type import DDPPlugin
 from pytorch_lightning.utilities import rank_zero_info
 
-from transformers import (
+from adapter_transformers import (
     AdamW,
     AutoConfig,
     AutoModel,
@@ -22,14 +22,14 @@ from transformers import (
     PretrainedConfig,
     PreTrainedTokenizer,
 )
-from transformers.optimization import (
+from adapter_transformers.optimization import (
     Adafactor,
     get_cosine_schedule_with_warmup,
     get_cosine_with_hard_restarts_schedule_with_warmup,
     get_linear_schedule_with_warmup,
     get_polynomial_decay_schedule_with_warmup,
 )
-from transformers.utils.versions import require_version
+from adapter_transformers.utils.versions import require_version
 
 
 logger = logging.getLogger(__name__)
@@ -48,7 +48,7 @@ MODEL_MODES = {
 }
 
 
-# update this and the import above to support new schedulers from transformers.optimization
+# update this and the import above to support new schedulers from adapter_transformers.optimization
 arg_to_scheduler = {
     "linear": get_linear_schedule_with_warmup,
     "cosine": get_cosine_schedule_with_warmup,

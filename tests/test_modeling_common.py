@@ -23,8 +23,6 @@ import unittest
 import warnings
 from typing import Dict, List, Tuple
 
-from huggingface_hub import HfApi
-from requests.exceptions import HTTPError
 from adapter_transformers import is_torch_available, logging
 from adapter_transformers.file_utils import WEIGHTS_NAME, is_torch_fx_available
 from adapter_transformers.models.auto import get_values
@@ -39,6 +37,8 @@ from adapter_transformers.testing_utils import (
     slow,
     torch_device,
 )
+from huggingface_hub import HfApi
+from requests.exceptions import HTTPError
 
 
 if is_torch_available():

@@ -17,7 +17,12 @@
 import unittest
 
 from adapter_transformers import is_tf_available, is_torch_available
-from adapter_transformers.testing_utils import DUMMY_UNKWOWN_IDENTIFIER, SMALL_MODEL_IDENTIFIER, is_pt_tf_cross_test, slow
+from adapter_transformers.testing_utils import (
+    DUMMY_UNKWOWN_IDENTIFIER,
+    SMALL_MODEL_IDENTIFIER,
+    is_pt_tf_cross_test,
+    slow,
+)
 
 
 if is_tf_available():

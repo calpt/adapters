@@ -28,8 +28,8 @@ import datasets
 import numpy as np
 from datasets import load_dataset, load_metric
 
-import transformers
-from transformers import (
+import adapter_transformers
+from adapter_transformers import (
     AdapterConfig,
     AutoConfig,
     AutoModelForSeq2SeqLM,
@@ -48,9 +48,9 @@ from transformers import (
     default_data_collator,
     set_seed,
 )
-from transformers.trainer_utils import get_last_checkpoint
-from transformers.utils import check_min_version
-from transformers.utils.versions import require_version
+from adapter_transformers.trainer_utils import get_last_checkpoint
+from adapter_transformers.utils import check_min_version
+from adapter_transformers.utils.versions import require_version
 
 
 # Will error if the minimal version of Transformers is not installed. Remove at your own risks.
@@ -94,7 +94,7 @@ class ModelArguments:
     use_auth_token: bool = field(
         default=False,
         metadata={
-            "help": "Will use the token generated when running `transformers-cli login` (necessary to use this script "
+            "help": "Will use the token generated when running `adapter_transformers-cli login` (necessary to use this script "
             "with private models)."
         },
     )
@@ -236,7 +236,7 @@ class DataTrainingArguments:
 
 
 def main():
-    # See all possible arguments in src/transformers/training_args.py
+    # See all possible arguments in src/adapter_transformers/training_args.py
     # or by passing the --help flag to this script.
     # We now keep distinct sets of args, for a cleaner separation of concerns.
 
@@ -262,7 +262,7 @@ def main():
     log_level = training_args.get_process_log_level()
     logger.setLevel(log_level)
     datasets.utils.logging.set_verbosity(log_level)
-    transformers.utils.logging.set_verbosity(log_level)
+    adapter_transformers.utils.logging.set_verbosity(log_level)
 
     # Log on each process the small summary:
     logger.warning(

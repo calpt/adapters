@@ -20,7 +20,13 @@ from shutil import copyfile
 
 from adapter_transformers import M2M100Tokenizer, is_torch_available
 from adapter_transformers.file_utils import is_sentencepiece_available
-from adapter_transformers.testing_utils import nested_simplify, require_sentencepiece, require_tokenizers, require_torch, slow
+from adapter_transformers.testing_utils import (
+    nested_simplify,
+    require_sentencepiece,
+    require_tokenizers,
+    require_torch,
+    slow,
+)
 
 
 if is_sentencepiece_available():

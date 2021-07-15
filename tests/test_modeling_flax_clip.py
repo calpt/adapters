@@ -18,7 +18,11 @@ if is_flax_available():
         convert_pytorch_state_dict_to_flax,
         load_flax_weights_in_pytorch_model,
     )
-    from adapter_transformers.models.clip.modeling_flax_clip import FlaxCLIPModel, FlaxCLIPTextModel, FlaxCLIPVisionModel
+    from adapter_transformers.models.clip.modeling_flax_clip import (
+        FlaxCLIPModel,
+        FlaxCLIPTextModel,
+        FlaxCLIPVisionModel,
+    )
 
 if is_torch_available():
     import torch

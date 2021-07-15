@@ -20,7 +20,13 @@ import unittest
 from adapter_transformers import is_torch_available
 from adapter_transformers.file_utils import cached_property
 from adapter_transformers.hf_api import HfApi
-from adapter_transformers.testing_utils import require_sentencepiece, require_tokenizers, require_torch, slow, torch_device
+from adapter_transformers.testing_utils import (
+    require_sentencepiece,
+    require_tokenizers,
+    require_torch,
+    slow,
+    torch_device,
+)
 
 from .test_configuration_common import ConfigTester
 from .test_generation_utils import GenerationTesterMixin

@@ -20,8 +20,8 @@ from pickle import UnpicklingError
 
 import numpy as np
 
-import jax.numpy as jnp
 import adapter_transformers
+import jax.numpy as jnp
 from flax.serialization import from_bytes
 from flax.traverse_util import flatten_dict, unflatten_dict
 
