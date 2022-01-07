@@ -33,6 +33,7 @@ from ...adapters.models.bart import (
     BartModelAdaptersMixin,
     BartModelHeadsMixin,
 )
+from ...adapters.prefix_tuning import PrefixTuningLayer
 from ...file_utils import (
     ModelOutput,
     add_code_sample_docstrings,
@@ -137,6 +138,7 @@ class BartAttention(nn.Module):
 
     def __init__(
         self,
+        config: BartConfig,
         embed_dim: int,
         num_heads: int,
         dropout: float = 0.0,
@@ -161,6 +163,8 @@ class BartAttention(nn.Module):
         self.v_proj = nn.Linear(embed_dim, embed_dim, bias=bias)
         self.q_proj = nn.Linear(embed_dim, embed_dim, bias=bias)
         self.out_proj = nn.Linear(embed_dim, embed_dim, bias=bias)
+
+        self.prefix_tuning = PrefixTuningLayer(config)
 
     def _shape(self, tensor: torch.Tensor, seq_len: int, bsz: int):
         return tensor.view(bsz, seq_len, self.num_heads, self.head_dim).transpose(1, 2).contiguous()
@@ -217,6 +221,8 @@ class BartAttention(nn.Module):
         query_states = self._shape(query_states, tgt_len, bsz).view(*proj_shape)
         key_states = key_states.view(*proj_shape)
         value_states = value_states.view(*proj_shape)
+
+        key_states, values_states, attention_mask = self.prefix_tuning(key_states, value_states, attention_mask)
 
         src_len = key_states.size(1)
         attn_weights = torch.bmm(query_states, key_states.transpose(1, 2))
@@ -279,6 +285,7 @@ class BartEncoderLayer(BartEncoderLayerAdaptersMixin, nn.Module):
 
         self.embed_dim = config.d_model
         self.self_attn = BartAttention(
+            config,
             embed_dim=self.embed_dim,
             num_heads=config.encoder_attention_heads,
             dropout=config.attention_dropout,
@@ -350,6 +357,7 @@ class BartDecoderLayer(BartDecoderLayerAdaptersMixin, nn.Module):
         self.embed_dim = config.d_model
 
         self.self_attn = BartAttention(
+            config,
             embed_dim=self.embed_dim,
             num_heads=config.decoder_attention_heads,
             dropout=config.attention_dropout,
@@ -361,6 +369,7 @@ class BartDecoderLayer(BartDecoderLayerAdaptersMixin, nn.Module):
 
         self.self_attn_layer_norm = nn.LayerNorm(self.embed_dim)
         self.encoder_attn = BartAttention(
+            config,
             self.embed_dim,
             config.decoder_attention_heads,
             dropout=config.attention_dropout,

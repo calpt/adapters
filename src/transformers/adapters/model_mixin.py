@@ -11,10 +11,16 @@ from torch import nn
 
 from ..models.auto.tokenization_auto import AutoTokenizer
 from .composition import AdapterCompositionBlock, Fuse, Stack, parse_composition
-from .configuration import AdapterConfig, AdapterFusionConfig, ModelAdaptersConfig, get_adapter_config_hash
+from .configuration import (
+    AdapterConfig,
+    AdapterConfigBase,
+    AdapterFusionConfig,
+    ModelAdaptersConfig,
+    get_adapter_config_hash,
+)
 from .context import AdapterSetup
 from .hub_mixin import PushAdapterToHubMixin
-from .layer import AdapterLayer
+from .layer import AdapterLayer, AdapterLayerBase
 from .loading import AdapterFusionLoader, AdapterLoader, PredictionHeadLoader, WeightsLoader
 from .modeling import Adapter, GLOWCouplingBlock, NICECouplingBlock
 from .utils import EMBEDDING_FILE, TOKENIZER_PATH, inherit_doc
@@ -40,7 +46,7 @@ class InvertibleAdaptersMixin:
         """
         if adapter_name in self.invertible_adapters:
             raise ValueError(f"Model already contains an adapter module for '{adapter_name}'.")
-        adapter_config = self.config.adapters.get(adapter_name)
+        adapter_config = self.config.adapters.match(adapter_name, config_type=AdapterConfig)
         if adapter_config and adapter_config["inv_adapter"]:
             if adapter_config["inv_adapter"] == "nice":
                 inv_adap = NICECouplingBlock(
@@ -157,7 +163,7 @@ class ModelAdaptersMixin(PushAdapterToHubMixin, ABC):
         """
         for i, layer in self.iter_layers():
             for module in layer.modules():
-                if isinstance(module, AdapterLayer):
+                if isinstance(module, AdapterLayerBase):
                     fn(i, module)
 
     def train_adapter(self, adapter_setup: Union[list, AdapterCompositionBlock], train_embeddings=False):
@@ -237,7 +243,7 @@ class ModelAdaptersMixin(PushAdapterToHubMixin, ABC):
         Args:
 
             adapter_name (str): The name of the adapter module to be added.
-            config (str or dict or AdapterConfig, optional): The adapter configuration, can be either:
+            config (str or dict or AdapterConfigBase, optional): The adapter configuration, can be either:
 
                 - the string identifier of a pre-defined configuration dictionary
                 - a configuration dictionary specifying the full config
@@ -246,7 +252,7 @@ class ModelAdaptersMixin(PushAdapterToHubMixin, ABC):
             set_active (bool, optional): Set the adapter to be the active one. By default (False), the adapter is added but not activated.
         """
         if isinstance(config, dict):
-            config = AdapterConfig.from_dict(config)  # ensure config is ok and up-to-date
+            config = AdapterConfigBase.load(config)  # ensure config is ok and up-to-date
         # In case adapter already exists and we allow overwriting, explicitly delete the existing one first
         if overwrite_ok and adapter_name in self.config.adapters:
             self.delete_adapter(adapter_name)
@@ -703,6 +709,7 @@ class ModelAdaptersMixin(PushAdapterToHubMixin, ABC):
         return reg_loss
 
     def get_adapter(self, name):
+        # TODO-AH: make this method work for prefix tuning
         destination = defaultdict(dict)
 
         # use a custom index to ensure numbering is from 0 to N layers
