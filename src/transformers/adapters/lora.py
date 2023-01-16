@@ -11,7 +11,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from ..configuration_utils import PretrainedConfig
-from .composition import AdapterCompositionBlock
+from .composition import AdapterCompositionBlock, Stack
 from .configuration import LoRAConfig
 from .layer import AdapterLayerBase
 
@@ -35,6 +35,11 @@ class LoRA(nn.Module):
             self.lora_dropout = nn.Dropout(p=config.dropout)
         else:
             self.lora_dropout = lambda x: x
+
+        if hasattr(config, "stacking_mode"):
+            self.stacking_mode = config.stacking_mode
+        else:
+            self.stacking_mode = None
 
         # Actual trainable parameters
         if self.r > 1 and self.composition_mode == "scale":
@@ -245,6 +250,23 @@ class Linear(LoRALayer, nn.Linear):
                             gate = None
                         result = lora.com(result, delta_w, scaling=gate)
                     return result
+                elif isinstance(adapter_setup, Stack):
+                    result = F.linear(x, T(self.weight), bias=self.bias)
+                    delta_w = None
+                    for ia3_name in adapter_setup:
+                        ia3 = self.loras[ia3_name]
+                        if not ia3.composition_mode == "scale":
+                            raise ValueError("Invalid adapter setup.")
+                        if delta_w is None:
+                            delta_w = ia3.lora_B.view(1, 1, -1)
+                        else:
+                            if ia3.stacking_mode == "add":
+                                delta_w =delta_w + ia3.lora_B.view(1, 1, -1)
+                            elif ia3.stacking_mode == "mul":
+                                delta_w =delta_w * ia3.lora_B.view(1, 1, -1)
+                            else:
+                                raise ValueError(f"Invalid stacking mode {ia3.stacking_mode}.")
+                    result = ia3.com(result, delta_w)
                 else:
                     raise ValueError(f"Invalid adapter setup. Cannot use {adapter_setup} with LoRA.")
 

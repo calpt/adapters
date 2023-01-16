@@ -8,6 +8,7 @@ from transformers import (
     BertForSequenceClassification,
     PfeifferConfig,
     PrefixTuningConfig,
+    IA3Config,
 )
 from transformers.adapters.composition import BatchSplit, Fuse, Parallel, Split, Stack, parse_composition
 from transformers.testing_utils import require_torch, torch_device
@@ -217,3 +218,10 @@ class PrefixTuningCompositionTest(AdapterCompositionTest):
 
     def get_adapter_config(self):
         return PrefixTuningConfig()
+
+
+class IA3CompositionTest(AdapterCompositionTest):
+    unsupported_blocks = [Split, Fuse]
+
+    def get_adapter_config(self):
+        return IA3Config()
