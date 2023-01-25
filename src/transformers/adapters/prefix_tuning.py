@@ -4,7 +4,7 @@ import torch
 from torch import nn
 
 from ..modeling_utils import ModuleUtilsMixin
-from .composition import AdapterCompositionBlock
+from .composition import AdapterCompositionBlock, adjust_tensors_for_parallel
 from .configuration import PrefixTuningConfig
 from .context import AdapterSetup, ForwardContext
 from .layer import AdapterLayerBase
@@ -333,6 +333,9 @@ class PrefixTuningShim(AdapterLayerBase, nn.Module):
                         gate_output_value = gate_output[:, -1].view(-1, 1, 1, 1)
                         prefix_keys = prefix_keys * gate_output_key
                         prefix_values = prefix_values * gate_output_value
+
+                    # replicate for Parallel block
+                    prefix_keys, prefix_values = adjust_tensors_for_parallel(key_states, prefix_keys, prefix_values)
 
                     key_states = torch.cat([prefix_keys, key_states], dim=2)
                     value_states = torch.cat([prefix_values, value_states], dim=2)
