@@ -1,7 +1,6 @@
 import logging
 import os
 import warnings
-from abc import ABC, abstractmethod
 from collections import defaultdict
 from os.path import join
 from typing import Iterable, List, Optional, Tuple, Union
@@ -19,6 +18,7 @@ from .configuration import (
 )
 from .context import AdapterSetup, ForwardContext
 from .hub_mixin import PushAdapterToHubMixin
+from .interfaces import AdaptersInterface
 from .layer import AdapterLayer, AdapterLayerBase
 from .loading import AdapterFusionLoader, AdapterLoader, PredictionHeadLoader, WeightsLoader
 from .lora import LoRALayer
@@ -262,7 +262,7 @@ class EmbeddingAdaptersWrapperMixin:
         return self.base_model.loaded_embeddings
 
 
-class ModelAdaptersMixin(PushAdapterToHubMixin, ABC):
+class ModelAdaptersMixin(PushAdapterToHubMixin, AdaptersInterface):
     """Mixin for transformer models adding support for loading/ saving adapters."""
 
     def __init__(self, config, *args, **kwargs):
@@ -298,17 +298,6 @@ class ModelAdaptersMixin(PushAdapterToHubMixin, ABC):
 
         if isinstance(self, EmbeddingAdaptersMixin):
             self.loaded_embeddings["default"] = self.get_input_embeddings()
-
-    # These methods have to be implemented by every deriving class:
-
-    @abstractmethod
-    def iter_layers(self) -> Iterable[Tuple[int, nn.Module]]:
-        """
-        Iterates over all layers of the model.
-
-        This abstract method has to ne implemented by every implementing model.
-        """
-        pass
 
     def apply_to_adapter_layers(self, fn):
         """
@@ -408,17 +397,16 @@ class ModelAdaptersMixin(PushAdapterToHubMixin, ABC):
         Adds a new adapter module of the specified type to the model.
 
         Args:
-            adapter_name (str): The name of the adapter module to be added. config (str or dict or AdapterConfigBase,
-            optional): The adapter configuration, can be either:
+            adapter_name (str): The name of the adapter module to be added.
+            config (str or dict or AdapterConfigBase, optional): The adapter configuration, can be either:
 
                 - the string identifier of a pre-defined configuration dictionary
                 - a configuration dictionary specifying the full config
                 - if not given, the default configuration for this adapter type will be used
             overwrite_ok (bool, optional):
-                Overwrite an adapter with the same name if it exists. By default (False), an
-            exception is thrown. set_active (bool, optional):
-                Set the adapter to be the active one. By default (False),
-            the adapter is added but not activated.
+                Overwrite an adapter with the same name if it exists. By default (False), an exception is thrown.
+            set_active (bool, optional):
+                Set the adapter to be the active one. By default (False), the adapter is added but not activated.
         """
         if isinstance(config, dict):
             config = AdapterConfigBase.load(config)  # ensure config is ok and up-to-date
