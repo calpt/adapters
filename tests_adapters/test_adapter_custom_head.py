@@ -3,9 +3,10 @@ import unittest
 
 import torch
 
+from adapter_transformers import AutoAdapterModel
+from adapter_transformers.heads import ClassificationHead, PredictionHead
 from tests.test_modeling_common import ids_tensor
-from transformers import AutoAdapterModel, AutoConfig
-from transformers.adapters.heads import ClassificationHead, PredictionHead
+from transformers import AutoConfig
 from transformers.testing_utils import require_torch, torch_device
 
 
@@ -67,7 +68,7 @@ class AdapterCustomHeadTest(unittest.TestCase):
         self.assertEqual(output1[0].size(), output2[0].size())
         state1 = model1.heads["custom_head"].state_dict()
         state2 = model2.heads["custom_head"].state_dict()
-        for ((k1, v1), (k2, v2)) in zip(state1.items(), state2.items()):
+        for (k1, v1), (k2, v2) in zip(state1.items(), state2.items()):
             self.assertTrue(torch.equal(v1, v2))
 
     def test_builtin_head_as_custom(self):

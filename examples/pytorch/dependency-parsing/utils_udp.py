@@ -15,8 +15,8 @@ from torch.utils.data import DataLoader
 from torch.utils.data.dataset import Dataset
 from tqdm import tqdm
 
+from adapter_transformers import AdapterTrainer
 from transformers import (
-    AdapterTrainer,
     DataCollator,
     EvalPrediction,
     PreTrainedModel,

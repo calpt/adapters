@@ -3,16 +3,16 @@ import random
 
 import torch
 
-from transformers import (
-    MODEL_FOR_SEQUENCE_CLASSIFICATION_MAPPING,
+from adapter_transformers import (
+    ADAPTER_MODEL_MAPPING,
     AutoAdapterModel,
+    PfeifferConfig,
+    PrefixTuningConfig,
     T5AdapterModel,
-    Trainer,
-    TrainingArguments,
 )
-from transformers.adapters import ADAPTER_MODEL_MAPPING, PfeifferConfig, PrefixTuningConfig
-from transformers.adapters.models.bert_generation.adapter_model import BertGenerationAdapterModel
-from transformers.adapters.composition import BatchSplit, Parallel
+from adapter_transformers.composition import BatchSplit, Parallel
+from adapter_transformers.models.bert_generation.adapter_model import BertGenerationAdapterModel
+from transformers import MODEL_FOR_SEQUENCE_CLASSIFICATION_MAPPING, Trainer, TrainingArguments
 from transformers.testing_utils import require_torch, torch_device
 
 
@@ -223,8 +223,12 @@ class ParallelTrainingMixin:
         trainer.train()
 
         # check that the weights of the adapters have changed
-        self.assertTrue(any([not torch.equal(v, state_dict_pre[k]) for k, v in model.state_dict().items() if "mrpc" in k]))
-        self.assertTrue(all(torch.equal(v, state_dict_pre[k]) for k, v in model.state_dict().items() if "mrpc" not in k))
+        self.assertTrue(
+            any([not torch.equal(v, state_dict_pre[k]) for k, v in model.state_dict().items() if "mrpc" in k])
+        )
+        self.assertTrue(
+            all(torch.equal(v, state_dict_pre[k]) for k, v in model.state_dict().items() if "mrpc" not in k)
+        )
 
     def run_parallel_training_equivalent_to_single(self, adapter_config):
         model = AutoAdapterModel.from_config(self.config())

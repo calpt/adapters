@@ -1,5 +1,5 @@
+from adapter_transformers import MBartAdapterModel
 from tests.models.mbart.test_modeling_mbart import *
-from transformers import MBartAdapterModel
 from transformers.testing_utils import require_torch
 
 from .base import AdapterModelTesterMixin

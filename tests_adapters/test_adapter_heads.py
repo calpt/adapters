@@ -3,8 +3,9 @@ import tempfile
 
 import torch
 
-from transformers import ADAPTER_MODEL_MAPPING, AdapterSetup, AutoAdapterModel, AutoModelForSequenceClassification
-from transformers.adapters.composition import BatchSplit, Stack
+from adapter_transformers import ADAPTER_MODEL_MAPPING, AdapterSetup, AutoAdapterModel
+from adapter_transformers.composition import BatchSplit, Stack
+from transformers import AutoModelForSequenceClassification
 from transformers.testing_utils import require_torch, torch_device
 
 from .methods import create_twin_models
@@ -138,7 +139,7 @@ class PredictionHeadModelTestMixin:
         input_ids = self.get_input_samples((1, self.seq_length), config=model1.config)["input_ids"]
         input_ids = input_ids.to(torch_device)
         generated = model1.generate(input_ids, max_length=seq_output_length)
-        self.assertEqual(generated.shape[0], 1) 
+        self.assertEqual(generated.shape[0], 1)
         self.assertLessEqual(generated.shape[1], seq_output_length)
 
     def test_seq2seq_lm_head(self):

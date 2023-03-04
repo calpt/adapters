@@ -4,8 +4,10 @@ from tempfile import TemporaryDirectory
 
 import torch
 
+from adapter_transformers import AutoAdapterModel
+from adapter_transformers.composition import Fuse, Stack
+from adapter_transformers.trainer import AdapterTrainer, logger
 from transformers import (
-    AutoAdapterModel,
     AutoModelForSequenceClassification,
     AutoTokenizer,
     BertConfig,
@@ -15,9 +17,7 @@ from transformers import (
     Trainer,
     TrainingArguments,
 )
-from transformers.adapters.composition import Fuse, Stack
-from transformers.adapters.trainer import AdapterTrainer, logger
-from transformers.testing_utils import slow, require_ray
+from transformers.testing_utils import require_ray, slow
 
 
 class TestAdapterTrainer(unittest.TestCase):
@@ -74,7 +74,7 @@ class TestAdapterTrainer(unittest.TestCase):
 
         self.assertEqual(model.config.adapters.adapters, model_resume.config.adapters.adapters)
 
-        for ((k1, v1), (k2, v2)) in zip(trainer.model.state_dict().items(), trainer_resume.model.state_dict().items()):
+        for (k1, v1), (k2, v2) in zip(trainer.model.state_dict().items(), trainer_resume.model.state_dict().items()):
             self.assertEqual(k1, k2)
             if "adapter" in k1:
                 self.assertTrue(torch.equal(v1, v2), k1)
@@ -124,7 +124,7 @@ class TestAdapterTrainer(unittest.TestCase):
 
         self.assertEqual(model.config.adapters.adapters, model_resume.config.adapters.adapters)
 
-        for ((k1, v1), (k2, v2)) in zip(
+        for (k1, v1), (k2, v2) in zip(
             trainer.model.to("cpu").state_dict().items(), trainer_resume.model.to("cpu").state_dict().items()
         ):
             self.assertEqual(k1, k2)
@@ -317,7 +317,7 @@ class TestAdapterTrainer(unittest.TestCase):
             self.assertEqual("dummy", model.active_head)
             self.assertEqual(model.config.adapters.adapters, model_resume.config.adapters.adapters)
 
-            for ((k1, v1), (k2, v2)) in zip(
+            for (k1, v1), (k2, v2) in zip(
                 trainer.model.to("cpu").state_dict().items(), trainer_resume.model.to("cpu").state_dict().items()
             ):
                 self.assertEqual(k1, k2)

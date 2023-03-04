@@ -31,6 +31,7 @@ from datasets import load_dataset
 
 import evaluate
 import transformers
+from adapter_transformers import AdapterArguments, Seq2SeqAdapterTrainer, setup_adapter_training
 from filelock import FileLock
 from transformers import (
     AutoConfig,
@@ -47,7 +48,6 @@ from transformers import (
     Seq2SeqTrainingArguments,
     set_seed,
 )
-from transformers.adapters import AdapterArguments, Seq2SeqAdapterTrainer, setup_adapter_training
 from transformers.trainer_utils import get_last_checkpoint
 from transformers.utils import check_min_version, is_offline_mode
 from transformers.utils.versions import require_version

@@ -1,4 +1,4 @@
-from transformers.adapters import ADAPTER_MODEL_MAPPING, AutoAdapterModel, CompacterPlusPlusConfig
+from adapter_transformers import ADAPTER_MODEL_MAPPING, AutoAdapterModel, CompacterPlusPlusConfig
 from transformers.testing_utils import require_torch, torch_device
 
 from .base import AdapterMethodBaseTestMixin
@@ -32,7 +32,9 @@ class CompacterTestMixin(AdapterMethodBaseTestMixin):
         self.run_load_test(CompacterPlusPlusConfig(phm_dim=2, reduction_factor=8))
 
     def test_train_shared_w_compacter(self):
-        adapter_config = CompacterPlusPlusConfig(phm_dim=2, shared_W_phm=True, shared_phm_rule=False, reduction_factor=8)
+        adapter_config = CompacterPlusPlusConfig(
+            phm_dim=2, shared_W_phm=True, shared_phm_rule=False, reduction_factor=8
+        )
         self.run_train_test(adapter_config, ["adapters.{name}."])
 
     def test_train_shared_phm_compacter(self):

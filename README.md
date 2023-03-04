@@ -14,6 +14,32 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
+## Self-Contained `adapter-transformers`
+
+This branch disentangles `adapter-transformers` from HF Transformers and adds Transformers as an external dependency.
+
+### Breaking
+
+- All `adapter-transformers` classes now have to imported via `adapter_transformers` namespace
+
+### TODO
+
+Features not yet working:
+
+- Auto classes for static head model classes with adapters
+- Text generation with adapters
+- Using Transformers pipelines with adapters
+
+Tasks to do for first usable version:
+
+- Remove utils folder and use utils of HF
+- Make all tests passing
+- Update example scripts w. breaking changes
+- Update docs w. breaking changes
+- Update contributing guides for new code structure
+
+---
+
 <p align="center">
 <img style="vertical-align:middle" src="https://raw.githubusercontent.com/Adapter-Hub/adapter-transformers/master/adapter_docs/logo.png" />
 </p>

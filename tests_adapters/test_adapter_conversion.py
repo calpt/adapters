@@ -4,6 +4,7 @@ import tempfile
 
 import torch
 
+from adapter_transformers import AutoAdapterModel
 from transformers import (
     MODEL_FOR_CAUSAL_LM_MAPPING,
     MODEL_FOR_IMAGE_CLASSIFICATION_MAPPING,
@@ -14,7 +15,6 @@ from transformers import (
     MODEL_FOR_SEQUENCE_CLASSIFICATION_MAPPING,
     MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING,
     AlbertPreTrainedModel,
-    AutoAdapterModel,
     BertPreTrainedModel,
     RobertaPreTrainedModel,
 )

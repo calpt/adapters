@@ -1,6 +1,6 @@
 import torch
 
-from transformers.adapters import LoRAConfig
+from adapter_transformers import LoRAConfig
 from transformers.testing_utils import require_torch, torch_device
 
 from .base import AdapterMethodBaseTestMixin
@@ -8,7 +8,6 @@ from .base import AdapterMethodBaseTestMixin
 
 @require_torch
 class LoRATestMixin(AdapterMethodBaseTestMixin):
-
     def test_add_lora(self):
         model = self.get_model()
         self.run_add_test(model, LoRAConfig(), ["loras.{name}."])

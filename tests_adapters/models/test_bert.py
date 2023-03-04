@@ -1,5 +1,5 @@
+from adapter_transformers import BertAdapterModel
 from tests.models.bert.test_modeling_bert import *
-from transformers import BertAdapterModel
 from transformers.testing_utils import require_torch
 
 from .base import AdapterModelTesterMixin

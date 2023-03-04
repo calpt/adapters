@@ -4,8 +4,8 @@ import tempfile
 
 import torch
 
+from adapter_transformers import PfeifferConfig, __version__
 from tests_adapters.methods import create_twin_models
-from transformers.adapters import PfeifferConfig, __version__
 from transformers.testing_utils import require_torch, torch_device
 
 
@@ -32,7 +32,9 @@ class CompabilityTestMixin:
 
         # check if adapter was correctly loaded
         self.assertTrue(name in model2.config.adapters)
-        self.assertEqual("gelu", model2.config.adapters.config_map[model2.config.adapters.adapters[name]]["non_linearity"])
+        self.assertEqual(
+            "gelu", model2.config.adapters.config_map[model2.config.adapters.adapters[name]]["non_linearity"]
+        )
 
     def test_save_version_with_adapter(self):
         model = self.get_model()

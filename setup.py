@@ -1,4 +1,4 @@
-# Copyright 2021 The HuggingFace Team and the AdapterHub Team. All rights reserved.
+# Copyright 2020 The AdapterHub Team. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -178,6 +178,7 @@ _deps = [
     "tokenizers>=0.11.1,!=0.11.3,<0.14",
     "torch>=1.7,!=1.12.0",
     "torchaudio",
+    "transformers==4.26.1",
     "pyctcdecode>=0.4.0",
     "tqdm>=4.27",
     "unidic>=1.0.2",
@@ -427,12 +428,13 @@ install_requires = [
     deps["requests"],  # for downloading models over HTTPS
     deps["tokenizers"],
     deps["tqdm"],  # progress bars in model download and training scripts
+    deps["transformers"],
 ]
 
 setup(
     name="adapter-transformers",
-    version="3.2.0",
-    author="Jonas Pfeiffer, Andreas Rücklé, Clifton Poth, Hannah Sterz, Leon Engländer, based on work by the HuggingFace team and community",
+    version="4.0.0a0",
+    author="Jonas Pfeiffer, Andreas Rücklé, Clifton Poth, Hannah Sterz, Leon Engländer and community contributors",
     author_email="pfeiffer@ukp.tu-darmstadt.de",
     description="A friendly fork of HuggingFace's Transformers, adding Adapters to PyTorch language models",
     long_description=open("README.md", "r", encoding="utf-8").read(),

@@ -26,6 +26,9 @@ from os.path import abspath, dirname, join
 git_repo_path = abspath(join(dirname(__file__), "src"))
 sys.path.insert(1, git_repo_path)
 
+# add original HF tests folder
+sys.path.insert(1, abspath(join(dirname(__file__), "hf_transformers")))
+
 # silence FutureWarning warnings in tests since often we can't act on them until
 # they become normal warnings - i.e. the tests still need to test the current functionality
 warnings.simplefilter(action="ignore", category=FutureWarning)

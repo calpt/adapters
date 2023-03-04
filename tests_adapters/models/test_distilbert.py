@@ -1,5 +1,5 @@
+from adapter_transformers import DistilBertAdapterModel
 from tests.models.distilbert.test_modeling_distilbert import *
-from transformers import DistilBertAdapterModel
 from transformers.testing_utils import require_torch
 
 from .base import AdapterModelTesterMixin

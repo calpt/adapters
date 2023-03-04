@@ -4,9 +4,8 @@ CIFAR-10 demo data, adapted from https://huggingface.co/datasets/cifar10.
 import os
 import pickle
 
-import numpy as np
-
 import datasets
+import numpy as np
 
 
 class Cifar10(datasets.GeneratorBasedBuilder):

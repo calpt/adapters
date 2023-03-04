@@ -3,12 +3,12 @@ import tempfile
 
 import torch
 
-from transformers import (
+from adapter_transformers import (
     ADAPTER_CONFIG_MAP,
     ADAPTER_MODEL_MAPPING,
-    MODEL_FOR_SEQ_TO_SEQ_CAUSAL_LM_MAPPING,
     AutoAdapterModel,
-    AutoTokenizer,
+    BatchSplit,
+    Fuse,
     HoulsbyConfig,
     HoulsbyInvConfig,
     InvertibleAdaptersMixin,
@@ -16,8 +16,8 @@ from transformers import (
     PfeifferConfig,
     PfeifferInvConfig,
 )
-from transformers.adapters import BatchSplit, Fuse
-from transformers.adapters.heads.language_modeling import CausalLMHead
+from adapter_transformers.heads.language_modeling import CausalLMHead
+from transformers import MODEL_FOR_SEQ_TO_SEQ_CAUSAL_LM_MAPPING, AutoTokenizer
 from transformers.testing_utils import require_torch, torch_device
 
 from .base import AdapterMethodBaseTestMixin, create_twin_models
@@ -325,22 +325,25 @@ class BottleneckAdapterTestMixin(AdapterMethodBaseTestMixin):
 
         self.trainings_run(model)
         self.assertTrue(regularization_called)
+
         def has_tied_embeddings(k):
-            tied_embeddings = hasattr(model.config, "tie_word_embeddings") and model.config.tie_word_embeddings 
-            is_tied_layer = isinstance(model.heads["head"], CausalLMHead) and 'heads.{}.{}.weight'.format("head", len(model.heads["head"]._modules)-1) in k
+            tied_embeddings = hasattr(model.config, "tie_word_embeddings") and model.config.tie_word_embeddings
+            is_tied_layer = (
+                isinstance(model.heads["head"], CausalLMHead)
+                and "heads.{}.{}.weight".format("head", len(model.heads["head"]._modules) - 1) in k
+            )
             return tied_embeddings and is_tied_layer
 
         # check that the adapters have changed, but the base model has not
         adapters_with_change, base_with_change = False, False
-        for ((k1, v1), (k2, v2)) in zip(state_dict_pre.items(), model.state_dict().items()):
+        for (k1, v1), (k2, v2) in zip(state_dict_pre.items(), model.state_dict().items()):
             if (
-                ("adapter_fusion_layer" in k1
+                "adapter_fusion_layer" in k1
                 or "classifier" in k1
                 or "classification_head" in k1
                 or "score" in k1
-                or "head" in k1)
-                and not has_tied_embeddings(k1)
-            ):
+                or "head" in k1
+            ) and not has_tied_embeddings(k1):
                 adapters_with_change |= not torch.equal(v1, v2)
             else:
                 base_with_change |= not torch.equal(v1, v2)
@@ -376,7 +379,7 @@ class BottleneckAdapterTestMixin(AdapterMethodBaseTestMixin):
 
         # check that the adapters have changed, but the base model has not
         adapters_with_change, base_with_change = False, False
-        for ((k1, v1), (k2, v2)) in zip(state_dict_pre.items(), model.state_dict().items()):
+        for (k1, v1), (k2, v2) in zip(state_dict_pre.items(), model.state_dict().items()):
             if "mrpc" in k1:
                 adapters_with_change |= not torch.equal(v1, v2)
             else:

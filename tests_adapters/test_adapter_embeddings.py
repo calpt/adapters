@@ -3,7 +3,8 @@ import tempfile
 
 import torch
 
-from transformers import AutoAdapterModel, AutoTokenizer, Trainer, TrainingArguments
+from adapter_transformers import AutoAdapterModel
+from transformers import AutoTokenizer, Trainer, TrainingArguments
 from transformers.testing_utils import require_torch, torch_device
 
 
@@ -106,7 +107,7 @@ class EmbeddingTestMixin:
             max_steps=15,
             no_cuda=True,
             per_device_train_batch_size=2,
-            label_names=['labels']
+            label_names=["labels"],
         )
 
         # evaluate

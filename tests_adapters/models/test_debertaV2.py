@@ -1,5 +1,5 @@
+from adapter_transformers import DebertaV2AdapterModel
 from tests.models.deberta_v2.test_modeling_deberta_v2 import *
-from transformers import DebertaV2AdapterModel
 from transformers.testing_utils import require_torch
 
 from .base import AdapterModelTesterMixin

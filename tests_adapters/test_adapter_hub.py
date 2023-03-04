@@ -3,22 +3,19 @@ import unittest
 
 import numpy as np
 
+from adapter_transformers import ADAPTER_CONFIG_MAP, AdapterConfig, BertAdapterModel, get_adapter_config_hash
+from adapter_transformers.trainer import AdapterTrainer as Trainer
+from adapter_transformers.utils import find_in_index
 from tests.test_modeling_common import ids_tensor
 from transformers import (  # get_adapter_config_hash,
-    ADAPTER_CONFIG_MAP,
-    AdapterConfig,
     AutoModel,
     AutoTokenizer,
-    BertAdapterModel,
     BertForSequenceClassification,
     GlueDataset,
     GlueDataTrainingArguments,
     TrainingArguments,
-    get_adapter_config_hash,
     glue_compute_metrics,
 )
-from transformers.adapters.trainer import AdapterTrainer as Trainer
-from transformers.adapters.utils import find_in_index
 from transformers.testing_utils import require_torch, torch_device
 
 

@@ -1,5 +1,5 @@
+from adapter_transformers import RobertaAdapterModel
 from tests.models.roberta.test_modeling_roberta import *
-from transformers import RobertaAdapterModel
 from transformers.testing_utils import require_torch
 
 from .base import AdapterModelTesterMixin

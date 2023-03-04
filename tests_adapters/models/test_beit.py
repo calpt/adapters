@@ -1,5 +1,5 @@
+from adapter_transformers import BeitAdapterModel
 from tests.models.beit.test_modeling_beit import *
-from transformers import BeitAdapterModel
 from transformers.testing_utils import require_torch
 
 from .base import AdapterModelTesterMixin

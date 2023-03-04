@@ -3,7 +3,14 @@ import unittest
 from transformers import XLMRobertaConfig
 from transformers.testing_utils import require_torch
 
-from .methods import BottleneckAdapterTestMixin, UniPELTTestMixin, CompacterTestMixin, IA3TestMixin, LoRATestMixin, PrefixTuningTestMixin
+from .methods import (
+    BottleneckAdapterTestMixin,
+    CompacterTestMixin,
+    IA3TestMixin,
+    LoRATestMixin,
+    PrefixTuningTestMixin,
+    UniPELTTestMixin,
+)
 from .test_adapter import AdapterTestBase, make_config
 from .test_adapter_conversion import ModelClassConversionTestMixin
 from .test_adapter_fusion_common import AdapterFusionModelTestMixin

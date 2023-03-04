@@ -2,17 +2,17 @@ import json
 import unittest
 from dataclasses import FrozenInstanceError, dataclass
 
-from transformers import (
+from adapter_transformers import (
     ADAPTER_CONFIG_MAP,
     AdapterConfig,
     AdapterConfigBase,
     ConfigUnion,
     HoulsbyConfig,
+    LoRAConfig,
     MAMConfig,
     ParallelConfig,
     PfeifferConfig,
     PrefixTuningConfig,
-    LoRAConfig,
 )
 from transformers.testing_utils import require_torch
 
@@ -94,12 +94,20 @@ class AdapterConfigTest(unittest.TestCase):
         to_test = [
             ("houlsby", HoulsbyConfig()),
             ("pfeiffer[reduction_factor=2, leave_out=[11]]", PfeifferConfig(reduction_factor=2, leave_out=[11])),
-            ("parallel[reduction_factor={'0': 8, '1': 8, 'default': 16}]", ParallelConfig(reduction_factor={"0": 8, "1": 8, "default": 16})),
+            (
+                "parallel[reduction_factor={'0': 8, '1': 8, 'default': 16}]",
+                ParallelConfig(reduction_factor={"0": 8, "1": 8, "default": 16}),
+            ),
             ("prefix_tuning[prefix_length=30, flat=True]", PrefixTuningConfig(prefix_length=30, flat=True)),
             ("lora[r=200,alpha=8]", LoRAConfig(r=200, alpha=8)),
             ("prefix_tuning|parallel", ConfigUnion(PrefixTuningConfig(), ParallelConfig())),
             ("lora[attn_matrices=['k', 'v']]", LoRAConfig(attn_matrices=["k", "v"])),
-            ("lora[use_gating=True]|prefix_tuning[use_gating=True]|pfeiffer[use_gating=True]", ConfigUnion(LoRAConfig(use_gating=True), PrefixTuningConfig(use_gating=True), PfeifferConfig(use_gating=True))),
+            (
+                "lora[use_gating=True]|prefix_tuning[use_gating=True]|pfeiffer[use_gating=True]",
+                ConfigUnion(
+                    LoRAConfig(use_gating=True), PrefixTuningConfig(use_gating=True), PfeifferConfig(use_gating=True)
+                ),
+            ),
         ]
         for config_str, config in to_test:
             with self.subTest(config_str=config_str):

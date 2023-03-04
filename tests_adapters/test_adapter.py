@@ -1,10 +1,9 @@
 import random
 
-import torch
 import datasets
+import torch
 
-
-from transformers import AutoModel, GlueDataset, GlueDataTrainingArguments, AutoTokenizer, AutoFeatureExtractor
+from transformers import AutoFeatureExtractor, AutoModel, AutoTokenizer, GlueDataset, GlueDataTrainingArguments
 from transformers.testing_utils import torch_device
 
 

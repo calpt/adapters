@@ -1,5 +1,5 @@
+from adapter_transformers import ViTAdapterModel
 from tests.models.vit.test_modeling_vit import *
-from transformers import ViTAdapterModel
 from transformers.testing_utils import require_torch
 
 from .base import AdapterModelTesterMixin
