@@ -1,9 +1,3 @@
-from transformers.models.albert.modeling_albert import (
-    ALBERT_INPUTS_DOCSTRING,
-    ALBERT_START_DOCSTRING,
-    AlbertModel,
-    AlbertPreTrainedModel,
-)
 from transformers.utils import add_start_docstrings, add_start_docstrings_to_model_forward
 
 from ...context import AdapterSetup
@@ -17,6 +11,7 @@ from ...heads import (
     TaggingHead,
 )
 from ...model_mixin import EmbeddingAdaptersWrapperMixin
+from .modeling_albert import ALBERT_INPUTS_DOCSTRING, ALBERT_START_DOCSTRING, AlbertModel, AlbertPreTrainedModel
 
 
 @add_start_docstrings(

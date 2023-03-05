@@ -2,14 +2,6 @@ import warnings
 
 import torch
 
-from transformers.models.mbart.modeling_mbart import (
-    MBART_INPUTS_DOCSTRING,
-    MBART_START_DOCSTRING,
-    MBartConfig,
-    MBartModel,
-    MBartPreTrainedModel,
-    shift_tokens_right,
-)
 from transformers.utils import add_start_docstrings, add_start_docstrings_to_model_forward
 
 from ...composition import adjust_tensors_for_parallel
@@ -21,6 +13,14 @@ from ...heads import (
     Seq2SeqLMHead,
 )
 from ...model_mixin import EmbeddingAdaptersWrapperMixin
+from .modeling_mbart import (
+    MBART_INPUTS_DOCSTRING,
+    MBART_START_DOCSTRING,
+    MBartConfig,
+    MBartModel,
+    MBartPreTrainedModel,
+    shift_tokens_right,
+)
 
 
 @add_start_docstrings(

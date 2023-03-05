@@ -1,5 +1,4 @@
 from transformers.file_utils import add_start_docstrings
-from transformers.models.deberta import DebertaModel, DebertaPreTrainedModel
 
 from ...context import AdapterSetup
 from ...heads import (
@@ -11,6 +10,7 @@ from ...heads import (
     TaggingHead,
 )
 from ...model_mixin import EmbeddingAdaptersWrapperMixin
+from .modeling_deberta import DebertaModel, DebertaPreTrainedModel
 
 
 @add_start_docstrings(

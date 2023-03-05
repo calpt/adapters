@@ -1,14 +1,14 @@
-from transformers.models.bert_generation.modeling_bert_generation import (
-    BERT_GENERATION_INPUTS_DOCSTRING,
-    BERT_GENERATION_START_DOCSTRING,
-    BertGenerationEncoder,
-    BertGenerationPreTrainedModel,
-)
 from transformers.utils import add_start_docstrings, add_start_docstrings_to_model_forward
 
 from ...context import AdapterSetup
 from ...heads import BertStyleMaskedLMHead, CausalLMHead, ModelWithFlexibleHeadsAdaptersMixin
 from ...model_mixin import EmbeddingAdaptersWrapperMixin
+from .modeling_bert_generation import (
+    BERT_GENERATION_INPUTS_DOCSTRING,
+    BERT_GENERATION_START_DOCSTRING,
+    BertGenerationEncoder,
+    BertGenerationPreTrainedModel,
+)
 
 
 @add_start_docstrings(

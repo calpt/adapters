@@ -2,7 +2,6 @@ import logging
 
 import torch
 
-from transformers.models.gptj.modeling_gptj import GPTJ_START_DOCSTRING, GPTJModel, GPTJPreTrainedModel
 from transformers.utils import add_start_docstrings
 
 from ...composition import adjust_tensors_for_parallel
@@ -15,6 +14,7 @@ from ...heads import (
     TaggingHead,
 )
 from ...model_mixin import EmbeddingAdaptersWrapperMixin
+from .modeling_gptj import GPTJ_START_DOCSTRING, GPTJModel, GPTJPreTrainedModel
 
 
 logger = logging.getLogger(__name__)

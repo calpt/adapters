@@ -1,11 +1,5 @@
 import warnings
 
-from transformers.models.bert.modeling_bert import (
-    BERT_INPUTS_DOCSTRING,
-    BERT_START_DOCSTRING,
-    BertModel,
-    BertPreTrainedModel,
-)
 from transformers.utils import add_start_docstrings, add_start_docstrings_to_model_forward
 
 from ...context import AdapterSetup
@@ -21,6 +15,7 @@ from ...heads import (
     TaggingHead,
 )
 from ...model_mixin import EmbeddingAdaptersWrapperMixin
+from .modeling_bert import BERT_INPUTS_DOCSTRING, BERT_START_DOCSTRING, BertModel, BertPreTrainedModel
 
 
 @add_start_docstrings(

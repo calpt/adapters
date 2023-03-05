@@ -3,11 +3,11 @@ import warnings
 
 import torch
 
-from transformers.models.t5.modeling_t5 import T5_INPUTS_DOCSTRING, T5_START_DOCSTRING, T5Model, T5PreTrainedModel
 from transformers.utils import add_start_docstrings, add_start_docstrings_to_model_forward
 
 from ...heads import ModelWithFlexibleHeadsAdaptersMixin, Seq2SeqLMHead
 from ...model_mixin import EmbeddingAdaptersWrapperMixin
+from .modeling_t5 import T5_INPUTS_DOCSTRING, T5_START_DOCSTRING, T5Model, T5PreTrainedModel
 
 
 logger = logging.getLogger(__name__)

@@ -2,12 +2,6 @@ import warnings
 
 import torch.nn as nn
 
-from transformers.models.distilbert.modeling_distilbert import (
-    DISTILBERT_INPUTS_DOCSTRING,
-    DISTILBERT_START_DOCSTRING,
-    DistilBertModel,
-    DistilBertPreTrainedModel,
-)
 from transformers.utils import add_start_docstrings, add_start_docstrings_to_model_forward
 
 from ...heads import (
@@ -22,6 +16,12 @@ from ...heads import (
     TaggingHead,
 )
 from ...model_mixin import EmbeddingAdaptersWrapperMixin
+from .modeling_distilbert import (
+    DISTILBERT_INPUTS_DOCSTRING,
+    DISTILBERT_START_DOCSTRING,
+    DistilBertModel,
+    DistilBertPreTrainedModel,
+)
 
 
 @add_start_docstrings(
