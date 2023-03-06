@@ -26,11 +26,33 @@ _import_structure = {
         "RobertaAdapterModel",
         "RobertaModelWithHeads",
     ],
+    "modeling_roberta": [
+        "ROBERTA_PRETRAINED_MODEL_ARCHIVE_LIST",
+        "RobertaForCausalLM",
+        "RobertaForMaskedLM",
+        "RobertaForMultipleChoice",
+        "RobertaForQuestionAnswering",
+        "RobertaForSequenceClassification",
+        "RobertaForTokenClassification",
+        "RobertaModel",
+        "RobertaPreTrainedModel",
+    ],
 }
 
 
 if TYPE_CHECKING:
     from .adapter_model import RobertaAdapterModel, RobertaModelWithHeads
+    from .modeling_roberta import (
+        ROBERTA_PRETRAINED_MODEL_ARCHIVE_LIST,
+        RobertaForCausalLM,
+        RobertaForMaskedLM,
+        RobertaForMultipleChoice,
+        RobertaForQuestionAnswering,
+        RobertaForSequenceClassification,
+        RobertaForTokenClassification,
+        RobertaModel,
+        RobertaPreTrainedModel,
+    )
 
 else:
     import sys

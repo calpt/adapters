@@ -26,11 +26,33 @@ _import_structure = {
         "XLMRobertaAdapterModel",
         "XLMRobertaModelWithHeads",
     ],
+    "modeling_xlm_roberta": [
+        "XLM_ROBERTA_PRETRAINED_MODEL_ARCHIVE_LIST",
+        "XLMRobertaForCausalLM",
+        "XLMRobertaForMaskedLM",
+        "XLMRobertaForMultipleChoice",
+        "XLMRobertaForQuestionAnswering",
+        "XLMRobertaForSequenceClassification",
+        "XLMRobertaForTokenClassification",
+        "XLMRobertaModel",
+        "XLMRobertaPreTrainedModel",
+    ],
 }
 
 
 if TYPE_CHECKING:
     from .adapter_model import XLMRobertaAdapterModel, XLMRobertaModelWithHeads
+    from .modeling_xlm_roberta import (
+        XLM_ROBERTA_PRETRAINED_MODEL_ARCHIVE_LIST,
+        XLMRobertaForCausalLM,
+        XLMRobertaForMaskedLM,
+        XLMRobertaForMultipleChoice,
+        XLMRobertaForQuestionAnswering,
+        XLMRobertaForSequenceClassification,
+        XLMRobertaForTokenClassification,
+        XLMRobertaModel,
+        XLMRobertaPreTrainedModel,
+    )
 
 else:
     import sys

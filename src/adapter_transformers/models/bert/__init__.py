@@ -26,11 +26,41 @@ _import_structure = {
         "BertAdapterModel",
         "BertModelWithHeads",
     ],
+    "modeling_bert": [
+        "BERT_PRETRAINED_MODEL_ARCHIVE_LIST",
+        "BertForMaskedLM",
+        "BertForMultipleChoice",
+        "BertForNextSentencePrediction",
+        "BertForPreTraining",
+        "BertForQuestionAnswering",
+        "BertForSequenceClassification",
+        "BertForTokenClassification",
+        "BertLayer",
+        "BertLMHeadModel",
+        "BertModel",
+        "BertPreTrainedModel",
+        "load_tf_weights_in_bert",
+    ],
 }
 
 
 if TYPE_CHECKING:
     from .adapter_model import BertAdapterModel, BertModelWithHeads
+    from .modeling_bert import (
+        BERT_PRETRAINED_MODEL_ARCHIVE_LIST,
+        BertForMaskedLM,
+        BertForMultipleChoice,
+        BertForNextSentencePrediction,
+        BertForPreTraining,
+        BertForQuestionAnswering,
+        BertForSequenceClassification,
+        BertForTokenClassification,
+        BertLayer,
+        BertLMHeadModel,
+        BertModel,
+        BertPreTrainedModel,
+        load_tf_weights_in_bert,
+    )
 
 else:
     import sys

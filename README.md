@@ -20,7 +20,19 @@ This branch disentangles `adapter-transformers` from HF Transformers and adds Tr
 
 ### Breaking
 
-- All `adapter-transformers` classes now have to imported via `adapter_transformers` namespace
+- All adapter-related classes now have to imported via `adapter_transformers` namespace, e.g.:
+    ```python
+    from adapter_transformers import BertAdapterModel
+    # ...
+    ```
+- **(TODO)** Built-in HF model classes can be adapted for usage with adapters via a wrapper method, e.g.:
+    ```python
+    from transformers import BertModel
+    from adapter_transformers import wrap_model
+
+    model = BertModel.from_pretrained("bert-base-uncased")
+    model = wrap_model(model)
+    ```
 
 ### TODO
 

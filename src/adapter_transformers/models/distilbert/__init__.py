@@ -26,11 +26,31 @@ _import_structure = {
         "DistilBertAdapterModel",
         "DistilBertModelWithHeads",
     ],
+    "modeling_distilbert": [
+        "DISTILBERT_PRETRAINED_MODEL_ARCHIVE_LIST",
+        "DistilBertForMaskedLM",
+        "DistilBertForMultipleChoice",
+        "DistilBertForQuestionAnswering",
+        "DistilBertForSequenceClassification",
+        "DistilBertForTokenClassification",
+        "DistilBertModel",
+        "DistilBertPreTrainedModel",
+    ],
 }
 
 
 if TYPE_CHECKING:
     from .adapter_model import DistilBertAdapterModel, DistilBertModelWithHeads
+    from .modeling_distilbert import (
+        DISTILBERT_PRETRAINED_MODEL_ARCHIVE_LIST,
+        DistilBertForMaskedLM,
+        DistilBertForMultipleChoice,
+        DistilBertForQuestionAnswering,
+        DistilBertForSequenceClassification,
+        DistilBertForTokenClassification,
+        DistilBertModel,
+        DistilBertPreTrainedModel,
+    )
 
 else:
     import sys

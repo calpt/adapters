@@ -26,11 +26,31 @@ _import_structure = {
         "GPT2AdapterModel",
         "GPT2ModelWithHeads",
     ],
+    "modeling_gpt2": [
+        "GPT2_PRETRAINED_MODEL_ARCHIVE_LIST",
+        "GPT2DoubleHeadsModel",
+        "GPT2ForSequenceClassification",
+        "GPT2ForTokenClassification",
+        "GPT2LMHeadModel",
+        "GPT2Model",
+        "GPT2PreTrainedModel",
+        "load_tf_weights_in_gpt2",
+    ],
 }
 
 
 if TYPE_CHECKING:
     from .adapter_model import GPT2AdapterModel, GPT2ModelWithHeads
+    from .modeling_gpt2 import (
+        GPT2_PRETRAINED_MODEL_ARCHIVE_LIST,
+        GPT2DoubleHeadsModel,
+        GPT2ForSequenceClassification,
+        GPT2ForTokenClassification,
+        GPT2LMHeadModel,
+        GPT2Model,
+        GPT2PreTrainedModel,
+        load_tf_weights_in_gpt2,
+    )
 
 else:
     import sys

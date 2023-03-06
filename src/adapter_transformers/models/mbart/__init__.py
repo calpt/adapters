@@ -26,11 +26,29 @@ _import_structure = {
         "MBartAdapterModel",
         "MBartModelWithHeads",
     ],
+    "modeling_mbart": [
+        "MBART_PRETRAINED_MODEL_ARCHIVE_LIST",
+        "MBartForCausalLM",
+        "MBartForConditionalGeneration",
+        "MBartForQuestionAnswering",
+        "MBartForSequenceClassification",
+        "MBartModel",
+        "MBartPreTrainedModel",
+    ],
 }
 
 
 if TYPE_CHECKING:
     from .adapter_model import MBartAdapterModel, MBartModelWithHeads
+    from .modeling_mbart import (
+        MBART_PRETRAINED_MODEL_ARCHIVE_LIST,
+        MBartForCausalLM,
+        MBartForConditionalGeneration,
+        MBartForQuestionAnswering,
+        MBartForSequenceClassification,
+        MBartModel,
+        MBartPreTrainedModel,
+    )
 
 else:
     import sys

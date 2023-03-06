@@ -23,11 +23,23 @@ from transformers.utils import _LazyModule
 
 _import_structure = {
     "adapter_model": ["BertGenerationAdapterModel"],
+    "modeling_bert_generation": [
+        "BertGenerationDecoder",
+        "BertGenerationEncoder",
+        "BertGenerationPreTrainedModel",
+        "load_tf_weights_in_bert_generation",
+    ],
 }
 
 
 if TYPE_CHECKING:
     from .adapter_model import BertGenerationAdapterModel
+    from .modeling_bert_generation import (
+        BertGenerationDecoder,
+        BertGenerationEncoder,
+        BertGenerationPreTrainedModel,
+        load_tf_weights_in_bert_generation,
+    )
 
 else:
     import sys

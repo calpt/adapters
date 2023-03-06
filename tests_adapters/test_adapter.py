@@ -5,6 +5,7 @@ import torch
 
 from transformers import AutoFeatureExtractor, AutoModel, AutoTokenizer, GlueDataset, GlueDataTrainingArguments
 from transformers.testing_utils import torch_device
+from adapter_transformers.wrappers import wrap_model
 
 
 def make_config(config_class, **kwargs):
@@ -22,6 +23,7 @@ class AdapterTestBase:
             model = AutoModel.from_config(self.config())
         else:
             model = self.model_class(self.config())
+        model = wrap_model(model)
         model.to(torch_device)
         return model
 

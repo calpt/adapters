@@ -23,11 +23,27 @@ from transformers.utils import _LazyModule
 
 _import_structure = {
     "adapter_model": ["BeitAdapterModel"],
+    "modeling_bert": [
+        "BEIT_PRETRAINED_MODEL_ARCHIVE_LIST",
+        "BeitForImageClassification",
+        "BeitForMaskedImageModeling",
+        "BeitForSemanticSegmentation",
+        "BeitModel",
+        "BeitPreTrainedModel",
+    ],
 }
 
 
 if TYPE_CHECKING:
     from .adapter_model import BeitAdapterModel
+    from .modeling_beit import (
+        BEIT_PRETRAINED_MODEL_ARCHIVE_LIST,
+        BeitForImageClassification,
+        BeitForMaskedImageModeling,
+        BeitForSemanticSegmentation,
+        BeitModel,
+        BeitPreTrainedModel,
+    )
 
 else:
     import sys
