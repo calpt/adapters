@@ -12,12 +12,14 @@ from adapter_transformers import (
     HoulsbyConfig,
     HoulsbyInvConfig,
     InvertibleAdaptersMixin,
+    InvertibleAdaptersWrapperMixin,
     MAMConfig,
     PfeifferConfig,
     PfeifferInvConfig,
 )
 from adapter_transformers.heads.language_modeling import CausalLMHead
-from transformers import MODEL_FOR_SEQ_TO_SEQ_CAUSAL_LM_MAPPING, AutoTokenizer
+from adapter_transformers.wrappers import wrap_model
+from transformers import MODEL_FOR_SEQ_TO_SEQ_CAUSAL_LM_MAPPING
 from transformers.testing_utils import require_torch, torch_device
 
 from .base import AdapterMethodBaseTestMixin, create_twin_models
@@ -48,9 +50,9 @@ class BottleneckAdapterTestMixin(AdapterMethodBaseTestMixin):
                 self.run_delete_test(model, adapter_config, filter_keys)
 
     def test_add_adapter_with_invertible(self):
-        model = self.get_model()
+        model = self.get_model().base_model
         model.eval()
-        if not isinstance(model, InvertibleAdaptersMixin):
+        if not isinstance(model, InvertibleAdaptersMixin) and not isinstance(model, InvertibleAdaptersWrapperMixin):
             self.skipTest("Model does not support invertible adapters.")
 
         for adapter_config in [PfeifferInvConfig(), HoulsbyInvConfig()]:
@@ -185,10 +187,8 @@ class BottleneckAdapterTestMixin(AdapterMethodBaseTestMixin):
         if self.config_class not in ADAPTER_MODEL_MAPPING:
             self.skipTest("Does not support flex heads.")
 
-        model_base, model_with_head_base = create_twin_models(self.model_class, self.config)
-
-        model_with_head = AutoAdapterModel.from_config(model_with_head_base.config)
-        setattr(model_with_head, model_with_head.base_model_prefix, model_with_head_base)
+        model_base, model_with_head = create_twin_models(self.model_class, self.config)
+        model_base = model_base.base_model  # use base model w/o prefix
 
         model_with_head.add_adapter("dummy")
 
@@ -214,10 +214,8 @@ class BottleneckAdapterTestMixin(AdapterMethodBaseTestMixin):
         if self.config_class not in ADAPTER_MODEL_MAPPING:
             self.skipTest("Does not support flex heads.")
 
-        model_base, model_with_head_base = create_twin_models(self.model_class, self.config)
-
-        model_with_head = AutoAdapterModel.from_config(model_with_head_base.config)
-        setattr(model_with_head, model_with_head.base_model_prefix, model_with_head_base)
+        model_base, model_with_head = create_twin_models(self.model_class, self.config)
+        model_base = model_base.base_model  # use base model w/o prefix
 
         model_base.add_adapter("dummy")
 
@@ -246,6 +244,7 @@ class BottleneckAdapterTestMixin(AdapterMethodBaseTestMixin):
             self.skipTest("No causal lm class.")
 
         static_model = MODEL_FOR_SEQ_TO_SEQ_CAUSAL_LM_MAPPING[self.config_class](self.config())
+        static_model = wrap_model(static_model)
         flex_model = AutoAdapterModel.from_pretrained(None, config=self.config(), state_dict=static_model.state_dict())
         static_model.add_adapter("dummy")
         static_model.set_active_adapters("dummy")

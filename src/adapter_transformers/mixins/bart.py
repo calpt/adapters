@@ -3,6 +3,7 @@ from typing import Iterable, Tuple
 import torch.nn as nn
 
 from ..layer import AdapterLayer
+from ..lora import Linear as LoRALinear
 from ..model_mixin import (
     EmbeddingAdaptersMixin,
     EmbeddingAdaptersWrapperMixin,
@@ -10,25 +11,44 @@ from ..model_mixin import (
     ModelAdaptersMixin,
     ModelWithHeadsAdaptersMixin,
 )
+from ..prefix_tuning import PrefixTuningShim
+
+
+class BartAttentionAdaptersMixin:
+    """Adds adapters to the BartAttention module."""
+
+    def init_adapters(self, config):
+        # Wrap layers for LoRA
+        self.k_proj = LoRALinear.wrap(self.k_proj, "selfattn", config, attn_key="k")
+        self.v_proj = LoRALinear.wrap(self.v_proj, "selfattn", config, attn_key="v")
+        self.q_proj = LoRALinear.wrap(self.q_proj, "selfattn", config, attn_key="q")
+
+        self.prefix_tuning = PrefixTuningShim(self.location_key + "_prefix" if self.location_key else None, config)
 
 
 class BartEncoderLayerAdaptersMixin:
     """Adds adapters to the BartEncoderLayer module of BART."""
 
-    def _init_adapter_modules(self):
-        self.attention_adapters = AdapterLayer("mh_adapter", self.config)
-        self.output_adapters = AdapterLayer("output_adapter", self.config)
-        self.attention_adapters._init_adapter_modules()
-        self.output_adapters._init_adapter_modules()
+    def init_adapters(self, config):
+        # Wrap layers for LoRA
+        self.fc1 = LoRALinear.wrap(self.fc1, "intermediate", config)
+        self.fc2 = LoRALinear.wrap(self.fc2, "output", config)
+
+        # Set attention layer location key for prefix tuning
+        self.self_attn.location_key = "encoder"
+        self.attention_adapters = AdapterLayer("mh_adapter")
+        self.output_adapters = AdapterLayer("output_adapter")
 
 
 class BartDecoderLayerAdaptersMixin(BartEncoderLayerAdaptersMixin):
     """Adds adapters to the BartDecoderLayer module of BART."""
 
-    def _init_adapter_modules(self):
-        super()._init_adapter_modules()
-        self.cross_attention_adapters = AdapterLayer("cross_adapter", self.config)
-        self.cross_attention_adapters._init_adapter_modules()
+    def init_adapters(self, config):
+        super().init_adapters(config)
+        # Set attention layer location key for prefix tuning
+        self.self_attn.location_key = "self"
+        self.encoder_attn.location_key = "cross"
+        self.cross_attention_adapters = AdapterLayer("cross_adapter")
 
 
 class BartModelAdaptersMixin(EmbeddingAdaptersMixin, InvertibleAdaptersWrapperMixin, ModelAdaptersMixin):

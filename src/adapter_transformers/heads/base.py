@@ -740,7 +740,8 @@ class ModelWithFlexibleHeadsAdaptersMixin(ModelWithHeadsAdaptersMixin):
         """
         if head_name:
             used_heads = [head_name]
-        elif AdapterSetup.get_context_head_setup():
+        # together with context, check if we have heads at all to allow for models without heads
+        elif len(self.heads) > 0 and AdapterSetup.get_context_head_setup():
             used_heads = AdapterSetup.get_context_head_setup()
             if isinstance(used_heads, str):
                 used_heads = [used_heads]

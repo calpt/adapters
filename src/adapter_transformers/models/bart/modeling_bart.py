@@ -47,15 +47,14 @@ from transformers.utils import (
 
 from ...composition import adjust_tensors_for_parallel
 from ...context import ForwardContext
-from ...lora import Linear as LoRALinear
 from ...mixins.bart import (
+    BartAttentionAdaptersMixin,
     BartDecoderLayerAdaptersMixin,
     BartEncoderLayerAdaptersMixin,
     BartModelAdaptersMixin,
     BartModelWithHeadsAdaptersMixin,
 )
 from ...model_mixin import InvertibleAdaptersMixin
-from ...prefix_tuning import PrefixTuningShim
 
 
 logger = logging.get_logger(__name__)
@@ -150,18 +149,16 @@ class BartLearnedPositionalEmbedding(nn.Embedding):
         return super().forward(positions + self.offset)
 
 
-class BartAttention(nn.Module):
+class BartAttention(BartAttentionAdaptersMixin, nn.Module):
     """Multi-headed attention from 'Attention Is All You Need' paper"""
 
     def __init__(
         self,
-        config: BartConfig,
         embed_dim: int,
         num_heads: int,
         dropout: float = 0.0,
         is_decoder: bool = False,
         bias: bool = True,
-        location_key: Optional[str] = None,
     ):
         super().__init__()
         self.embed_dim = embed_dim
@@ -177,12 +174,10 @@ class BartAttention(nn.Module):
         self.scaling = self.head_dim**-0.5
         self.is_decoder = is_decoder
 
-        self.k_proj = LoRALinear(embed_dim, embed_dim, "selfattn", config, attn_key="k", bias=bias)
-        self.v_proj = LoRALinear(embed_dim, embed_dim, "selfattn", config, attn_key="v", bias=bias)
-        self.q_proj = LoRALinear(embed_dim, embed_dim, "selfattn", config, attn_key="q", bias=bias)
+        self.k_proj = nn.Linear(embed_dim, embed_dim, bias=bias)
+        self.v_proj = nn.Linear(embed_dim, embed_dim, bias=bias)
+        self.q_proj = nn.Linear(embed_dim, embed_dim, bias=bias)
         self.out_proj = nn.Linear(embed_dim, embed_dim, bias=bias)
-
-        self.prefix_tuning = PrefixTuningShim(location_key + "_prefix" if location_key else None, config)
 
     def _shape(self, tensor: torch.Tensor, seq_len: int, bsz: int):
         return tensor.view(bsz, seq_len, self.num_heads, self.head_dim).transpose(1, 2).contiguous()
@@ -318,25 +313,19 @@ class BartAttention(nn.Module):
 class BartEncoderLayer(BartEncoderLayerAdaptersMixin, nn.Module):
     def __init__(self, config: BartConfig):
         super().__init__()
-        self.config = config
-
         self.embed_dim = config.d_model
         self.self_attn = BartAttention(
-            config,
             embed_dim=self.embed_dim,
             num_heads=config.encoder_attention_heads,
             dropout=config.attention_dropout,
-            location_key="encoder",
         )
         self.self_attn_layer_norm = nn.LayerNorm(self.embed_dim)
         self.dropout = config.dropout
         self.activation_fn = ACT2FN[config.activation_function]
         self.activation_dropout = config.activation_dropout
-        self.fc1 = LoRALinear(self.embed_dim, config.encoder_ffn_dim, "intermediate", config)
-        self.fc2 = LoRALinear(config.encoder_ffn_dim, self.embed_dim, "output", config)
+        self.fc1 = nn.Linear(self.embed_dim, config.encoder_ffn_dim)
+        self.fc2 = nn.Linear(config.encoder_ffn_dim, self.embed_dim)
         self.final_layer_norm = nn.LayerNorm(self.embed_dim)
-
-        self._init_adapter_modules()
 
     def forward(
         self,
@@ -390,17 +379,13 @@ class BartEncoderLayer(BartEncoderLayerAdaptersMixin, nn.Module):
 class BartDecoderLayer(BartDecoderLayerAdaptersMixin, nn.Module):
     def __init__(self, config: BartConfig):
         super().__init__()
-        self.config = config
-
         self.embed_dim = config.d_model
 
         self.self_attn = BartAttention(
-            config,
             embed_dim=self.embed_dim,
             num_heads=config.decoder_attention_heads,
             dropout=config.attention_dropout,
             is_decoder=True,
-            location_key="self",
         )
         self.dropout = config.dropout
         self.activation_fn = ACT2FN[config.activation_function]
@@ -408,19 +393,15 @@ class BartDecoderLayer(BartDecoderLayerAdaptersMixin, nn.Module):
 
         self.self_attn_layer_norm = nn.LayerNorm(self.embed_dim)
         self.encoder_attn = BartAttention(
-            config,
             self.embed_dim,
             config.decoder_attention_heads,
             dropout=config.attention_dropout,
             is_decoder=True,
-            location_key="cross",
         )
         self.encoder_attn_layer_norm = nn.LayerNorm(self.embed_dim)
         self.fc1 = nn.Linear(self.embed_dim, config.decoder_ffn_dim)
         self.fc2 = nn.Linear(config.decoder_ffn_dim, self.embed_dim)
         self.final_layer_norm = nn.LayerNorm(self.embed_dim)
-
-        self._init_adapter_modules()
 
     def forward(
         self,
@@ -742,7 +723,6 @@ class BartEncoder(InvertibleAdaptersMixin, BartPretrainedModel):
 
     def __init__(self, config: BartConfig, embed_tokens: Optional[nn.Embedding] = None):
         super().__init__(config)
-        self.config = config
 
         self.dropout = config.dropout
         self.layerdrop = config.encoder_layerdrop
@@ -1207,7 +1187,7 @@ class BartModel(BartModelAdaptersMixin, BartPretrainedModel):
         self.encoder = BartEncoder(config, self.shared)
         self.decoder = BartDecoder(config, self.shared)
 
-        self._init_adapter_modules()
+        self.init_adapters(config)
         # Initialize weights and apply final processing
         self.post_init()
 
@@ -1763,7 +1743,7 @@ class BartDecoderWrapper(BartModelAdaptersMixin, BartPretrainedModel):
         super().__init__(config)
         self.decoder = BartDecoder(config)
 
-        self._init_adapter_modules()
+        self.init_adapters(config)
 
     @ForwardContext.wrap
     def forward(self, *args, **kwargs):

@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import ABCMeta, abstractmethod
 from typing import List, Mapping, Union
 
 import numpy as np
@@ -11,7 +11,8 @@ from .context import AdapterSetup, ForwardContext
 from .modeling import Adapter, BertFusion, ParallelAdapter
 
 
-class AdapterLayerBase(ABC):
+# We don't inherit from ABC because __slots__ changes object layout
+class AdapterLayerBase(metaclass=ABCMeta):
     """
     Base class for all adaptation methods that require per-layer modules.
     """
@@ -95,12 +96,12 @@ class AdapterLayerBase(ABC):
 
 
 class AdapterLayer(AdapterLayerBase, nn.Module):
-    def __init__(self, location_key: str, config):
+    def __init__(self, location_key: str):
         super().__init__()
         self.location_key = location_key
-        self.config = config
 
-    def _init_adapter_modules(self):
+    def init_adapters(self, config):
+        self.config = config
         self.adapters = nn.ModuleDict(dict())
         self.adapter_fusion_layer = nn.ModuleDict(dict())
 

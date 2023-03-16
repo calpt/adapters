@@ -34,14 +34,14 @@ logger = logging.getLogger(__name__)
 class InvertibleAdaptersMixin:
     """Mixin for Transformer models adding invertible adapters."""
 
-    def _init_adapter_modules(self):
+    def init_adapters(self, config):
         self.invertible_adapters = nn.ModuleDict(dict())
 
         # Make sure config is wrapped
-        if hasattr(self, "config"):
-            self.config = wrap_config(self.config)
+        self.config = wrap_config(config)
 
-        super()._init_adapter_modules()
+        if hasattr(super(), "init_adapters"):
+            super().init_adapters(config)
 
     def add_invertible_adapter(self, adapter_name: str):
         """
@@ -156,15 +156,14 @@ class InvertibleAdaptersWrapperMixin:
 class EmbeddingAdaptersMixin:
     """Mixin for Transformer models adding support for dynamically switching embeddings."""
 
-    def _init_adapter_modules(self):
+    def init_adapters(self, config):
         self.loaded_embeddings = {}
         self._active_embedding = "default"
 
         # Make sure config is wrapped
-        if hasattr(self, "config"):
-            self.config = wrap_config(self.config)
+        self.config = wrap_config(config)
 
-        super()._init_adapter_modules()
+        super().init_adapters(config)
 
     def load_embeddings(self, path: str, name: str):
         """
@@ -177,7 +176,7 @@ class EmbeddingAdaptersMixin:
         Returns: a tokenizer if it ws saved with the embedding otherwise None
 
         """
-        from ..models.auto.tokenization_auto import AutoTokenizer
+        from transformers.models.auto.tokenization_auto import AutoTokenizer
 
         if name in self.loaded_embeddings:
             raise ValueError("An embedding with the name {} already exists".format(name))
@@ -332,18 +331,26 @@ class ModelAdaptersMixin(PushAdapterToHubMixin, ABC):
         if isinstance(layer, PrefixTuningShim):
             layer.set_pool(self.base_model.prefix_tuning)
 
-    def _init_adapter_modules(self, add_prefix_tuning_pool=True):
+    @property
+    def model_name(self):
+        return self.config.name_or_path
+
+    def init_adapters(self, config, add_prefix_tuning_pool=True):
         """
         This method initializes adapter modules and fusion modules from the model config.
         """
-        if self.config.name_or_path and not os.path.exists(self.config.name_or_path):
-            self.model_name = self.config.name_or_path
-        else:
-            self.model_name = None
         self.base_model.shared_parameters = nn.ModuleDict()
 
         # Make sure config is wrapped
-        self.config = wrap_config(self.config)
+        self.config = wrap_config(config)
+
+        # Initialize adapters in all submodules
+        for module in self.modules():
+            # skip calling module
+            if module == self:
+                continue
+            if hasattr(module, "init_adapters"):
+                module.init_adapters(self.config)
 
         # Link all prefix tunings
         if add_prefix_tuning_pool:

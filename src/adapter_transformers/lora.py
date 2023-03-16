@@ -173,6 +173,19 @@ class Linear(LoRALayer, nn.Linear):
         if fan_in_fan_out:
             self.weight.data = torch.t(self.weight.data)
 
+    @classmethod
+    def wrap(cls, module: nn.Linear, location_key: str, config: PretrainedConfig, attn_key: str = None, **kwargs):
+        new_module = cls(module.in_features, module.out_features, location_key, config, attn_key=attn_key, **kwargs)
+        # copy weights
+        if new_module.fan_in_fan_out:
+            new_module.weight.data = torch.t(module.weight.data)
+        else:
+            new_module.weight.data = module.weight.data
+        if module.bias is not None:
+            new_module.bias.data = module.bias.data
+
+        return new_module
+
     def _check_lora_location(self, config: LoRAConfig):
         return self.attn_key is None or self.attn_key in config.attn_matrices
 

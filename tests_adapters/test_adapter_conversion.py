@@ -5,6 +5,10 @@ import tempfile
 import torch
 
 from adapter_transformers import AutoAdapterModel
+from adapter_transformers.models.albert import AlbertPreTrainedModel
+from adapter_transformers.models.bert import BertPreTrainedModel
+from adapter_transformers.models.roberta import RobertaPreTrainedModel
+from adapter_transformers.wrappers import wrap_model
 from transformers import (
     MODEL_FOR_CAUSAL_LM_MAPPING,
     MODEL_FOR_IMAGE_CLASSIFICATION_MAPPING,
@@ -14,9 +18,6 @@ from transformers import (
     MODEL_FOR_SEQ_TO_SEQ_CAUSAL_LM_MAPPING,
     MODEL_FOR_SEQUENCE_CLASSIFICATION_MAPPING,
     MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING,
-    AlbertPreTrainedModel,
-    BertPreTrainedModel,
-    RobertaPreTrainedModel,
 )
 from transformers.testing_utils import require_torch, torch_device
 
@@ -81,6 +82,7 @@ class ModelClassConversionTestMixin:
             self.skipTest("No causal language modeling class.")
 
         model = MODEL_FOR_CAUSAL_LM_MAPPING[self.config_class](self.config())
+        model = wrap_model(model)
         label_dict = {}
         label_dict["labels"] = torch.zeros((self.batch_size, self.seq_length), dtype=torch.long, device=torch_device)
         self.run_test(model, label_dict=label_dict)
@@ -90,6 +92,7 @@ class ModelClassConversionTestMixin:
             self.skipTest("No masked language modeling class.")
 
         model = MODEL_FOR_MASKED_LM_MAPPING[self.config_class](self.config())
+        model = wrap_model(model)
         label_dict = {}
         label_dict["labels"] = torch.zeros((self.batch_size, self.seq_length), dtype=torch.long, device=torch_device)
         # for encoder-decoder models such as BART, we additionally pass the decoder input ids
@@ -102,6 +105,7 @@ class ModelClassConversionTestMixin:
             self.skipTest("No seq2seq language modeling class.")
 
         model = MODEL_FOR_SEQ_TO_SEQ_CAUSAL_LM_MAPPING[self.config_class](self.config())
+        model = wrap_model(model)
         label_dict = {}
         label_dict["labels"] = torch.zeros((self.batch_size, self.seq_length), dtype=torch.long, device=torch_device)
         label_dict["decoder_input_ids"] = label_dict["labels"].clone()
@@ -112,6 +116,7 @@ class ModelClassConversionTestMixin:
             self.skipTest("No sequence classification class.")
 
         model = MODEL_FOR_SEQUENCE_CLASSIFICATION_MAPPING[self.config_class](self.config())
+        model = wrap_model(model)
         label_dict = {}
         label_dict["labels"] = torch.zeros(self.batch_size, dtype=torch.long, device=torch_device)
         self.run_test(model, label_dict=label_dict)
@@ -121,6 +126,7 @@ class ModelClassConversionTestMixin:
             self.skipTest("No image classification class.")
 
         model = MODEL_FOR_IMAGE_CLASSIFICATION_MAPPING[self.config_class](self.config())
+        model = wrap_model(model)
         label_dict = {}
         label_dict["labels"] = torch.zeros(3, dtype=torch.long, device=torch_device)
         self.run_test(model, input_shape=(3, 3, 224, 224), label_dict=label_dict)
@@ -130,6 +136,7 @@ class ModelClassConversionTestMixin:
             self.skipTest("No question answering class.")
 
         model = MODEL_FOR_QUESTION_ANSWERING_MAPPING[self.config_class](self.config())
+        model = wrap_model(model)
         label_dict = {}
         label_dict["start_positions"] = torch.zeros(self.batch_size, dtype=torch.long, device=torch_device)
         label_dict["end_positions"] = torch.zeros(self.batch_size, dtype=torch.long, device=torch_device)
@@ -140,6 +147,7 @@ class ModelClassConversionTestMixin:
             self.skipTest("No token classification class.")
 
         model = MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING[self.config_class](self.config())
+        model = wrap_model(model)
         label_dict = {}
         label_dict["labels"] = torch.zeros((self.batch_size, self.seq_length), dtype=torch.long, device=torch_device)
         self.run_test(model, label_dict=label_dict)
@@ -149,6 +157,7 @@ class ModelClassConversionTestMixin:
             self.skipTest("No token classification class.")
 
         model = MODEL_FOR_MULTIPLE_CHOICE_MAPPING[self.config_class](self.config())
+        model = wrap_model(model)
         label_dict = {}
         label_dict["labels"] = torch.ones(self.batch_size, dtype=torch.long, device=torch_device)
         self.run_test(model, input_shape=(self.batch_size, 2, self.seq_length), label_dict=label_dict)
@@ -158,6 +167,7 @@ class ModelClassConversionTestMixin:
             self.skipTest("no causal lm class.")
 
         static_model = MODEL_FOR_SEQ_TO_SEQ_CAUSAL_LM_MAPPING[self.config_class](self.config())
+        static_model = wrap_model(static_model)
         flex_model = AutoAdapterModel.from_pretrained(None, config=self.config(), state_dict=static_model.state_dict())
         static_model.add_adapter("dummy")
         static_model.set_active_adapters("dummy")

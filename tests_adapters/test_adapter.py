@@ -3,9 +3,10 @@ import random
 import datasets
 import torch
 
-from transformers import AutoFeatureExtractor, AutoModel, AutoTokenizer, GlueDataset, GlueDataTrainingArguments
-from transformers.testing_utils import torch_device
+from adapter_transformers import AutoAdapterModel
 from adapter_transformers.wrappers import wrap_model
+from transformers import AutoFeatureExtractor, AutoTokenizer, GlueDataset, GlueDataTrainingArguments
+from transformers.testing_utils import torch_device
 
 
 def make_config(config_class, **kwargs):
@@ -14,13 +15,13 @@ def make_config(config_class, **kwargs):
 
 class AdapterTestBase:
     # If not overriden by subclass, AutoModel should be used.
-    model_class = AutoModel
+    model_class = AutoAdapterModel
     # Default shape of inputs to use
     default_input_samples_shape = (3, 64)
 
     def get_model(self):
-        if self.model_class == AutoModel:
-            model = AutoModel.from_config(self.config())
+        if self.model_class == AutoAdapterModel:
+            model = AutoAdapterModel.from_config(self.config())
         else:
             model = self.model_class(self.config())
         model = wrap_model(model)
@@ -58,7 +59,7 @@ class AdapterTestBase:
             if tokenizer.pad_token is None:
                 tokenizer.pad_token = tokenizer.eos_token
         data_args = GlueDataTrainingArguments(
-            task_name="mrpc", data_dir="./tests/fixtures/tests_samples/MRPC", overwrite_cache=True
+            task_name="mrpc", data_dir="./hf_transformers/tests/fixtures/tests_samples/MRPC", overwrite_cache=True
         )
         return GlueDataset(data_args, tokenizer=tokenizer, mode="train")
 
