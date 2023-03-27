@@ -431,6 +431,7 @@ class LoRAConfig(AdapterConfigBase):
     dropout: float = 0.0
     attn_matrices: List[str] = field(default_factory=lambda: ["q", "v"])
     composition_mode: str = "add"
+    stacking_mode: str = "add"
     init_weights: str = "lora"
     use_gating: bool = False
 
