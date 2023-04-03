@@ -4,10 +4,12 @@ import warnings
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from os.path import join
-from typing import Iterable, List, Optional, Tuple, Union
+from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
 
 import torch
 from torch import nn
+
+from transformers.modeling_outputs import ModelOutput
 
 from .composition import AdapterCompositionBlock, Fuse, Stack, parse_composition
 from .configuration import (
@@ -1024,6 +1026,30 @@ class ModelAdaptersMixin(PushAdapterToHubMixin, ABC):
             if isinstance(module, LoRALayer):
                 module.reset_adapter()
 
+    # HACK Copied from transformers/generation/utils.py
+    def _prepare_encoder_decoder_kwargs_for_generation(
+        self, inputs_tensor: torch.Tensor, model_kwargs, model_input_name: Optional[str] = None
+    ) -> Dict[str, Any]:
+        # 1. get encoder
+        encoder = self.get_encoder()
+
+        # 2. prepare encoder args and encoder kwargs from model kwargs
+        irrelevant_prefix = ["decoder_", "cross_attn", "use_cache"]
+        encoder_kwargs = {
+            argument: value
+            for argument, value in model_kwargs.items()
+            if not any(argument.startswith(p) for p in irrelevant_prefix)
+        }
+
+        # 3. make sure that encoder returns `ModelOutput`
+        model_input_name = model_input_name if model_input_name is not None else self.main_input_name
+        encoder_kwargs["return_dict"] = True
+        encoder_kwargs[model_input_name] = inputs_tensor
+        with ForwardContext(self, **encoder_kwargs):
+            model_kwargs["encoder_outputs"]: ModelOutput = encoder(**encoder_kwargs)
+
+        return model_kwargs
+
 
 @inherit_doc
 class ModelWithHeadsAdaptersMixin(ModelAdaptersMixin):
@@ -1033,6 +1059,9 @@ class ModelWithHeadsAdaptersMixin(ModelAdaptersMixin):
 
     def __init__(self, config, *args, **kwargs):
         super().__init__(config, *args, **kwargs)
+
+    def init_adapters(self, config, add_prefix_tuning_pool=True):
+        super().init_adapters(config, add_prefix_tuning_pool)
         self._convert_to_flex_head = False
 
     def iter_layers(self) -> Iterable[Tuple[int, nn.Module]]:

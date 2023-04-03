@@ -6,6 +6,7 @@ import numpy as np
 from adapter_transformers import ADAPTER_CONFIG_MAP, AdapterConfig, BertAdapterModel, get_adapter_config_hash
 from adapter_transformers.trainer import AdapterTrainer as Trainer
 from adapter_transformers.utils import find_in_index
+from adapter_transformers.wrappers import wrap_model
 from tests.test_modeling_common import ids_tensor
 from transformers import (  # get_adapter_config_hash,
     AutoModel,
@@ -49,6 +50,7 @@ class AdapterHubTest(unittest.TestCase):
             with self.subTest(config=config):
                 tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
                 model = BertForSequenceClassification.from_pretrained("bert-base-uncased")
+                model = wrap_model(model)
 
                 loading_info = {}
                 adapter_name = model.load_adapter(
@@ -69,7 +71,7 @@ class AdapterHubTest(unittest.TestCase):
 
                 # setup dataset
                 data_args = GlueDataTrainingArguments(
-                    task_name="mrpc", data_dir="./tests/fixtures/tests_samples/MRPC", overwrite_cache=True
+                    task_name="mrpc", data_dir="./hf_transformers/tests/fixtures/tests_samples/MRPC", overwrite_cache=True
                 )
                 eval_dataset = GlueDataset(data_args, tokenizer=tokenizer, mode="dev")
                 training_args = TrainingArguments(output_dir="./examples", no_cuda=True)
@@ -90,6 +92,7 @@ class AdapterHubTest(unittest.TestCase):
 
     def test_load_task_adapter_from_hub_with_leave_out(self):
         model = AutoModel.from_pretrained("bert-base-uncased")
+        model = wrap_model(model)
 
         loading_info = {}
         adapter_name = model.load_adapter("sts/mrpc@ukp", config="pfeiffer", loading_info=loading_info, leave_out=[11])
@@ -109,6 +112,7 @@ class AdapterHubTest(unittest.TestCase):
         for config in ["pfeiffer+inv", "houlsby+inv"]:
             with self.subTest(config=config):
                 model = AutoModel.from_pretrained("bert-base-multilingual-cased")
+                model = wrap_model(model)
                 config = AdapterConfig.load(config, non_linearity="gelu", reduction_factor=2)
 
                 loading_info = {}
