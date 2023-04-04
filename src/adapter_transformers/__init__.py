@@ -144,6 +144,10 @@ _import_structure = {
         "get_adapter_info",
         "list_adapters",
     ],
+    "wrappers": [
+        "wrap_config",
+        "wrap_model",
+    ],
 }
 
 
@@ -233,6 +237,7 @@ if TYPE_CHECKING:
         get_adapter_info,
         list_adapters,
     )
+    from .wrappers import wrap_config, wrap_model
 
 else:
     import sys

@@ -11,6 +11,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from transformers.configuration_utils import PretrainedConfig
+from transformers.pytorch_utils import Conv1D
 
 from .composition import AdapterCompositionBlock
 from .configuration import LoRAConfig
@@ -174,13 +175,23 @@ class Linear(LoRALayer, nn.Linear):
             self.weight.data = torch.t(self.weight.data)
 
     @classmethod
-    def wrap(cls, module: nn.Linear, location_key: str, config: PretrainedConfig, attn_key: str = None, **kwargs):
-        new_module = cls(module.in_features, module.out_features, location_key, config, attn_key=attn_key, **kwargs)
-        # copy weights
-        if new_module.fan_in_fan_out:
-            new_module.weight.data = torch.t(module.weight.data)
+    def wrap(
+        cls,
+        module: Union[nn.Linear, Conv1D],
+        location_key: str,
+        config: PretrainedConfig,
+        attn_key: str = None,
+        **kwargs
+    ):
+        if isinstance(module, Conv1D):
+            new_module = cls(
+                module.weight.shape[0], module.weight.shape[1], location_key, config, attn_key=attn_key, **kwargs
+            )
         else:
-            new_module.weight.data = module.weight.data
+            new_module = cls(
+                module.in_features, module.out_features, location_key, config, attn_key=attn_key, **kwargs
+            )
+        new_module.weight.data = module.weight.data
         if module.bias is not None:
             new_module.bias.data = module.bias.data
 
@@ -281,6 +292,18 @@ class MergedLinear(LoRALayer, nn.Linear):
         self.fan_in_fan_out = fan_in_fan_out
         if fan_in_fan_out:
             self.weight.data = self.weight.data.T
+
+    @classmethod
+    def wrap(cls, module: Union[nn.Linear, Conv1D], location_key: str, config: PretrainedConfig, **kwargs):
+        if isinstance(module, Conv1D):
+            new_module = cls(module.weight.shape[0], module.weight.shape[1], location_key, config, **kwargs)
+        else:
+            new_module = cls(module.in_features, module.out_features, location_key, config, **kwargs)
+        new_module.weight.data = module.weight.data
+        if module.bias is not None:
+            new_module.bias.data = module.bias.data
+
+        return new_module
 
     def get_n_heads(self, lora: Union[LoRA, LoRAConfig]):
         return len(set(lora.attn_matrices))

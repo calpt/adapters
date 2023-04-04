@@ -71,7 +71,9 @@ class AdapterHubTest(unittest.TestCase):
 
                 # setup dataset
                 data_args = GlueDataTrainingArguments(
-                    task_name="mrpc", data_dir="./hf_transformers/tests/fixtures/tests_samples/MRPC", overwrite_cache=True
+                    task_name="mrpc",
+                    data_dir="./hf_transformers/tests/fixtures/tests_samples/MRPC",
+                    overwrite_cache=True,
                 )
                 eval_dataset = GlueDataset(data_args, tokenizer=tokenizer, mode="dev")
                 training_args = TrainingArguments(output_dir="./examples", no_cuda=True)

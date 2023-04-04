@@ -18,14 +18,14 @@ limitations under the License.
 
 This branch disentangles `adapter-transformers` from HF Transformers and adds Transformers as an external dependency.
 
-### Breaking
+### Breaking changes
 
 - All adapter-related classes now have to imported via `adapter_transformers` namespace, e.g.:
     ```python
     from adapter_transformers import BertAdapterModel
     # ...
     ```
-- **(TODO)** Built-in HF model classes can be adapted for usage with adapters via a wrapper method, e.g.:
+- Built-in HF model classes can be adapted for usage with adapters via a wrapper method, e.g.:
     ```python
     from transformers import BertModel
     from adapter_transformers import wrap_model
@@ -34,12 +34,33 @@ This branch disentangles `adapter-transformers` from HF Transformers and adds Tr
     model = wrap_model(model)
     ```
 
+### Model support
+
+- [ ] Albert
+- [x] Bart
+- [ ] BEiT
+- [x] Bert
+- [ ] Bert Generation
+- [ ] CLIP
+- [ ] Deberta
+- [ ] Deberta V2
+- [ ] DistilBert
+- [ ] Encoder-Decoder
+- [x] GPT-2
+- [ ] GPT-J
+- [ ] MBart
+- [x] Roberta
+- [ ] T5
+- [ ] ViT
+- [x] XLM-R
+
 ### TODO
 
-Features not yet working:
+Features not (yet) working:
 
-- Auto classes for static head model classes with adapters
-- Text generation with adapters
+- Loading model + adapter checkpoints using HF classes
+- Text generation with adapters (hacked working version)
+- Parallel generation with adapters
 - Using Transformers pipelines with adapters
 
 Tasks to do for first usable version:

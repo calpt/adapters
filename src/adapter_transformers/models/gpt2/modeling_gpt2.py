@@ -48,10 +48,12 @@ from transformers.utils.model_parallel_utils import assert_device_map, get_devic
 
 from ...composition import adjust_tensors_for_parallel
 from ...context import ForwardContext
-from ...lora import Linear as LoRALinear
-from ...lora import MergedLinear as LoRAMergedLinear
-from ...mixins.gpt2 import GPT2DecoderBlockAdaptersMixin, GPT2ModelAdapterMixin, GPT2ModelWithHeadsAdaptersMixin
-from ...prefix_tuning import PrefixTuningShim
+from ...mixins.gpt2 import (
+    GPT2AttentionAdaptersMixin,
+    GPT2DecoderBlockAdaptersMixin,
+    GPT2ModelAdapterMixin,
+    GPT2ModelWithHeadsAdaptersMixin,
+)
 
 
 logger = logging.get_logger(__name__)
@@ -126,7 +128,7 @@ def load_tf_weights_in_gpt2(model, config, gpt2_checkpoint_path):
     return model
 
 
-class GPT2Attention(nn.Module):
+class GPT2Attention(GPT2AttentionAdaptersMixin, nn.Module):
     def __init__(self, config, is_cross_attention=False, layer_idx=None):
         super().__init__()
 
@@ -161,22 +163,13 @@ class GPT2Attention(nn.Module):
             self.c_attn = Conv1D(2 * self.embed_dim, self.embed_dim)
             self.q_attn = Conv1D(self.embed_dim, self.embed_dim)
         else:
-            self.c_attn = LoRAMergedLinear(
-                self.embed_dim,
-                3 * self.embed_dim,
-                "selfattn",
-                config,
-                fan_in_fan_out=True,
-            )
+            self.c_attn = Conv1D(3 * self.embed_dim, self.embed_dim)
         self.c_proj = Conv1D(self.embed_dim, self.embed_dim)
 
         self.attn_dropout = nn.Dropout(config.attn_pdrop)
         self.resid_dropout = nn.Dropout(config.resid_pdrop)
 
         self.pruned_heads = set()
-
-        location_key = "cross_prefix" if self.is_cross_attention else "self_prefix"
-        self.prefix_tuning = PrefixTuningShim(location_key, config)
 
     def prune_heads(self, heads):
         if len(heads) == 0:
@@ -362,9 +355,8 @@ class GPT2MLP(nn.Module):
     def __init__(self, intermediate_size, config):
         super().__init__()
         embed_dim = config.hidden_size
-        # Order of dimension inputs to LORALinear reversed compared to Conv1D
-        self.c_fc = LoRALinear(embed_dim, intermediate_size, "intermediate", config, fan_in_fan_out=True)
-        self.c_proj = LoRALinear(intermediate_size, embed_dim, "output", config, fan_in_fan_out=True)
+        self.c_fc = Conv1D(intermediate_size, embed_dim)
+        self.c_proj = Conv1D(embed_dim, intermediate_size)
         self.act = ACT2FN[config.activation_function]
         self.dropout = nn.Dropout(config.resid_pdrop)
 
@@ -379,7 +371,6 @@ class GPT2MLP(nn.Module):
 class GPT2Block(GPT2DecoderBlockAdaptersMixin, nn.Module):
     def __init__(self, config, layer_idx=None):
         super().__init__()
-        self.config = config
         hidden_size = config.hidden_size
         inner_dim = config.n_inner if config.n_inner is not None else 4 * hidden_size
 
@@ -392,7 +383,6 @@ class GPT2Block(GPT2DecoderBlockAdaptersMixin, nn.Module):
             self.ln_cross_attn = nn.LayerNorm(hidden_size, eps=config.layer_norm_epsilon)
 
         self.mlp = GPT2MLP(inner_dim, config)
-        self._init_adapter_modules()
 
     def forward(
         self,
@@ -704,7 +694,7 @@ class GPT2Model(GPT2ModelAdapterMixin, GPT2PreTrainedModel):
         self.device_map = None
         self.gradient_checkpointing = False
 
-        self._init_adapter_modules()
+        self.init_adapters(config)
 
         # Initialize weights and apply final processing
         self.post_init()

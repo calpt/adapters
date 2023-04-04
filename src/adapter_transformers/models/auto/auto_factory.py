@@ -1,9 +1,7 @@
 import importlib
 
 from transformers.models.auto.auto_factory import (
-    _BaseAutoModelClass,
     _LazyAutoMapping,
-    auto_class_update,
     getattribute_from_module,
     model_type_to_module_name,
 )

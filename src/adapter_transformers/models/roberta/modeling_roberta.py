@@ -47,14 +47,14 @@ from transformers.utils import (
 
 from ...composition import adjust_tensors_for_parallel
 from ...context import ForwardContext
-from ...lora import Linear as LoRALinear
 from ...mixins.bert import (
+    BertLayerAdaptersMixin,
     BertModelAdaptersMixin,
     BertModelWithHeadsAdaptersMixin,
     BertOutputAdaptersMixin,
+    BertSelfAttentionAdaptersMixin,
     BertSelfOutputAdaptersMixin,
 )
-from ...prefix_tuning import PrefixTuningShim
 
 
 logger = logging.get_logger(__name__)
@@ -161,7 +161,7 @@ class RobertaEmbeddings(nn.Module):
 
 
 # Copied from transformers.models.bert.modeling_bert.BertSelfAttention with Bert->Roberta
-class RobertaSelfAttention(nn.Module):
+class RobertaSelfAttention(BertSelfAttentionAdaptersMixin, nn.Module):
     def __init__(self, config, position_embedding_type=None, location_key: Optional[str] = None):
         super().__init__()
         if config.hidden_size % config.num_attention_heads != 0 and not hasattr(config, "embedding_size"):
@@ -174,9 +174,9 @@ class RobertaSelfAttention(nn.Module):
         self.attention_head_size = int(config.hidden_size / config.num_attention_heads)
         self.all_head_size = self.num_attention_heads * self.attention_head_size
 
-        self.query = LoRALinear(config.hidden_size, self.all_head_size, "selfattn", config, attn_key="q")
-        self.key = LoRALinear(config.hidden_size, self.all_head_size, "selfattn", config, attn_key="k")
-        self.value = LoRALinear(config.hidden_size, self.all_head_size, "selfattn", config, attn_key="v")
+        self.query = nn.Linear(config.hidden_size, self.all_head_size)
+        self.key = nn.Linear(config.hidden_size, self.all_head_size)
+        self.value = nn.Linear(config.hidden_size, self.all_head_size)
 
         self.dropout = nn.Dropout(config.attention_probs_dropout_prob)
         self.position_embedding_type = position_embedding_type or getattr(
@@ -187,8 +187,6 @@ class RobertaSelfAttention(nn.Module):
             self.distance_embedding = nn.Embedding(2 * config.max_position_embeddings - 1, self.attention_head_size)
 
         self.is_decoder = config.is_decoder
-
-        self.prefix_tuning = PrefixTuningShim(location_key + "_prefix" if location_key else None, config)
 
     def transpose_for_scores(self, x: torch.Tensor) -> torch.Tensor:
         new_x_shape = x.size()[:-1] + (self.num_attention_heads, self.attention_head_size)
@@ -306,12 +304,9 @@ class RobertaSelfAttention(nn.Module):
 class RobertaSelfOutput(BertSelfOutputAdaptersMixin, nn.Module):
     def __init__(self, config):
         super().__init__()
-        self.config = config
-
         self.dense = nn.Linear(config.hidden_size, config.hidden_size)
         self.LayerNorm = nn.LayerNorm(config.hidden_size, eps=config.layer_norm_eps)
         self.dropout = nn.Dropout(config.hidden_dropout_prob)
-        self._init_adapter_modules()
 
     def forward(self, hidden_states: torch.Tensor, input_tensor: torch.Tensor) -> torch.Tensor:
         hidden_states = self.dense(hidden_states)
@@ -322,11 +317,9 @@ class RobertaSelfOutput(BertSelfOutputAdaptersMixin, nn.Module):
 
 # Copied from transformers.models.bert.modeling_bert.BertAttention with Bert->Roberta
 class RobertaAttention(nn.Module):
-    def __init__(self, config, position_embedding_type=None, location_key: Optional[str] = None):
+    def __init__(self, config, position_embedding_type=None):
         super().__init__()
-        self.self = RobertaSelfAttention(
-            config, position_embedding_type=position_embedding_type, location_key=location_key
-        )
+        self.self = RobertaSelfAttention(config, position_embedding_type=position_embedding_type)
         self.output = RobertaSelfOutput(config)
         self.pruned_heads = set()
 
@@ -376,7 +369,7 @@ class RobertaAttention(nn.Module):
 class RobertaIntermediate(nn.Module):
     def __init__(self, config):
         super().__init__()
-        self.dense = LoRALinear(config.hidden_size, config.intermediate_size, "intermediate", config)
+        self.dense = nn.Linear(config.hidden_size, config.intermediate_size)
         if isinstance(config.hidden_act, str):
             self.intermediate_act_fn = ACT2FN[config.hidden_act]
         else:
@@ -392,12 +385,9 @@ class RobertaIntermediate(nn.Module):
 class RobertaOutput(BertOutputAdaptersMixin, nn.Module):
     def __init__(self, config):
         super().__init__()
-        self.config = config
-
-        self.dense = LoRALinear(config.intermediate_size, config.hidden_size, "output", config)
+        self.dense = nn.Linear(config.intermediate_size, config.hidden_size)
         self.LayerNorm = nn.LayerNorm(config.hidden_size, eps=config.layer_norm_eps)
         self.dropout = nn.Dropout(config.hidden_dropout_prob)
-        self._init_adapter_modules()
 
     def forward(self, hidden_states: torch.Tensor, input_tensor: torch.Tensor) -> torch.Tensor:
         hidden_states = self.dense(hidden_states)
@@ -407,18 +397,18 @@ class RobertaOutput(BertOutputAdaptersMixin, nn.Module):
 
 
 # Copied from transformers.models.bert.modeling_bert.BertLayer with Bert->Roberta
-class RobertaLayer(nn.Module):
+class RobertaLayer(BertLayerAdaptersMixin, nn.Module):
     def __init__(self, config):
         super().__init__()
         self.chunk_size_feed_forward = config.chunk_size_feed_forward
         self.seq_len_dim = 1
-        self.attention = RobertaAttention(config, location_key="self")
+        self.attention = RobertaAttention(config)
         self.is_decoder = config.is_decoder
         self.add_cross_attention = config.add_cross_attention
         if self.add_cross_attention:
             if not self.is_decoder:
                 raise ValueError(f"{self} should be used as a decoder model if cross attention is added")
-            self.crossattention = RobertaAttention(config, position_embedding_type="absolute", location_key="cross")
+            self.crossattention = RobertaAttention(config, position_embedding_type="absolute")
         self.intermediate = RobertaIntermediate(config)
         self.output = RobertaOutput(config)
 
@@ -750,7 +740,7 @@ class RobertaModel(BertModelAdaptersMixin, RobertaPreTrainedModel):
 
         self.pooler = RobertaPooler(config) if add_pooling_layer else None
 
-        self._init_adapter_modules()
+        self.init_adapters(config)
 
         # Initialize weights and apply final processing
         self.post_init()
