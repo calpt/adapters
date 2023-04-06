@@ -62,6 +62,7 @@ Features not (yet) working:
 - Text generation with adapters (hacked working version)
 - Parallel generation with adapters
 - Using Transformers pipelines with adapters
+- Using HF language modeling classes with invertible adapters
 
 Tasks to do for first usable version:
 

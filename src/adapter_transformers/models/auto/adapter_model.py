@@ -2,8 +2,9 @@ import warnings
 from collections import OrderedDict
 
 from transformers.models.auto.configuration_auto import CONFIG_MAPPING_NAMES
+from transformers.models.auto.auto_factory import _BaseAutoModelClass, auto_class_update
 
-from .auto_factory import _BaseAutoModelClass, _LazyAdapterModelAutoMapping, auto_class_update
+from .auto_factory import _LazyAdapterModelAutoMapping
 
 
 # Make sure that children are placed before parents!

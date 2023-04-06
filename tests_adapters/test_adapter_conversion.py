@@ -5,9 +5,6 @@ import tempfile
 import torch
 
 from adapter_transformers import AutoAdapterModel
-from adapter_transformers.models.albert import AlbertPreTrainedModel
-from adapter_transformers.models.bert import BertPreTrainedModel
-from adapter_transformers.models.roberta import RobertaPreTrainedModel
 from adapter_transformers.wrappers import wrap_model
 from transformers import (
     MODEL_FOR_CAUSAL_LM_MAPPING,
@@ -18,6 +15,9 @@ from transformers import (
     MODEL_FOR_SEQ_TO_SEQ_CAUSAL_LM_MAPPING,
     MODEL_FOR_SEQUENCE_CLASSIFICATION_MAPPING,
     MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING,
+    AlbertPreTrainedModel,
+    BertPreTrainedModel,
+    RobertaPreTrainedModel,
 )
 from transformers.testing_utils import require_torch, torch_device
 
