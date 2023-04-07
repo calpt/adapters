@@ -1,7 +1,7 @@
+from transformers.models.xlm_roberta.modeling_xlm_roberta import XLM_ROBERTA_START_DOCSTRING, XLMRobertaConfig
 from transformers.utils import add_start_docstrings
 
 from ..roberta.adapter_model import RobertaAdapterModel, RobertaModelWithHeads
-from .modeling_xlm_roberta import XLM_ROBERTA_START_DOCSTRING, XLMRobertaConfig
 
 
 @add_start_docstrings(

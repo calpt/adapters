@@ -210,3 +210,15 @@ def adjust_tensors_for_parallel(hidden_states, *tensors):
         else:
             outputs.append(tensor)
     return tuple(outputs)
+
+
+def adjust_tensors_for_parallel_(hidden_states, *tensors):
+    """
+    In-place version of adjust_tensors_for_parallel().
+    """
+    for tensor in tensors:
+        if tensor is not None and hidden_states.shape[0] >= tensor.shape[0]:
+            repeats = [1] * len(tensor.shape)
+            repeats[0] = hidden_states.shape[0] // tensor.shape[0]
+            new_tensor = tensor.repeat(*repeats)
+            tensor.set_(new_tensor)

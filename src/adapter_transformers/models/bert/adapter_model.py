@@ -1,5 +1,11 @@
 import warnings
 
+from transformers.models.bert.modeling_bert import (
+    BERT_INPUTS_DOCSTRING,
+    BERT_START_DOCSTRING,
+    BertModel,
+    BertPreTrainedModel,
+)
 from transformers.utils import add_start_docstrings, add_start_docstrings_to_model_forward
 
 from ...context import AdapterSetup
@@ -15,7 +21,7 @@ from ...heads import (
     TaggingHead,
 )
 from ...model_mixin import EmbeddingAdaptersWrapperMixin
-from .modeling_bert import BERT_INPUTS_DOCSTRING, BERT_START_DOCSTRING, BertModel, BertPreTrainedModel
+from ...wrappers import wrap_model
 
 
 @add_start_docstrings(
@@ -26,7 +32,7 @@ class BertAdapterModel(EmbeddingAdaptersWrapperMixin, ModelWithFlexibleHeadsAdap
     def __init__(self, config):
         super().__init__(config)
 
-        self.bert = BertModel(config)
+        self.bert = wrap_model(BertModel(config))
 
         self._init_head_modules()
 

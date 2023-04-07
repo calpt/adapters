@@ -1,5 +1,11 @@
 import warnings
 
+from transformers.models.roberta.modeling_roberta import (
+    ROBERTA_INPUTS_DOCSTRING,
+    ROBERTA_START_DOCSTRING,
+    RobertaModel,
+    RobertaPreTrainedModel,
+)
 from transformers.utils import add_start_docstrings, add_start_docstrings_to_model_forward
 
 from ...context import AdapterSetup
@@ -15,7 +21,7 @@ from ...heads import (
     TaggingHead,
 )
 from ...model_mixin import EmbeddingAdaptersWrapperMixin
-from .modeling_roberta import ROBERTA_INPUTS_DOCSTRING, ROBERTA_START_DOCSTRING, RobertaModel, RobertaPreTrainedModel
+from ...wrappers import wrap_model
 
 
 @add_start_docstrings(
@@ -26,7 +32,7 @@ class RobertaAdapterModel(EmbeddingAdaptersWrapperMixin, ModelWithFlexibleHeadsA
     def __init__(self, config):
         super().__init__(config)
 
-        self.roberta = RobertaModel(config)
+        self.roberta = wrap_model(RobertaModel(config))
 
         self._init_head_modules()
 

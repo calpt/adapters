@@ -3,6 +3,8 @@ from typing import Callable, Iterable, Tuple
 
 import torch.nn as nn
 
+from ..composition import adjust_tensors_for_parallel_
+from ..context import ForwardContext
 from ..layer import AdapterLayer
 from ..lora import Linear as LoRALinear
 from ..model_mixin import (
@@ -71,12 +73,31 @@ class BertLayerAdaptersMixin:
 class BertModelAdaptersMixin(EmbeddingAdaptersMixin, InvertibleAdaptersMixin, ModelAdaptersMixin):
     """Adds adapters to the BertModel module."""
 
+    def init_adapters(self, config):
+        super().init_adapters(config)
+
+        # Set hook for parallel composition
+        for _, layer in self.iter_layers():
+            self._set_layer_hook_for_parallel(layer)
+
+    def _set_layer_hook_for_parallel(self, layer: nn.Module):
+        def hook(module, input):
+            adjust_tensors_for_parallel_(input[0], input[1])
+            return input
+
+        layer.register_forward_pre_hook(hook)
+
     def iter_layers(self) -> Iterable[Tuple[int, nn.Module]]:
         for i, layer in enumerate(self.encoder.layer):
             yield i, layer
 
     def hook_after_embeddings(self, hook_fn: Callable):
         return self.embeddings.register_forward_hook(hook_fn)
+
+    # TODO move this into shared mixin for base classes
+    @ForwardContext.wrap
+    def forward(self, *args, **kwargs):
+        return super().forward(*args, **kwargs)
 
 
 class BertModelWithHeadsAdaptersMixin(EmbeddingAdaptersWrapperMixin, ModelWithHeadsAdaptersMixin):
