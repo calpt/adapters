@@ -26,31 +26,11 @@ _import_structure = {
         "BartAdapterModel",
         "BartModelWithHeads",
     ],
-    "modeling_bart": [
-        "BART_PRETRAINED_MODEL_ARCHIVE_LIST",
-        "BartForCausalLM",
-        "BartForConditionalGeneration",
-        "BartForQuestionAnswering",
-        "BartForSequenceClassification",
-        "BartModel",
-        "BartPretrainedModel",
-        "PretrainedBartModel",
-    ],
 }
 
 
 if TYPE_CHECKING:
     from .adapter_model import BartAdapterModel, BartModelWithHeads
-    from .modeling_bart import (
-        BART_PRETRAINED_MODEL_ARCHIVE_LIST,
-        BartForCausalLM,
-        BartForConditionalGeneration,
-        BartForQuestionAnswering,
-        BartForSequenceClassification,
-        BartModel,
-        BartPretrainedModel,
-        PretrainedBartModel,
-    )
 
 else:
     import sys

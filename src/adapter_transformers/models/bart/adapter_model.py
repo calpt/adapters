@@ -2,6 +2,14 @@ import warnings
 
 import torch
 
+from transformers.models.bart.modeling_bart import (
+    BART_INPUTS_DOCSTRING,
+    BART_START_DOCSTRING,
+    BartConfig,
+    BartModel,
+    BartPretrainedModel,
+    shift_tokens_right,
+)
 from transformers.utils import add_start_docstrings, add_start_docstrings_to_model_forward
 
 from ...composition import adjust_tensors_for_parallel
@@ -13,14 +21,7 @@ from ...heads import (
     Seq2SeqLMHead,
 )
 from ...model_mixin import EmbeddingAdaptersWrapperMixin
-from .modeling_bart import (
-    BART_INPUTS_DOCSTRING,
-    BART_START_DOCSTRING,
-    BartConfig,
-    BartModel,
-    BartPretrainedModel,
-    shift_tokens_right,
-)
+from ...wrappers import wrap_model
 
 
 @add_start_docstrings(
@@ -31,7 +32,7 @@ class BartAdapterModel(EmbeddingAdaptersWrapperMixin, ModelWithFlexibleHeadsAdap
 
     def __init__(self, config: BartConfig, **kwargs):
         super().__init__(config, **kwargs)
-        self.model = BartModel(config)
+        self.model = wrap_model(BartModel(config))
 
         self._init_head_modules()
 

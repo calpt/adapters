@@ -1,7 +1,10 @@
-from typing import Callable, Iterable, Tuple
+from typing import Callable, Iterable, Optional, Tuple
 
+import torch
 import torch.nn as nn
 
+from ..composition import adjust_tensors_for_parallel
+from ..context import ForwardContext
 from ..layer import AdapterLayer
 from ..lora import Linear as LoRALinear
 from ..model_mixin import (
@@ -59,6 +62,16 @@ class BartEncoderAdaptersMixin(InvertibleAdaptersMixin):
         return self.layernorm_embedding.register_forward_hook(hook_fn)
 
 
+class BartDecoderAdaptersMixin:
+    """Adds adapters to the BartDecoder module of BART."""
+
+    def forward(
+        self, input_ids: torch.LongTensor = None, encoder_hidden_states: Optional[torch.FloatTensor] = None, **kwargs
+    ):
+        (input_ids,) = adjust_tensors_for_parallel(encoder_hidden_states, input_ids)
+        return super().forward(input_ids=input_ids, encoder_hidden_states=encoder_hidden_states, **kwargs)
+
+
 class BartModelAdaptersMixin(EmbeddingAdaptersMixin, InvertibleAdaptersWrapperMixin, ModelAdaptersMixin):
     """Adds adapters to the BartModel class."""
 
@@ -73,6 +86,11 @@ class BartModelAdaptersMixin(EmbeddingAdaptersMixin, InvertibleAdaptersWrapperMi
         else:
             for i, layer in enumerate(self.decoder.layers):
                 yield i, layer
+
+    # TODO move this into shared mixin for base classes
+    @ForwardContext.wrap
+    def forward(self, *args, **kwargs):
+        return super().forward(*args, **kwargs)
 
 
 class BartModelWithHeadsAdaptersMixin(EmbeddingAdaptersWrapperMixin, ModelWithHeadsAdaptersMixin):

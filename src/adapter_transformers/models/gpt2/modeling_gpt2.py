@@ -39,7 +39,7 @@ from transformers.utils import (
 )
 from transformers.utils.model_parallel_utils import assert_device_map, get_device_map
 
-from ...composition import adjust_tensors_for_parallel
+from ...composition import adjust_tensors_for_parallel, adjust_tensors_for_parallel_
 from ...context import ForwardContext
 from ...mixins.gpt2 import GPT2AttentionAdaptersMixin, GPT2DecoderBlockAdaptersMixin, GPT2ModelAdapterMixin
 
@@ -48,15 +48,6 @@ logger = logging.get_logger(__name__)
 
 _CHECKPOINT_FOR_DOC = "gpt2"
 _CONFIG_FOR_DOC = "GPT2Config"
-
-GPT2_PRETRAINED_MODEL_ARCHIVE_LIST = [
-    "gpt2",
-    "gpt2-medium",
-    "gpt2-large",
-    "gpt2-xl",
-    "distilgpt2",
-    # See all GPT-2 models at https://huggingface.co/models?filter=gpt2
-]
 
 
 def load_tf_weights_in_gpt2(model, config, gpt2_checkpoint_path):
@@ -383,6 +374,7 @@ class GPT2Block(GPT2DecoderBlockAdaptersMixin, nn.Module):
         use_cache: Optional[bool] = False,
         output_attentions: Optional[bool] = False,
     ) -> Union[Tuple[torch.Tensor], Optional[Tuple[torch.Tensor, Tuple[torch.FloatTensor, ...]]]]:
+        adjust_tensors_for_parallel_(hidden_states, attention_mask)
         residual = hidden_states
         hidden_states = self.ln_1(hidden_states)
         attn_outputs = self.attn(
@@ -898,7 +890,6 @@ class GPT2Model(GPT2ModelAdapterMixin, GPT2PreTrainedModel):
                 )
 
             hidden_states = outputs[0]
-            (attention_mask,) = adjust_tensors_for_parallel(hidden_states, attention_mask)
             # also adjust output shape if necessary
             if getattr(ForwardContext.get_context(), "adapters_parallelized", False):
                 output_shape = hidden_states.size()
