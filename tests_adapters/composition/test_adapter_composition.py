@@ -2,7 +2,7 @@ import unittest
 
 import torch
 
-from adapter_transformers import PfeifferConfig, PrefixTuningConfig
+from adapter_transformers import PfeifferConfig, PrefixTuningConfig, wrap_model
 from adapter_transformers.composition import BatchSplit, Fuse, Parallel, Split, Stack, parse_composition
 from tests.test_modeling_common import ids_tensor
 from transformers import BertConfig, BertForSequenceClassification
@@ -34,7 +34,15 @@ class AdapterCompositionTest(unittest.TestCase):
         return PfeifferConfig()
 
     def build_model(self):
-        model = BertForSequenceClassification(BertConfig())
+        model = BertForSequenceClassification(
+            BertConfig(
+                hidden_size=32,
+                num_hidden_layers=4,
+                num_attention_heads=4,
+                intermediate_size=37,
+            )
+        )
+        model = wrap_model(model)
         adapter_config = self.get_adapter_config()
         model.add_adapter("a", config=adapter_config)
         model.add_adapter("b", config=adapter_config)

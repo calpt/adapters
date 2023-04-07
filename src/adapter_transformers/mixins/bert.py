@@ -1,5 +1,5 @@
 import logging
-from typing import Iterable, Tuple
+from typing import Callable, Iterable, Tuple
 
 import torch.nn as nn
 
@@ -74,6 +74,9 @@ class BertModelAdaptersMixin(EmbeddingAdaptersMixin, InvertibleAdaptersMixin, Mo
     def iter_layers(self) -> Iterable[Tuple[int, nn.Module]]:
         for i, layer in enumerate(self.encoder.layer):
             yield i, layer
+
+    def hook_after_embeddings(self, hook_fn: Callable):
+        return self.embeddings.register_forward_hook(hook_fn)
 
 
 class BertModelWithHeadsAdaptersMixin(EmbeddingAdaptersWrapperMixin, ModelWithHeadsAdaptersMixin):

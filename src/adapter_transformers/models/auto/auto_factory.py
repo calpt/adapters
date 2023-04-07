@@ -1,10 +1,6 @@
 import importlib
 
-from transformers.models.auto.auto_factory import (
-    _LazyAutoMapping,
-    getattribute_from_module,
-    model_type_to_module_name,
-)
+from transformers.models.auto.auto_factory import _LazyAutoMapping, getattribute_from_module, model_type_to_module_name
 
 
 class _LazyAdapterModelAutoMapping(_LazyAutoMapping):

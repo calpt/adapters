@@ -42,10 +42,10 @@ from ...context import ForwardContext
 from ...mixins.bart import (
     BartAttentionAdaptersMixin,
     BartDecoderLayerAdaptersMixin,
+    BartEncoderAdaptersMixin,
     BartEncoderLayerAdaptersMixin,
     BartModelAdaptersMixin,
 )
-from ...model_mixin import InvertibleAdaptersMixin
 
 
 logger = logging.get_logger(__name__)
@@ -481,30 +481,6 @@ class BartDecoderLayer(BartDecoderLayerAdaptersMixin, nn.Module):
         return outputs
 
 
-class BartClassificationHead(nn.Module):
-    """Head for sentence-level classification tasks."""
-
-    def __init__(
-        self,
-        input_dim: int,
-        inner_dim: int,
-        num_classes: int,
-        pooler_dropout: float,
-    ):
-        super().__init__()
-        self.dense = nn.Linear(input_dim, inner_dim)
-        self.dropout = nn.Dropout(p=pooler_dropout)
-        self.out_proj = nn.Linear(inner_dim, num_classes)
-
-    def forward(self, hidden_states: torch.Tensor) -> torch.Tensor:
-        hidden_states = self.dropout(hidden_states)
-        hidden_states = self.dense(hidden_states)
-        hidden_states = torch.tanh(hidden_states)
-        hidden_states = self.dropout(hidden_states)
-        hidden_states = self.out_proj(hidden_states)
-        return hidden_states
-
-
 class BartPretrainedModel(PreTrainedModel):
     config_class = BartConfig
     base_model_prefix = "model"
@@ -702,7 +678,7 @@ BART_INPUTS_DOCSTRING = r"""
 """
 
 
-class BartEncoder(InvertibleAdaptersMixin, BartPretrainedModel):
+class BartEncoder(BartEncoderAdaptersMixin, BartPretrainedModel):
     """
     Transformer encoder consisting of *config.encoder_layers* self attention layers. Each layer is a
     [`BartEncoderLayer`].
@@ -817,8 +793,6 @@ class BartEncoder(InvertibleAdaptersMixin, BartPretrainedModel):
         hidden_states = inputs_embeds + embed_pos
         hidden_states = self.layernorm_embedding(hidden_states)
         hidden_states = nn.functional.dropout(hidden_states, p=self.dropout, training=self.training)
-
-        hidden_states = self.invertible_adapters_forward(hidden_states)
 
         # expand attention_mask
         if attention_mask is not None:

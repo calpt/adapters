@@ -1,10 +1,10 @@
 import logging
 import os
 import warnings
-from abc import ABC, abstractmethod
+from abc import ABC, ABCMeta, abstractmethod
 from collections import defaultdict
 from os.path import join
-from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple, Union
 
 import torch
 from torch import nn
@@ -33,7 +33,7 @@ from .wrappers.configuration import wrap_config
 logger = logging.getLogger(__name__)
 
 
-class InvertibleAdaptersMixin:
+class InvertibleAdaptersMixin(metaclass=ABCMeta):
     """Mixin for Transformer models adding invertible adapters."""
 
     def init_adapters(self, config):
@@ -44,6 +44,22 @@ class InvertibleAdaptersMixin:
 
         if hasattr(super(), "init_adapters"):
             super().init_adapters(config)
+
+        self.hook_after_embeddings(self._hook_fn)
+
+    def _hook_fn(self, module, args, output):
+        new_output = self.invertible_adapters_forward(output)
+        return new_output
+
+    @abstractmethod
+    def hook_after_embeddings(self, hook_fn: Callable):
+        """
+        Hook a function to be called after the embeddings have been computed.
+
+        Args:
+            hook_fn (Callable): The function to be called after the embeddings have been computed.
+        """
+        raise NotImplementedError
 
     def add_invertible_adapter(self, adapter_name: str):
         """

@@ -73,6 +73,16 @@ class BottleneckAdapterTestMixin(AdapterMethodBaseTestMixin):
                 for param in model.invertible_adapters[name].parameters():
                     self.assertTrue(param.requires_grad)
 
+                # Set a hook before the invertible adapter to make sure it's actually called twice:
+                # Once after the embedding layer and once in the prediction head.
+                calls = 0
+
+                def forward_pre_hook(module, input):
+                    nonlocal calls
+                    calls += 1
+
+                model.get_invertible_adapter().register_forward_pre_hook(forward_pre_hook)
+
                 # check forward pass
                 input_data = self.get_input_samples(config=model.config)
                 model.to(torch_device)
@@ -83,6 +93,8 @@ class BottleneckAdapterTestMixin(AdapterMethodBaseTestMixin):
                 adapter_output_no_inv = model(**input_data)
                 self.assertEqual(len(adapter_output), len(adapter_output_no_inv))
                 self.assertFalse(torch.equal(adapter_output[0], adapter_output_no_inv[0]))
+                # We expect one call to invertible adapter
+                self.assertEqual(1, calls)
 
     def test_get_adapter(self):
         model = self.get_model()

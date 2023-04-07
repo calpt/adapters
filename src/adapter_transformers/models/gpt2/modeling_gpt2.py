@@ -27,9 +27,7 @@ from torch.cuda.amp import autocast
 
 from transformers import GPT2Config
 from transformers.activations import ACT2FN
-from transformers.modeling_outputs import (
-    BaseModelOutputWithPastAndCrossAttentions,
-)
+from transformers.modeling_outputs import BaseModelOutputWithPastAndCrossAttentions
 from transformers.modeling_utils import PreTrainedModel
 from transformers.pytorch_utils import Conv1D, find_pruneable_heads_and_indices, prune_conv1d_layer
 from transformers.utils import (
@@ -43,11 +41,7 @@ from transformers.utils.model_parallel_utils import assert_device_map, get_devic
 
 from ...composition import adjust_tensors_for_parallel
 from ...context import ForwardContext
-from ...mixins.gpt2 import (
-    GPT2AttentionAdaptersMixin,
-    GPT2DecoderBlockAdaptersMixin,
-    GPT2ModelAdapterMixin,
-)
+from ...mixins.gpt2 import GPT2AttentionAdaptersMixin, GPT2DecoderBlockAdaptersMixin, GPT2ModelAdapterMixin
 
 
 logger = logging.get_logger(__name__)
@@ -836,7 +830,6 @@ class GPT2Model(GPT2ModelAdapterMixin, GPT2PreTrainedModel):
 
         if inputs_embeds is None:
             inputs_embeds = self.wte(input_ids)
-        inputs_embeds = self.invertible_adapters_forward(inputs_embeds)
         position_embeds = self.wpe(position_ids)
         hidden_states = inputs_embeds + position_embeds
 

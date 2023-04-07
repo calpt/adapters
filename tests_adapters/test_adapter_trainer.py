@@ -4,7 +4,7 @@ from tempfile import TemporaryDirectory
 
 import torch
 
-from adapter_transformers import AutoAdapterModel
+from adapter_transformers import AutoAdapterModel, wrap_model
 from adapter_transformers.composition import Fuse, Stack
 from adapter_transformers.trainer import AdapterTrainer, logger
 from transformers import (
@@ -33,11 +33,12 @@ class TestAdapterTrainer(unittest.TestCase):
 
         tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
         data_args = GlueDataTrainingArguments(
-            task_name="mrpc", data_dir="./tests/fixtures/tests_samples/MRPC", overwrite_cache=True
+            task_name="mrpc", data_dir="./hf_transformers/tests/fixtures/tests_samples/MRPC", overwrite_cache=True
         )
         train_dataset = GlueDataset(data_args, tokenizer=tokenizer, mode="train")
 
         model = AutoModelForSequenceClassification.from_config(self.get_model_config())
+        model = wrap_model(model)
         model.add_adapter("adapter")
         model.add_adapter("additional_adapter")
         model.set_active_adapters("adapter")
@@ -61,6 +62,7 @@ class TestAdapterTrainer(unittest.TestCase):
         trainer.train()
         # create second model that should resume the training of the first
         model_resume = AutoModelForSequenceClassification.from_config(self.get_model_config())
+        model_resume = wrap_model(model_resume)
         model_resume.add_adapter("adapter")
         model_resume.add_adapter("additional_adapter")
         model_resume.set_active_adapters("adapter")
@@ -82,11 +84,12 @@ class TestAdapterTrainer(unittest.TestCase):
     def test_resume_training_with_fusion(self):
         tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
         data_args = GlueDataTrainingArguments(
-            task_name="mrpc", data_dir="./tests/fixtures/tests_samples/MRPC", overwrite_cache=True
+            task_name="mrpc", data_dir="./hf_transformers/tests/fixtures/tests_samples/MRPC", overwrite_cache=True
         )
         train_dataset = GlueDataset(data_args, tokenizer=tokenizer, mode="train")
 
         model = AutoModelForSequenceClassification.from_config(self.get_model_config())
+        model = wrap_model(model)
         model.add_adapter("adapter")
         model.add_adapter("additional_adapter")
         model.add_adapter_fusion(Fuse("adapter", "additional_adapter"))
@@ -110,6 +113,7 @@ class TestAdapterTrainer(unittest.TestCase):
 
         trainer.train()
         model_resume = AutoModelForSequenceClassification.from_config(self.get_model_config())
+        model_resume = wrap_model(model_resume)
         model_resume.add_adapter("adapter")
         model_resume.add_adapter("additional_adapter")
         model_resume.add_adapter_fusion(Fuse("adapter", "additional_adapter"))
@@ -140,6 +144,7 @@ class TestAdapterTrainer(unittest.TestCase):
                 intermediate_size=37,
             )
         )
+        model = wrap_model(model)
         model.add_adapter("adapter1")
         model.add_adapter("adapter2")
         model.add_adapter_fusion(Fuse("adapter1", "adapter2"))
@@ -158,12 +163,13 @@ class TestAdapterTrainer(unittest.TestCase):
     def test_training_load_best_model_at_end_full_model(self):
         tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
         data_args = GlueDataTrainingArguments(
-            task_name="mrpc", data_dir="./tests/fixtures/tests_samples/MRPC", overwrite_cache=True
+            task_name="mrpc", data_dir="./hf_transformers/tests/fixtures/tests_samples/MRPC", overwrite_cache=True
         )
         train_dataset = GlueDataset(data_args, tokenizer=tokenizer, mode="train")
         eval_dataset = GlueDataset(data_args, tokenizer=tokenizer, mode="dev")
 
         model = AutoModelForSequenceClassification.from_config(self.get_model_config())
+        model = wrap_model(model)
         model.add_adapter("adapter")
         model.train_adapter("adapter")
 
@@ -192,12 +198,13 @@ class TestAdapterTrainer(unittest.TestCase):
     def test_training_load_best_model_at_end_adapter(self):
         tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
         data_args = GlueDataTrainingArguments(
-            task_name="mrpc", data_dir="./tests/fixtures/tests_samples/MRPC", overwrite_cache=True
+            task_name="mrpc", data_dir="./hf_transformers/tests/fixtures/tests_samples/MRPC", overwrite_cache=True
         )
         train_dataset = GlueDataset(data_args, tokenizer=tokenizer, mode="train")
         eval_dataset = GlueDataset(data_args, tokenizer=tokenizer, mode="dev")
 
         model = AutoModelForSequenceClassification.from_config(self.get_model_config())
+        model = wrap_model(model)
         model.add_adapter("adapter")
         model.train_adapter("adapter")
 
@@ -224,12 +231,13 @@ class TestAdapterTrainer(unittest.TestCase):
     def test_training_load_best_model_at_end_fusion(self):
         tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
         data_args = GlueDataTrainingArguments(
-            task_name="mrpc", data_dir="./tests/fixtures/tests_samples/MRPC", overwrite_cache=True
+            task_name="mrpc", data_dir="./hf_transformers/tests/fixtures/tests_samples/MRPC", overwrite_cache=True
         )
         train_dataset = GlueDataset(data_args, tokenizer=tokenizer, mode="train")
         eval_dataset = GlueDataset(data_args, tokenizer=tokenizer, mode="dev")
 
         model = AutoModelForSequenceClassification.from_config(self.get_model_config())
+        model = wrap_model(model)
         model.add_adapter("fuse_adapter_1")
         model.add_adapter("fuse_adapter_2")
         model.add_adapter_fusion(Fuse("fuse_adapter_1", "fuse_adapter_2"))
@@ -258,7 +266,7 @@ class TestAdapterTrainer(unittest.TestCase):
     def test_reloading_prediction_head(self):
         tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
         data_args = GlueDataTrainingArguments(
-            task_name="mrpc", data_dir="./tests/fixtures/tests_samples/MRPC", overwrite_cache=True
+            task_name="mrpc", data_dir="./hf_transformers/tests/fixtures/tests_samples/MRPC", overwrite_cache=True
         )
         train_dataset = GlueDataset(data_args, tokenizer=tokenizer, mode="train")
 
@@ -327,7 +335,7 @@ class TestAdapterTrainer(unittest.TestCase):
     def test_general(self):
         tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
         data_args = GlueDataTrainingArguments(
-            task_name="mrpc", data_dir="./tests/fixtures/tests_samples/MRPC", overwrite_cache=True
+            task_name="mrpc", data_dir="./hf_transformers/tests/fixtures/tests_samples/MRPC", overwrite_cache=True
         )
         train_dataset = GlueDataset(data_args, tokenizer=tokenizer, mode="train")
 
@@ -375,7 +383,7 @@ class TestAdapterTrainer(unittest.TestCase):
     def test_train_with_frozen_adapter_fusion(self):
         tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
         data_args = GlueDataTrainingArguments(
-            task_name="mrpc", data_dir="./tests/fixtures/tests_samples/MRPC", overwrite_cache=True
+            task_name="mrpc", data_dir="./hf_transformers/tests/fixtures/tests_samples/MRPC", overwrite_cache=True
         )
         train_dataset = GlueDataset(data_args, tokenizer=tokenizer, mode="train")
 
@@ -431,7 +439,7 @@ class TestAdapterTrainer(unittest.TestCase):
     def test_hyperparameter_search_works_with_AdapterTrainer(self):
         tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
         data_args = GlueDataTrainingArguments(
-            task_name="mrpc", data_dir="./tests/fixtures/tests_samples/MRPC", overwrite_cache=True
+            task_name="mrpc", data_dir="./hf_transformers/tests/fixtures/tests_samples/MRPC", overwrite_cache=True
         )
         train_dataset = GlueDataset(data_args, tokenizer=tokenizer, mode="train")
         eval_dataset = train_dataset

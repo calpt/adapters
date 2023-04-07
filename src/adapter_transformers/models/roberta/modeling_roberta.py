@@ -860,8 +860,6 @@ class RobertaModel(BertModelAdaptersMixin, RobertaPreTrainedModel):
             inputs_embeds=inputs_embeds,
             past_key_values_length=past_key_values_length,
         )
-        embedding_output = self.invertible_adapters_forward(embedding_output)
-
         encoder_outputs = self.encoder(
             embedding_output,
             attention_mask=extended_attention_mask,

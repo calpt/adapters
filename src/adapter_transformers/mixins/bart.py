@@ -1,4 +1,4 @@
-from typing import Iterable, Tuple
+from typing import Callable, Iterable, Tuple
 
 import torch.nn as nn
 
@@ -7,6 +7,7 @@ from ..lora import Linear as LoRALinear
 from ..model_mixin import (
     EmbeddingAdaptersMixin,
     EmbeddingAdaptersWrapperMixin,
+    InvertibleAdaptersMixin,
     InvertibleAdaptersWrapperMixin,
     ModelAdaptersMixin,
     ModelWithHeadsAdaptersMixin,
@@ -49,6 +50,13 @@ class BartDecoderLayerAdaptersMixin(BartEncoderLayerAdaptersMixin):
         self.self_attn.location_key = "self"
         self.encoder_attn.location_key = "cross"
         self.cross_attention_adapters = AdapterLayer("cross_adapter")
+
+
+class BartEncoderAdaptersMixin(InvertibleAdaptersMixin):
+    """Adds adapters to the BartEncoder module of BART."""
+
+    def hook_after_embeddings(self, hook_fn: Callable):
+        return self.layernorm_embedding.register_forward_hook(hook_fn)
 
 
 class BartModelAdaptersMixin(EmbeddingAdaptersMixin, InvertibleAdaptersWrapperMixin, ModelAdaptersMixin):
