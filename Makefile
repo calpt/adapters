@@ -29,7 +29,8 @@ deps_table_check_updated:
 
 # autogenerating code
 
-autogenerate_code: deps_table_update
+# HACK temporarily disable deps_table
+autogenerate_code:
 
 # Check that the repo is in a good state
 

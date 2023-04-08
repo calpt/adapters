@@ -12,7 +12,7 @@ from ..model_mixin import (
     EmbeddingAdaptersWrapperMixin,
     InvertibleAdaptersMixin,
     InvertibleAdaptersWrapperMixin,
-    ModelAdaptersMixin,
+    ModelBaseAdaptersMixin,
     ModelWithHeadsAdaptersMixin,
 )
 from ..prefix_tuning import PrefixTuningShim
@@ -72,7 +72,7 @@ class BartDecoderAdaptersMixin:
         return super().forward(input_ids=input_ids, encoder_hidden_states=encoder_hidden_states, **kwargs)
 
 
-class BartModelAdaptersMixin(EmbeddingAdaptersMixin, InvertibleAdaptersWrapperMixin, ModelAdaptersMixin):
+class BartModelAdaptersMixin(EmbeddingAdaptersMixin, InvertibleAdaptersWrapperMixin, ModelBaseAdaptersMixin):
     """Adds adapters to the BartModel class."""
 
     invertible_adapters_base_name = "encoder"
@@ -87,11 +87,7 @@ class BartModelAdaptersMixin(EmbeddingAdaptersMixin, InvertibleAdaptersWrapperMi
             for i, layer in enumerate(self.decoder.layers):
                 yield i, layer
 
-    # TODO move this into shared mixin for base classes
-    @ForwardContext.wrap
-    def forward(self, *args, **kwargs):
-        return super().forward(*args, **kwargs)
 
-
+# TODO remove this class
 class BartModelWithHeadsAdaptersMixin(EmbeddingAdaptersWrapperMixin, ModelWithHeadsAdaptersMixin):
     pass

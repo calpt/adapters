@@ -11,7 +11,7 @@ from ..model_mixin import (
     EmbeddingAdaptersMixin,
     EmbeddingAdaptersWrapperMixin,
     InvertibleAdaptersMixin,
-    ModelAdaptersMixin,
+    ModelBaseAdaptersMixin,
     ModelWithHeadsAdaptersMixin,
 )
 from ..prefix_tuning import PrefixTuningShim
@@ -70,7 +70,7 @@ class BertLayerAdaptersMixin:
             self.crossattention.self.location_key = "cross"
 
 
-class BertModelAdaptersMixin(EmbeddingAdaptersMixin, InvertibleAdaptersMixin, ModelAdaptersMixin):
+class BertModelAdaptersMixin(EmbeddingAdaptersMixin, InvertibleAdaptersMixin, ModelBaseAdaptersMixin):
     """Adds adapters to the BertModel module."""
 
     def init_adapters(self, config):
@@ -94,11 +94,7 @@ class BertModelAdaptersMixin(EmbeddingAdaptersMixin, InvertibleAdaptersMixin, Mo
     def hook_after_embeddings(self, hook_fn: Callable):
         return self.embeddings.register_forward_hook(hook_fn)
 
-    # TODO move this into shared mixin for base classes
-    @ForwardContext.wrap
-    def forward(self, *args, **kwargs):
-        return super().forward(*args, **kwargs)
 
-
+# TODO remove this class
 class BertModelWithHeadsAdaptersMixin(EmbeddingAdaptersWrapperMixin, ModelWithHeadsAdaptersMixin):
     pass

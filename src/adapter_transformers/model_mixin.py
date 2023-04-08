@@ -1068,6 +1068,13 @@ class ModelAdaptersMixin(PushAdapterToHubMixin, ABC):
 
 
 @inherit_doc
+class ModelBaseAdaptersMixin(ModelAdaptersMixin):
+    @ForwardContext.wrap
+    def forward(self, *args, **kwargs):
+        return super().forward(*args, **kwargs)
+
+
+@inherit_doc
 class ModelWithHeadsAdaptersMixin(ModelAdaptersMixin):
     """
     Mixin adding support for loading/ saving adapters to transformer models with head(s).

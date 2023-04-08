@@ -5,13 +5,7 @@ import torch.nn as nn
 from ..layer import AdapterLayer
 from ..lora import Linear as LoRALinear
 from ..lora import MergedLinear as LoRAMergedLinear
-from ..model_mixin import (
-    EmbeddingAdaptersMixin,
-    EmbeddingAdaptersWrapperMixin,
-    InvertibleAdaptersMixin,
-    ModelAdaptersMixin,
-    ModelWithHeadsAdaptersMixin,
-)
+from ..model_mixin import EmbeddingAdaptersMixin, InvertibleAdaptersMixin, ModelAdaptersMixin
 from ..prefix_tuning import PrefixTuningShim
 
 
@@ -46,7 +40,3 @@ class GPT2ModelAdapterMixin(EmbeddingAdaptersMixin, InvertibleAdaptersMixin, Mod
 
     def hook_after_embeddings(self, hook_fn: Callable):
         return self.drop.register_forward_hook(hook_fn)
-
-
-class GPT2ModelWithHeadsAdaptersMixin(EmbeddingAdaptersWrapperMixin, ModelWithHeadsAdaptersMixin):
-    pass
