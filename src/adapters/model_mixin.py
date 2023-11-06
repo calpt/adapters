@@ -953,9 +953,9 @@ class ModelAdaptersMixin(PushAdapterToHubMixin, ABC):
         # Adapter gating and attention outputs
         context.output_adapter_gating_scores = kwargs.get("output_adapter_gating_scores", False)
         context.output_adapter_fusion_attentions = kwargs.get("output_adapter_fusion_attentions", False)
+        context.output_prompt_tokens_length = kwargs.get("output_prompt_tokens_length", None)
         context.adapter_gating_scores = defaultdict(dict)
         context.adapter_fusion_attentions = defaultdict(dict)
-        context.prefix_attention_mask_length = kwargs.get("output_prefix_attention_mask_length", None)
 
     def get_fusion_regularization_loss(self):
         reg_loss = None

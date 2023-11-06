@@ -82,7 +82,7 @@ class ForwardContext:
         "adapter_gating_scores",
         "adapter_fusion_attentions",
         "adapter_input_parallelized",
-        "prefix_attention_mask_length",
+        "prompt_tokens_length",
     ]
 
     def __init__(self, model, *args, **kwargs):
